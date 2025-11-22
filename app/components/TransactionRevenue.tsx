@@ -1,0 +1,103 @@
+"use client";
+import { AgCharts } from "ag-charts-react";
+import { useState } from "react";
+
+const TransactionRevenue = () => {
+  const [chartOptions] = useState({
+    // 1. Transparent Background
+    background: {
+      visible: false,
+    },
+    // 2. Mock Data based on your screenshot (Weeks 31-38)
+    data: [
+      { week: "31", revenue: 0.5 },
+      { week: "32", revenue: 8.5 }, // Peak
+      { week: "33", revenue: 4.5 },
+      { week: "34", revenue: 5.5 },
+      { week: "35", revenue: 3.5 },
+      { week: "36", revenue: 1.0 },
+      { week: "37", revenue: 1.5 },
+      { week: "38", revenue: 0.2 },
+    ],
+    // 3. Series: Bar (Column) Chart styled like a Histogram
+    series: [
+      {
+        type: "bar",
+        xKey: "week",
+        yKey: "revenue",
+        fill: "#b22828", // Red color
+        strokeWidth: 0,
+        // Gap between bars (0.1 makes them look like a histogram/connected)
+        gapRatio: 0.1,
+
+        tooltip: {
+          renderer: ({ datum }) => ({
+            title: `Week ${datum.week}`,
+            content: `Revenue: ${datum.revenue}M`,
+          }),
+        },
+      },
+    ],
+    // 4. Axes Configuration
+    axes: [
+      {
+        type: "category",
+        position: "bottom",
+        title: {
+          text: "week",
+          color: "#9CA3AF",
+        },
+        label: {
+          color: "white",
+        },
+        line: {
+          color: "#374151",
+        },
+        // Vertical Grid Lines (visible in your screenshot)
+        gridLine: {
+          style: [
+            {
+              stroke: "#374151",
+              lineDash: [4, 4],
+            },
+          ],
+        },
+      },
+      {
+        type: "number",
+        position: "left",
+        title: {
+          text: "Total transaction Revenue",
+          color: "white",
+        },
+        label: {
+          color: "white",
+        },
+        line: {
+          color: "#374151",
+        },
+        // Hide Horizontal Grid Lines
+        gridLine: {
+          style: [{ stroke: "transparent" }],
+        },
+      },
+    ],
+    legend: {
+      enabled: false,
+    },
+    padding: {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 20,
+    },
+  });
+
+  return (
+    <div className="h-72 w-full">
+      <AgCharts options={chartOptions} />
+    </div>
+  );
+};
+
+export default TransactionRevenue;
