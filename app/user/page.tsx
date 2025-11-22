@@ -3,16 +3,25 @@
 import React from "react";
 import Card from "@/app/components/Card"; // Custom dark Card component
 // Import icons for the stat cards and charts
-import {
-  BoltIcon,
-  ChartBarIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/solid";
+import { ChartBarIcon, UserGroupIcon } from "@heroicons/react/24/solid";
+import TransactionUnit from "../components/TransactionUnit";
 
 // --- Internal Helper Components ---
 
 // Reused Stat Card for key metrics
-const StatCard = ({ title, value, icon: Icon, valueClass = "" }) => (
+const StatCard = ({
+  title,
+  value,
+  icon: Icon,
+  valueClass = "",
+}: {
+  title: string;
+  value: string;
+  icon: React.ForwardRefExoticComponent<
+    Omit<React.SVGProps<SVGSVGElement>, "ref"> & { title?: string }
+  >;
+  valueClass?: string;
+}) => (
   <Card className="flex flex-col p-4 justify-between min-h-[120px]">
     <div className="flex justify-between items-start">
       <h3 className="text-gray-400 text-sm font-medium">{title}</h3>
@@ -25,17 +34,23 @@ const StatCard = ({ title, value, icon: Icon, valueClass = "" }) => (
 );
 
 // Placeholder for the line chart (reusing TransactionUnit styling)
-const UserTrendChart = ({ title }) => (
+const UserTrendChart = ({ title }: { title: string }) => (
   <Card title={title} className="col-span-1 lg:col-span-2">
-    <div className="h-72 w-full flex items-center justify-center">
-      {/* Placeholder for the line chart component */}
-      <div className="text-gray-500">User Trend Chart Placeholder</div>
-    </div>
+    <TransactionUnit />
   </Card>
 );
 
 // Placeholder for the Donut chart
-const UserRatioChart = ({ title, legend }) => (
+const UserRatioChart = ({
+  title,
+  legend,
+}: {
+  title: string;
+  legend: Array<{
+    color: string;
+    label: string;
+  }>;
+}) => (
   <Card title={title} className="col-span-1">
     <div className="h-48 w-full flex items-center justify-center">
       {/* Placeholder for the donut chart component */}
@@ -65,23 +80,36 @@ export const UserManagementOverview = () => {
 
       {/* --- ROW 1: STATS CARDS (3-COLUMN GRID) --- */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <StatCard title="Engaged User" value="0" icon={UserGroupIcon} />
+        <StatCard
+          title="Engaged User"
+          value="0"
+          icon={UserGroupIcon}
+          valueClass=""
+        />
         <StatCard
           title="Unique Transacting Customers"
           value="0"
           icon={ChartBarIcon}
+          valueClass=""
         />
-        <StatCard title="Active Administrator" value="0" icon={UserGroupIcon} />
+        <StatCard
+          title="Active Administrator"
+          value="0"
+          icon={UserGroupIcon}
+          valueClass=""
+        />
         <StatCard
           title="Contactable Customers"
           value="0"
           icon={UserGroupIcon}
+          valueClass=""
         />
       </div>
 
       {/* --- ROW 2: LINE CHART + RATIO CHARTS (4-COLUMN SPAN) --- */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 w-full">
         {/* User Trend Chart (Spans 2 columns) */}
+
         <UserTrendChart title="User Singh" />
 
         {/* Existing/New Users Ratio Chart */}
@@ -94,6 +122,10 @@ export const UserManagementOverview = () => {
         />
 
         {/* Active/Inactive Users Ratio Chart */}
+      </div>
+
+      {/* --- ROW 3: LINE CHART (FULL WIDTH) --- */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <UserRatioChart
           title="Active/Inactive Users"
           legend={[
@@ -101,11 +133,6 @@ export const UserManagementOverview = () => {
             { label: "Inactive Users", color: "bg-gray-400" },
           ]}
         />
-      </div>
-
-      {/* --- ROW 3: LINE CHART (FULL WIDTH) --- */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <UserTrendChart title="Unique Customer" />
         <UserTrendChart title="Unique Customer" />
       </div>
     </div>

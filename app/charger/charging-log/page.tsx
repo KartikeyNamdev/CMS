@@ -4,7 +4,7 @@ import React, { useState } from "react";
 // Import Card to wrap content for visual consistency
 
 import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
-import { DialogDemo } from "@/app/components/FilterDialog";
+import FilterDialog from "@/app/components/FilterDialog";
 import ChargerGrid from "@/app/components/Table";
 
 // --- Placeholder Components ---
@@ -87,7 +87,11 @@ export const ProtocolSelector = () => {
 
           {/* Right Side Actions (Download Button) */}
           <div className="flex gap-4">
-            <DialogDemo data={ChargerFilter} title="Charger Log Filter" />
+            <FilterDialog
+              onClose={() => {}}
+              data={ChargerFilter}
+              title="Charger Log Filter"
+            />
             <button className="h-12 w-12 rounded-md bg-white text-black hover:bg-gray-100 transition-colors flex items-center justify-center">
               <ArrowDownTrayIcon className="w-5 h-5" />
             </button>

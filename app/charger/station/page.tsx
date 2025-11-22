@@ -1,10 +1,18 @@
 "use client";
 import DropdownFilter from "@/app/components/DropdownFilter";
+import FilterDialog from "@/app/components/FilterDialog";
 import ChargerGrid from "@/app/components/Table";
 import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
 const EMSPOptions = [{ value: "no options", label: "no options" }];
+const filterOptions = [
+  { label: "Station Visibility status" },
+  { label: "State" },
+  { label: "City" },
+  { label: "Zone" },
+  { label: "Access Type" },
+];
 const ColumnOptions = [
   {
     value: "select all",
@@ -91,6 +99,11 @@ export const Dashboard = () => {
 
         {/* Right Side: Action Buttons */}
         <div className="flex gap-4">
+          <FilterDialog
+            data={filterOptions}
+            title={"Station Filter"}
+            onClose={() => {}}
+          />
           <button className="h-12 px-4 rounded-xl text-white bg-white/10 hover:bg-white/20 transition-colors shadow-md border border-white/20 flex items-center gap-2">
             <ArrowDownTrayIcon className="w-5 h-5" />
           </button>

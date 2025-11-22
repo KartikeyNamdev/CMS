@@ -52,7 +52,7 @@ export const DashBoardSideBar = ({
                 whitespace-nowrap
                 ${
                   isActive
-                    ? "bg-red-600 text-white shadow-lg shadow-red-900/20"
+                    ? "bg-[#b22828] hover:bg-red-500 text-white shadow-lg shadow-red-900/20"
                     : "text-gray-400 hover:bg-white/5 hover:text-white"
                 }
               `}

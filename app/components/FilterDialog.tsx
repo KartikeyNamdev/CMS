@@ -16,18 +16,18 @@ import SlideBtn from "./SlideBtn";
 
 // Define a type for the data structure being passed
 type dataType = {
-  label: string;
-  value: string; // Added value for dynamic input
+  label?: string;
+  value?: string; // Added value for dynamic input
 };
 
-export function DialogDemo({
+function FilterDialog({
   data,
   title,
-  submit,
+  onClose,
 }: {
   data: dataType[];
   title: string;
-  submit: () => {};
+  onClose: () => void;
 }) {
   return (
     <Dialog>
@@ -55,9 +55,9 @@ export function DialogDemo({
 
           {/* --- SCROLLABLE CONTENT AREA --- */}
           <div className="grid gap-4 grow overflow-y-auto pr-2">
-            {data.map((field, idx) => {
+            {data?.map((field, idx) => {
               // Ensure fields have unique IDs for accessibility
-              const uniqueId = `${field.id || "field"}-${idx}`;
+              const uniqueId = `${"field"}-${idx}`;
               return (
                 <div className="flex justify-between pt-2 gap-3" key={uniqueId}>
                   <Label htmlFor={uniqueId} className="text-gray-200">
@@ -72,7 +72,7 @@ export function DialogDemo({
           <DialogFooter className="mt-4 pt-4 border-t border-gray-700/50">
             <DialogClose asChild>
               <Button
-                onClick={submit}
+                onClick={onClose}
                 type="submit"
                 className="bg-[#b22828] hover:bg-red-800 w-full rounded-full text-white"
               >
@@ -85,3 +85,4 @@ export function DialogDemo({
     </Dialog>
   );
 }
+export default FilterDialog;

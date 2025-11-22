@@ -1,4 +1,4 @@
-import { DialogDemo } from "@/app/components/FilterDialog";
+import FilterDialog from "@/app/components/FilterDialog";
 import ChargerGrid from "@/app/components/Table";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 const PriceHistoryOptions = [
@@ -30,7 +30,11 @@ const Home = () => {
       <div className="flex justify-between">
         <h1 className="text-white text-3xl">Price History</h1>
         <div className="flex gap-4">
-          <DialogDemo title="Price History" data={PriceHistoryOptions} />
+          <FilterDialog
+            onClose={() => {}}
+            title="Price History"
+            data={PriceHistoryOptions}
+          />
           <button
             className={` h-12 w-12 rounded-md bg-white text-black hover:bg-white/90 transition-colors shadow-md border border-white/20 flex items-center justify-center`}
           >

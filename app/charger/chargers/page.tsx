@@ -8,8 +8,9 @@ import ChargerGrid from "@/app/components/Table";
 
 import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 
-import { DialogDemo } from "@/app/components/FilterDialog";
+import FilterDialog from "@/app/components/FilterDialog";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // Mock Data Options (Updated to match screenshot needs)
 const ChargerFilterTypes = [
@@ -48,7 +49,6 @@ const ColumnOptions = [
 // --- STANDARDIZED HEIGHT ---
 const ITEM_HEIGHT_CLASS = "h-12";
 const INPUT_WIDTH_CLASS = "w-[140px]";
-const ICON_BUTTON_SIZE_CLASS = "w-10"; // Width equal to height for square buttons
 
 export const ChargersPage = () => {
   const navigate = useRouter();
@@ -161,10 +161,8 @@ export const ChargersPage = () => {
 
             {/* Settings Button (Icon Only) */}
             <div className="">
-              <DialogDemo
-                submit={() => {
-                  navigate.push("/charger/chargers/price-history");
-                }}
+              <FilterDialog
+                onClose={() => navigate.push("/charger/chargers/price-history")}
                 data={ChargerFilterTypes}
                 title="Charger Filter"
               />
@@ -177,14 +175,14 @@ export const ChargersPage = () => {
               <ArrowDownTrayIcon className="w-5 h-5" />
             </button>
 
-            {/* <Link href={"/charger/chargers/new"}> */}
-            <button
-              className={`${ITEM_HEIGHT_CLASS} px-4 rounded-xl text-white font-semibold bg-[#b22828] hover:bg-red-600 transition-colors shadow-md flex items-center gap-2`}
-            >
-              <PlusIcon className="w-5 h-5" />
-              Add Charger
-            </button>
-            {/* </Link> */}
+            <Link href={"/charger/chargers/new"}>
+              <button
+                className={`${ITEM_HEIGHT_CLASS} px-4 rounded-xl text-white font-semibold bg-[#b22828] hover:bg-red-600 transition-colors shadow-md flex items-center gap-2`}
+              >
+                <PlusIcon className="w-5 h-5" />
+                Add Charger
+              </button>
+            </Link>
           </div>
         </div>
       </div>

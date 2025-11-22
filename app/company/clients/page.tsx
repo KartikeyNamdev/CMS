@@ -7,9 +7,6 @@ import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 import DropdownFilter from "../../components/DropdownFilter";
 import Link from "next/link";
 
-// --- NEW IMPORT ---
-import FilterDialog from "@/app/components/FilterDialog"; // Import the dialog
-
 // Mock Data for filters
 const clientTypeOptions = [
   { value: "large", label: "Large Enterprise" },
@@ -18,19 +15,18 @@ const clientTypeOptions = [
 ];
 
 const ClientPage = () => {
-  // --- STATE 1: To control the visibility of the new dialog ---
-  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
-
   const [clientName, setClientName] = useState("");
   const [clientType, setClientType] = useState("");
 
+  // State for whether data is loaded (currently false to show "No Data Found!")
   const [hasData] = useState(false);
 
   return (
     // Use w-full and padding from your standard page layout
     <div className="w-full p-6 lg:px-56 min-h-screen">
-      {/* --- REMOVED: The unconditionally rendered FilterDialog is removed from here --- */}
-
+      {/* <FilterDialog title="Hello" onClose={() => {}}> */}
+      {/* <input type="text" placeholder="helllo" />
+      </FilterDialog> */}
       {/* --- ROW 1: HEADER AND STATUS --- */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-gray-400 text-sm">
@@ -40,7 +36,7 @@ const ClientPage = () => {
 
       {/* --- ROW 2: FILTERS AND ACTIONS --- */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-        {/* Left Side: Search Filters (remains the same) */}
+        {/* Left Side: Search Filters */}
         <div className="flex flex-wrap items-center gap-4">
           <input
             type="text"
@@ -69,18 +65,14 @@ const ClientPage = () => {
 
         {/* Right Side: Action Buttons */}
         <div className="flex gap-4">
-          {/* --- CONNECT THE DOWNLOAD BUTTON TO THE DIALOG --- */}
-          <button
-            className="h-12 px-4 rounded-xl text-white bg-white/10 hover:bg-white/20 transition-colors shadow-md border border-white/20 flex items-center gap-2"
-            onClick={() => setIsExportDialogOpen(true)} // <-- This opens the modal
-          >
+          <button className="h-12 px-4 rounded-xl text-white bg-white/10 hover:bg-white/20 transition-colors shadow-md border border-white/20 flex items-center gap-2">
             <ArrowDownTrayIcon className="w-5 h-5" />
           </button>
 
           <Link href={"/company/clients/new"}>
             <button
               className="h-12 px-6 rounded-xl text-white font-semibold bg-red-700 hover:bg-red-600 transition-colors shadow-md flex items-center gap-2"
-              // Removed onClick logic that did nothing
+              onClick={() => {}}
             >
               <PlusIcon className="w-5 h-5" />
               Add Client
@@ -100,27 +92,6 @@ const ClientPage = () => {
           </div>
         )}
       </div>
-
-      {/* --- DIALOG RENDERING (Conditional) --- */}
-      {isExportDialogOpen && (
-        <FilterDialog
-          title="Export Options"
-          onClose={() => setIsExportDialogOpen(false)} // <-- This closes the modal
-        >
-          {/* Custom content for the dialog */}
-          <div className="space-y-4">
-            <h3 className="text-white text-lg font-medium">
-              Select Fields to Export
-            </h3>
-            <input
-              type="text"
-              placeholder="File Name (e.g., client_data.csv)"
-              className="h-10 w-full bg-black/10 text-white placeholder-gray-600 border border-gray-700 p-3 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors"
-            />
-            {/* The default 'Apply' button in FilterDialog acts as the 'Export' button */}
-          </div>
-        </FilterDialog>
-      )}
     </div>
   );
 };
