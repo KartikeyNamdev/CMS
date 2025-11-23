@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-// Core AG-Grid imports
+import Link from "next/link";
 import type { ColDef } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 
 // Register necessary modules
 ModuleRegistry.registerModules([AllCommunityModule]);
+
 const useMockData = (url: string) => {
-  // Mock Row Data based on the screenshot columns
+  // Mock Row Data with URL field added
   const mockData = [
     {
       name: "PlugUp",
@@ -23,6 +24,7 @@ const useMockData = (url: string) => {
       accessType: "Public",
       openingHours: "24 Hours",
       visibilityStatus: "Enabled",
+      url: "/charger/station/PLUGUPOO3",
     },
     {
       name: "Electra",
@@ -36,8 +38,8 @@ const useMockData = (url: string) => {
       accessType: "Private",
       openingHours: "08:00 - 22:00",
       visibilityStatus: "Disabled",
+      url: "/charger/station/ELTRAX101",
     },
-    // Adding more rows for visible alternation
     {
       name: "ChargePoint",
       stationId: "CPX200A",
@@ -50,6 +52,7 @@ const useMockData = (url: string) => {
       accessType: "Public",
       openingHours: "24 Hours",
       visibilityStatus: "Enabled",
+      url: "/charger/station/CPX200A",
     },
     {
       name: "TeslaSC",
@@ -63,13 +66,29 @@ const useMockData = (url: string) => {
       accessType: "Private",
       openingHours: "24 Hours",
       visibilityStatus: "Enabled",
+      url: "/charger/station/TSLX990",
     },
   ];
 
   return { data: mockData, loading: false };
 };
 
-// Custom Cell Renderer for Actions (Placeholder)
+// Custom Cell Renderer for URL Links
+const URLRenderer = (props: any) => {
+  const url = props.value;
+  if (!url) return <span className="text-gray-400">--</span>;
+
+  return (
+    <Link
+      href={url}
+      className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
+    >
+      View Details
+    </Link>
+  );
+};
+
+// Custom Cell Renderer for Actions
 const ActionsRenderer = () => (
   <div className="flex items-center justify-center h-full text-white text-sm">
     <button className="text-red-300 hover:text-white font-medium">Edit</button>
@@ -80,7 +99,7 @@ const ActionsRenderer = () => (
   </div>
 );
 
-// Row Data Interface based on new columns
+// Row Data Interface with URL field added
 interface IChargerRow {
   name: string;
   stationId: string;
@@ -93,27 +112,37 @@ interface IChargerRow {
   accessType: string;
   openingHours: string;
   visibilityStatus: string;
+  url: string;
 }
 
 const ChargerGrid = () => {
   const { data: rowData, loading } = useMockData(
-    // Placeholder URL
     "https://api.your-dabas-data.com/chargers"
   );
 
-  // Column Definitions: Defines & controls grid columns.
+  // Column Definitions with URL field added
   const [colDefs] = useState<ColDef<IChargerRow>[]>([
     { field: "name", headerName: "Name", width: 100 },
-    { field: "stationId", headerName: "Stations/Site ID", width: 150 },
+    { field: "stationId", headerName: "Stations/Site ID", width: 100 },
     { field: "source", headerName: "Source", width: 100 },
     { field: "locations", headerName: "Locations", width: 150 },
     { field: "stateCity", headerName: "State, City", width: 150 },
     { field: "locationType", headerName: "Location Type", width: 130 },
-    { field: "numChargers", headerName: "No. Of Chargers", width: 130 },
-    { field: "emspChargers", headerName: "EMSP Chargers", width: 130 },
+    { field: "numChargers", headerName: "Chargers", width: 80 },
+    { field: "emspChargers", headerName: "EMSP", width: 80 },
     { field: "accessType", headerName: "Access Type", width: 110 },
     { field: "openingHours", headerName: "Opening Hours", width: 130 },
     { field: "visibilityStatus", headerName: "Visibility Status", width: 130 },
+    {
+      field: "url",
+      headerName: "Details",
+      cellRenderer: URLRenderer,
+      width: 120,
+      editable: false,
+      sortable: false,
+      filter: false,
+      resizable: false,
+    },
     {
       field: "name",
       headerName: "Actions",
@@ -134,82 +163,63 @@ const ChargerGrid = () => {
       editable: false,
       sortable: true,
       resizable: true,
-      // Default cell style to match dark theme
-      cellStyle: (i) => ({
+      cellStyle: () => ({
         display: "flex",
         alignItems: "center",
         color: "white",
-        // Background color is handled by row CSS now
-        backgroundColor: `bg-black/20`,
+        backgroundColor: "transparent",
       }),
       headerClass: "text-white bg-[#9d3536] font-bold",
     };
   }, []);
 
-  // Custom theme classes for the dark red look
   const themeClass = "ag-theme-alpine-dark custom-dabas-theme";
 
   return (
-    // Container: Defines the grid's theme & dimensions.
     <div style={{ height: "261px", width: "100%" }} className="mt-4">
-      {/* 1. Custom CSS for the dark red theme (Placed inline for single-file solution) */}
       <style jsx global>{`
         .custom-dabas-theme {
-          --ag-background-color: bg-black/20;
-          --ag-header-background-color: #6d2021; /* Deep red for header */
-          --ag-row-hover-color: rgba(
-            178,
-            40,
-            40,
-            0.7
-          ); /* Slightly darker red hover */
+          --ag-background-color: transparent;
+          --ag-header-background-color: #6d2021;
+          --ag-row-hover-color: rgba(178, 40, 40, 0.7);
           --ag-border-color: #444;
           --ag-foreground-color: white;
           --ag-font-size: 14px;
           --ag-header-foreground-color: white;
           --ag-row-border-color: #333;
-          --ag-row-border-style: none; /* Removed row borders for cleaner look */
+          --ag-row-border-style: none;
         }
 
-        /* Customize Header cell padding/styling */
         .custom-dabas-theme .ag-header-cell {
           padding-left: 10px;
           padding-right: 10px;
           font-weight: 600;
         }
 
-        /* Ensure header background fills correctly */
         .custom-dabas-theme .ag-header-row {
           background-color: #b22828;
-          height: 40px; /* Adjust header height */
+          height: 40px;
         }
 
-        /* 🚨 FIX: Target ag-row-odd and ag-row-even for alternating colors */
-
-        /* Light Red Row (Odd) */
         .custom-dabas-theme .ag-row-odd {
-          background: #9d3536; /* Base Red */
+          background: #9d3536;
         }
 
-        /* Darker Red Row (Even) */
         .custom-dabas-theme .ag-row-even {
-          background: #6d2021; /* Slightly darker shade of red */
+          background: #6d2021;
         }
 
-        /* Set default row background to bg-black/20 so the theme takes over */
         .custom-dabas-theme .ag-row {
-          background-color: bg-black/20 !important;
+          background-color: transparent !important;
         }
 
-        /* Fix selected row color */
         .custom-dabas-theme .ag-row-selected {
           background: rgba(255, 0, 0, 0.4) !important;
         }
 
-        /* Footer styling for pagination/status */
         .custom-dabas-theme .ag-paging-panel {
           color: white;
-          background-color: bg-black/20;
+          background-color: transparent;
         }
       `}</style>
 
@@ -219,14 +229,10 @@ const ChargerGrid = () => {
         loading={loading}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
-        // Grid Features
         pagination={true}
         paginationPageSize={10}
         rowSelection="multiple"
         animateRows={true}
-        // 🚨 REMOVED: getRowStyle which was overriding alternation
-
-        // Events
         onGridReady={() => {
           console.log("Grid Ready with Dabas Theme");
         }}
@@ -235,7 +241,6 @@ const ChargerGrid = () => {
           console.log(`New Cell Value: ${event.value}`)
         }
       />
-      {/* Manual status bar, as seen in your screenshot */}
       <div className="text-center text-white text-sm mt-3">
         Showing 1 - {rowData.length} of {rowData.length} Items
       </div>
