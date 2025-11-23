@@ -1,14 +1,18 @@
 "use client";
 
 import Card from "../components/Card";
+// NOTE: Assuming all chart components (TransactionDonut, TotalTransactionValue, etc.) exist
 import TransactionDonut from "../components/TransactionDonut";
-import TotalTransactionValue from "../components/TotalTransactionChart";
+
 import TransactionRevenue from "../components/TransactionRevenue";
-import RevenueDonut from "../components/RevenueDonut";
-import UnitsChart from "../components/UnitChart";
+
 import TransactionUnit from "../components/TransactionUnit";
 import DropdownFilter from "../components/DropdownFilter";
 import { useState } from "react";
+import { CalendarIcon } from "@heroicons/react/24/solid";
+import TotalTransactionValue from "../components/TotalTransactionChart";
+import RevenueDonut from "../components/RevenueDonut";
+import UnitsChart from "../components/TransactionUnit";
 
 // Options for dropdowns
 const stateOptions = [
@@ -28,92 +32,103 @@ export const Dashboard = () => {
   const [city, setCity] = useState("");
   const [charger, setCharger] = useState("");
   const [dateRange, setDateRange] = useState("");
+
+  // Standardized height for inputs and buttons
+  const ITEM_HEIGHT_CLASS = "h-10"; // Using h-10 for consistency with other inputs
+  const INPUT_WIDTH_CLASS = "w-[140px]"; // Consistent width for filter elements
+
   return (
-    <div className="p-6 lg:px-65 w-full">
-      <div className=" font-bold mb-6 content-center flex gap-6">
+    // Padding should be uniform (p-6 or lg:p-10)
+    <div className="p-6 lg:px-60 ">
+      {/* --- FILTER BAR (Responsive) --- */}
+      <div className="flex flex-wrap items-end gap-4 mb-8 border-b border-gray-700 pb-4">
+        {/* Dropdown Filters (Consistent width and height) */}
         <DropdownFilter
           placeholder="State"
           options={stateOptions}
           selectedValue={state}
           onChange={setState}
-          className="min-w-[140px]"
+          className={`${INPUT_WIDTH_CLASS} ${ITEM_HEIGHT_CLASS}`}
         />
         <DropdownFilter
           placeholder="City"
-          // Note: In a real app, this list would be filtered by the 'state' value
           options={[{ value: "la", label: "Los Angeles" }]}
           selectedValue={city}
           onChange={setCity}
-          className="min-w-[140px]"
+          className={`${INPUT_WIDTH_CLASS} ${ITEM_HEIGHT_CLASS}`}
         />
 
-        {/* 3. Charger Type Dropdown */}
         <DropdownFilter
           placeholder="All Charger"
           options={chargerOptions}
           selectedValue={charger}
           onChange={setCharger}
-          className="min-w-[140px]"
+          className={`${INPUT_WIDTH_CLASS} ${ITEM_HEIGHT_CLASS}`}
         />
-        <div className="relative flex items-center h-12 bg-white rounded-xl shadow-md min-w-[140px] text-gray-500 p-6">
+
+        {/* Date Input */}
+        <div
+          className={`relative flex items-center bg-white rounded-xl shadow-md ${INPUT_WIDTH_CLASS} ${ITEM_HEIGHT_CLASS} px-3`}
+        >
+          <CalendarIcon className="w-5 h-5 text-gray-500 mr-2" />
           <input
-            type="date"
-            name="bday"
-            onChange={(e) => {
-              setDateRange(e.target.value);
-            }}
+            type="text"
+            placeholder="Choose Date"
+            value={dateRange}
+            onFocus={(e) => (e.target.type = "date")} // Show date picker on focus
+            onBlur={(e) => (e.target.type = "text")} // Hide date picker on blur
+            onChange={(e) => setDateRange(e.target.value)}
+            className="w-full h-full text-black bg-transparent focus:outline-none placeholder-gray-500 text-sm"
           />
         </div>
 
-        {/* 5. Action Buttons */}
-        <button className="h-12 px-6 rounded-xl text-white font-semibold bg-[#b22828] hover:bg-red-700 transition-colors shadow-md">
+        {/* Action Buttons */}
+        <button
+          className={`${ITEM_HEIGHT_CLASS} px-6 rounded-xl text-white font-semibold bg-[#b22828] hover:bg-red-700 transition-colors shadow-md`}
+        >
           Search
         </button>
 
-        <button className="h-12 px-6 rounded-xl text-black font-semibold bg-white hover:bg-gray-200 transition-colors shadow-md border border-gray-300">
+        <button
+          className={`${ITEM_HEIGHT_CLASS} px-6 rounded-xl text-black font-semibold bg-white hover:bg-gray-200 transition-colors shadow-md border border-gray-300`}
+        >
           Clear
         </button>
       </div>
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      {/* --- CHARTS GRID (Responsive Layout) --- */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Transactions (1 Column) */}
         <Card title="Transactions" className="col-span-1">
-          <div className="">
-            <TransactionDonut />
-          </div>
+          <TransactionDonut />
         </Card>
 
+        {/* Total Transaction Value (Spans 2 columns on desktop) */}
         <Card
           title="Total Transaction Value"
           className="col-span-1 lg:col-span-2"
         >
-          <div className="px-10">
-            <TotalTransactionValue />
-          </div>
+          <TotalTransactionValue />
         </Card>
+
+        {/* Transaction Revenue (Spans 2 columns on desktop) */}
         <Card title="Transaction Revenue" className="col-span-1 lg:col-span-2">
-          <div className="px-10">
-            <TransactionRevenue />
-          </div>
+          <TransactionRevenue />
         </Card>
 
+        {/* Revenue (1 Column) */}
         <Card title="Revenue" className="col-span-1">
-          <div className="h-48 w-full flex items-center justify-center">
-            <RevenueDonut />
-          </div>
+          <RevenueDonut />
         </Card>
 
-        {/* --- ROW 3 --- */}
+        {/* Units (1 Column) */}
         <Card title="Units" className="col-span-1">
-          <div className="h-72 w-full flex items-center justify-center">
-            <UnitsChart />
-          </div>
+          <UnitsChart />
         </Card>
 
+        {/* Transaction Unit (Spans 2 columns on desktop) */}
         <Card title="Transaction Unit" className="col-span-1 lg:col-span-2">
-          {/* Replace with your Line Chart component */}
-          <div className="h-48 w-full flex items-center justify-center">
-            <TransactionUnit />
-          </div>
+          <TransactionUnit />
         </Card>
       </div>
     </div>

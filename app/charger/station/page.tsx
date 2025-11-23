@@ -52,7 +52,7 @@ const SourceTypeOptions = [
 ];
 export const Dashboard = () => {
   return (
-    <div className="lg:px-32 pt-10">
+    <div className="w-full p-6 lg:px-40 min-h-screen">
       {/* --- ROW 2: FILTERS AND ACTIONS --- */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         {/* Left Side: Search Filters */}

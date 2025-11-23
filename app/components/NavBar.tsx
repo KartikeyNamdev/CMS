@@ -27,7 +27,7 @@ export const NavBar = () => {
   return (
     <>
       {/* --- Main Navigation Bar: ADDED w-full --- */}
-      <nav className="bg-[#0B0B0B] w-full min-h-[4rem] flex items-center justify-between px-8 text-white border-b border-gray-500 relative z-30">
+      <nav className="bg-[#0B0B0B] w-full min-h-16 flex items-center justify-between px-8 text-white border-b border-gray-500 relative z-30">
         {/* 1. Logo (Left) */}
         <Image
           src={"/logo.png"}
@@ -59,20 +59,19 @@ export const NavBar = () => {
 
         {/* 3. Profile & Mobile Menu Button (Right Group) */}
         <div className="flex items-center gap-3">
-          {/* Mobile Menu Button (Visible only on mobile) */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="p-1 rounded-md md:hidden text-gray-400 hover:text-white transition-colors order-2"
-          >
-            {isOpen ? (
-              <XMarkIcon className="h-6 w-6" />
-            ) : (
-              <Bars3Icon className="h-6 w-6" />
-            )}
-          </button>
-
           {/* Profile (Always visible) */}
           <div className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-900 transition-colors order-1">
+            {/* Mobile Menu Button (Visible only on mobile) */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-1 rounded-md md:hidden text-gray-400 hover:text-white transition-colors order-2"
+            >
+              {isOpen ? (
+                <XMarkIcon className="h-6 w-6" />
+              ) : (
+                <Bars3Icon className="h-6 w-6" />
+              )}
+            </button>
             <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center font-semibold text-lg">
               <Image
                 src={"/Guy.png"}
@@ -86,7 +85,7 @@ export const NavBar = () => {
             <span className="text-white font-medium hidden sm:inline">
               Dabas
             </span>
-            <ChevronDownIcon className="w-5 h-5 text-gray-400" />
+            {/* <ChevronDownIcon className="w-5 h-5 text-gray-400" /> */}
           </div>
         </div>
       </nav>
