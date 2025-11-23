@@ -29,7 +29,7 @@ export const Dashboard = () => {
   const [charger, setCharger] = useState("");
   const [dateRange, setDateRange] = useState("");
   return (
-    <div className="p-6 lg:px-65">
+    <div className="p-6 lg:px-65 w-full">
       <div className=" font-bold mb-6 content-center flex gap-6">
         <DropdownFilter
           placeholder="State"
