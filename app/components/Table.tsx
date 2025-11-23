@@ -115,7 +115,7 @@ const ChargerGrid = () => {
     { field: "openingHours", headerName: "Opening Hours", width: 130 },
     { field: "visibilityStatus", headerName: "Visibility Status", width: 130 },
     {
-      field: "actions",
+      field: "name",
       headerName: "Actions",
       cellRenderer: ActionsRenderer,
       width: 150,
@@ -227,10 +227,10 @@ const ChargerGrid = () => {
         // 🚨 REMOVED: getRowStyle which was overriding alternation
 
         // Events
-        onGridReady={(params) => {
+        onGridReady={() => {
           console.log("Grid Ready with Dabas Theme");
         }}
-        onSelectionChanged={(event) => console.log("Row Selection Changed")}
+        onSelectionChanged={() => console.log("Row Selection Changed")}
         onCellValueChanged={(event) =>
           console.log(`New Cell Value: ${event.value}`)
         }

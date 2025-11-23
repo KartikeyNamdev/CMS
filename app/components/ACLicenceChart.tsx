@@ -1,10 +1,11 @@
 "use client";
 import { AgCharts } from "ag-charts-react";
+import { AgChartOptions } from "ag-charts-community";
 import { useState } from "react";
 
 const ACLicenseChart = () => {
   // Uses similar structure to RevenueChart/UnitsChart for AC License data
-  const [chartOptions] = useState({
+  const [chartOptions] = useState<AgChartOptions>({
     background: { visible: false },
     data: [
       { status: "Total AC License", count: 100 },
@@ -24,6 +25,7 @@ const ACLicenseChart = () => {
         cornerRadius: 4,
         sectorLabel: { enabled: false },
         calloutLabel: { enabled: false },
+        calloutLabelKey: undefined,
       },
     ],
     legend: { enabled: false },

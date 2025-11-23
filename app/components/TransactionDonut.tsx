@@ -24,7 +24,7 @@ const TransactionDonut = () => {
     series: [
       {
         data: chartData,
-        type: "pie",
+        type: "pie" as const,
         // 4. Keys for the new data
         angleKey: "count",
         legendItemKey: "status",
@@ -53,7 +53,11 @@ const TransactionDonut = () => {
 
         // 8. Simple tooltip on hover
         tooltip: {
-          renderer: ({ datum }) => ({
+          renderer: ({
+            datum,
+          }: {
+            datum: { status: string; count: string };
+          }) => ({
             title: datum.status,
             content: `Value: ${datum.count}`,
           }),
@@ -63,13 +67,13 @@ const TransactionDonut = () => {
     // 9. Configure the legend to match the image
     legend: {
       enabled: true,
-      position: "bottom", // At the bottom
+      position: "bottom" as const, // At the bottom
       item: {
         label: {
           color: "white", // White text
         },
         marker: {
-          shape: "circle", // Circular markers
+          shape: "circle" as const, // Circular markers
         },
       },
     },

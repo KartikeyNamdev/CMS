@@ -18,7 +18,7 @@ export const AddChargerForm = () => {
   };
 
   return (
-    <div className="w-full p-6 lg:px-66 min-h-screen">
+    <div className="w-full p-16 lg:px-66 min-h-screen">
       <Card title={null} className="p-8 bg-black/30">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* --- 1. CHARGER LOCATION DETAILS --- */}
@@ -84,6 +84,7 @@ export const AddChargerForm = () => {
             <FormInput label="Amenities" placeholder="Enter" required={false} />
             <FormInput
               label="Station Visibility Status"
+              placeholder="Enter"
               required={true}
               radioName="visibility_status"
             />

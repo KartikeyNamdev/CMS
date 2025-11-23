@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 import FilterDialog from "@/app/components/FilterDialog";
 import ChargerGrid from "@/app/components/Table";
+import DropdownFilter from "@/app/components/DropdownFilter";
 
 // --- Placeholder Components ---
 // These components will render conditionally based on the 'choosen' state.
@@ -87,6 +88,16 @@ export const ProtocolSelector = () => {
 
           {/* Right Side Actions (Download Button) */}
           <div className="flex gap-4">
+            <DropdownFilter
+              placeholder="Search Charger"
+              options={[
+                { value: "Plughere 60KW", label: "Plughere 60KW" },
+                { value: "PLUGUP 240", label: "PLUGUP 240" },
+                { value: "ELTRAX101", label: "ELTRAX101" },
+              ]}
+              selectedValue=""
+              onChange={() => {}}
+            />
             <FilterDialog
               onClose={() => {}}
               data={ChargerFilter}

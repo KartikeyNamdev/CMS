@@ -22,7 +22,7 @@ const TotalTransactionValue = () => {
     // 3. Series Configuration (Bar Chart)
     series: [
       {
-        type: "bar",
+        type: "bar" as const,
         xKey: "week",
         yKey: "value",
         fill: "#b22828", // Red color from screenshot
@@ -33,15 +33,17 @@ const TotalTransactionValue = () => {
         label: {
           enabled: true,
           color: "black", // Dark text inside red bars for contrast
-          placement: "inside",
-          formatter: ({ datum }) => datum.label,
+          formatter: ({ datum }: { datum: { label: string } }) => datum.label,
           fontSize: 10,
-          opacity: 0.6,
         },
 
         // Tooltip
         tooltip: {
-          renderer: ({ datum }) => ({
+          renderer: ({
+            datum,
+          }: {
+            datum: { label: string; week: string };
+          }) => ({
             title: `Week ${datum.week}`,
             content: `Value: ${datum.label}`,
           }),
@@ -51,8 +53,8 @@ const TotalTransactionValue = () => {
     // 4. Axes Configuration
     axes: [
       {
-        type: "category",
-        position: "bottom",
+        type: "category" as const,
+        position: "bottom" as const,
         title: {
           text: "week",
           color: "#9CA3AF", // Gray text
@@ -61,15 +63,15 @@ const TotalTransactionValue = () => {
           color: "white",
         },
         line: {
-          color: "#374151", // Dark gray axis line
+          stroke: "#374151", // Dark gray axis line
         },
         gridLine: {
           style: [{ stroke: "transparent" }], // No vertical grid lines
         },
       },
       {
-        type: "number",
-        position: "left",
+        type: "number" as const,
+        position: "left" as const,
         title: {
           text: "Total transaction value",
           color: "#9CA3AF", // Gray text
@@ -78,7 +80,7 @@ const TotalTransactionValue = () => {
           color: "white",
         },
         line: {
-          color: "#374151",
+          stroke: "#374151",
         },
         gridLine: {
           style: [{ stroke: "transparent" }], // No horizontal grid lines

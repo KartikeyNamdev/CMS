@@ -22,7 +22,7 @@ const TransactionRevenue = () => {
     // 3. Series: Bar (Column) Chart styled like a Histogram
     series: [
       {
-        type: "bar",
+        type: "bar" as const,
         xKey: "week",
         yKey: "revenue",
         fill: "#b22828", // Red color
@@ -31,7 +31,11 @@ const TransactionRevenue = () => {
         gapRatio: 0.1,
 
         tooltip: {
-          renderer: ({ datum }) => ({
+          renderer: ({
+            datum,
+          }: {
+            datum: { week: string; revenue: string };
+          }) => ({
             title: `Week ${datum.week}`,
             content: `Revenue: ${datum.revenue}M`,
           }),
@@ -41,8 +45,8 @@ const TransactionRevenue = () => {
     // 4. Axes Configuration
     axes: [
       {
-        type: "category",
-        position: "bottom",
+        type: "category" as const,
+        position: "bottom" as const,
         title: {
           text: "week",
           color: "#9CA3AF",
@@ -51,7 +55,7 @@ const TransactionRevenue = () => {
           color: "white",
         },
         line: {
-          color: "#374151",
+          stroke: "#374151",
         },
         // Vertical Grid Lines (visible in your screenshot)
         gridLine: {
@@ -64,8 +68,8 @@ const TransactionRevenue = () => {
         },
       },
       {
-        type: "number",
-        position: "left",
+        type: "number" as const,
+        position: "left" as const,
         title: {
           text: "Total transaction Revenue",
           color: "white",
@@ -74,7 +78,7 @@ const TransactionRevenue = () => {
           color: "white",
         },
         line: {
-          color: "#374151",
+          stroke: "#374151",
         },
         // Hide Horizontal Grid Lines
         gridLine: {

@@ -31,7 +31,7 @@ const Home = () => {
         <h1 className="text-white text-3xl">Price History</h1>
         <div className="flex gap-4">
           <FilterDialog
-            onClose={() => {}}
+            onClose={null}
             title="Price History"
             data={PriceHistoryOptions}
           />

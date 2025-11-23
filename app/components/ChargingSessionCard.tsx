@@ -1,5 +1,6 @@
 "use client";
 import { AgCharts } from "ag-charts-react";
+import { AgChartOptions } from "ag-charts-community";
 import { useState } from "react";
 
 // Mock Data structure based on the chart shape (Weeks 31-36)
@@ -10,13 +11,12 @@ const chartData = [
   { date: "34", sessions: 4.5 },
   { date: "35", sessions: 6.0 },
   { date: "36", sessions: 7.5 },
-  // Adding more data points for the second area in the screenshot
   { date: "37", sessions: 7.8 },
   { date: "38", sessions: 8.0 },
 ];
 
 const ChargingSessionsChart = () => {
-  const [chartOptions] = useState({
+  const [chartOptions] = useState<AgChartOptions>({
     // 1. Transparent Background
     background: {
       visible: false,
@@ -34,26 +34,13 @@ const ChargingSessionsChart = () => {
         xKey: "date",
         yKey: "sessions",
         yName: "No. of Charging Sessions",
-
-        // Line styling
-        stroke: "#b22828", // Solid red line for the top edge
+        stroke: "#b22828",
         strokeWidth: 2,
-        marker: { enabled: false }, // Markers disabled for this style
-
-        // Area Fill with Red Gradient
-        fill: {
-          type: "gradient",
-          colorStops: [
-            { offset: 0, color: "rgba(178, 40, 40, 0.8)" }, // Start with opaque red (#b22828)
-            { offset: 1, color: "rgba(178, 40, 40, 0.0)" }, // Fade to transparent red
-          ],
-        },
-
-        // Labels (disabled unless specific points are needed)
+        marker: { enabled: false },
+        fill: "rgba(178, 40, 40, 0.4)",
+        fillOpacity: 0.8,
         label: { enabled: false },
       },
-      // You would add the second area (pink/white) as a separate series here
-      // if your data supported two distinct stacking layers, but focusing on the requested gradient.
     ],
 
     // 4. Axes Configuration
@@ -63,17 +50,15 @@ const ChargingSessionsChart = () => {
         position: "bottom",
         title: { text: "Date", color: "white" },
         label: { color: "white" },
-        line: { color: "#374151" },
+        line: { stroke: "#374151" },
         gridLine: { style: [{ stroke: "transparent" }] },
-        // Use visible_range to zoom in on data area if needed
       },
       {
         type: "number",
         position: "left",
         title: { text: "No. of Charging Sessions", color: "white" },
         label: { color: "white" },
-        line: { color: "#374151" },
-        // Horizontal Grid Lines (subtle gray)
+        line: { stroke: "#374151" },
         gridLine: {
           style: [
             {

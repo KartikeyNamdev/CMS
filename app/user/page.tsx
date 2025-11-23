@@ -5,6 +5,7 @@ import Card from "@/app/components/Card"; // Custom dark Card component
 // Import icons for the stat cards and charts
 import { ChartBarIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 import TransactionUnit from "../components/TransactionUnit";
+import UnitsChart from "../components/UnitChart";
 
 // --- Internal Helper Components ---
 
@@ -52,17 +53,18 @@ const UserRatioChart = ({
   }>;
 }) => (
   <Card title={title} className="col-span-1">
-    <div className="h-48 w-full flex items-center justify-center">
-      {/* Placeholder for the donut chart component */}
-      <div className="text-gray-500">Donut Chart Placeholder</div>
-    </div>
+    {/* <div className="h-48 w-full flex items-center justify-center"> */}
+    {/* Placeholder for the donut chart component */}
+
+    {/* </div> */}
     <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-400 justify-center">
-      {legend.map((item, index) => (
+      {/* {legend.map((item, index) => (
         <div key={index} className="flex items-center gap-2">
           <span className={`w-3 h-3 rounded-full ${item.color}`}></span>
           {item.label}
         </div>
-      ))}
+      ))} */}
+      <UnitsChart />
     </div>
   </Card>
 );
@@ -110,7 +112,7 @@ export const UserManagementOverview = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 w-full">
         {/* User Trend Chart (Spans 2 columns) */}
 
-        <UserTrendChart title="User Singh" />
+        <UserTrendChart title="User Graph" />
 
         {/* Existing/New Users Ratio Chart */}
         <UserRatioChart

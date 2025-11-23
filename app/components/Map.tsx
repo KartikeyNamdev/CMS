@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import type * as L from "leaflet";
 
 const Map = () => {
-  const mapRef = useRef(null);
-  const mapInstanceRef = useRef(null);
-  const markerRef = useRef(null);
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
   const [coordinates, setCoordinates] = useState({
     lat: 23.2599,
     lng: 77.4126,
@@ -17,6 +18,7 @@ const Map = () => {
     const loadMap = async () => {
       const L = (await import("leaflet")).default;
 
+      // @ts-expect-error - Deleting internal Leaflet property
       delete L.Icon.Default.prototype._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl:
@@ -43,7 +45,7 @@ const Map = () => {
           .openPopup();
         markerRef.current = marker;
 
-        map.on("click", (e) => {
+        map.on("click", (e: L.LeafletMouseEvent) => {
           const { lat, lng } = e.latlng;
           setCoordinates({ lat, lng });
           setLatInput(lat.toFixed(5));
@@ -100,7 +102,7 @@ const Map = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="bg-black/80 backdrop-blur p-4 border-b border-gray-700">
+      <div className="bg-black/20 backdrop-blur p-4 border-b border-gray-700">
         <div className="flex gap-3 items-end">
           <div className="flex-1">
             <label className="block text-sm text-gray-300 mb-1">Latitude</label>
@@ -108,7 +110,7 @@ const Map = () => {
               type="text"
               value={latInput}
               onChange={(e) => setLatInput(e.target.value)}
-              className="w-full px-3 py-2 bg-black/50 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-black/20 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
               placeholder="Enter latitude"
             />
           </div>
@@ -121,14 +123,14 @@ const Map = () => {
               type="text"
               value={lngInput}
               onChange={(e) => setLngInput(e.target.value)}
-              className="w-full px-3 py-2 bg-black/50 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-black/20 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
               placeholder="Enter longitude"
             />
           </div>
 
           <button
             onClick={handleManualUpdate}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition text-sm font-medium"
+            className="px-5 py-2 bg-[#b22828] hover:bg-red-500 text-white rounded transition text-sm font-medium"
           >
             Update
           </button>

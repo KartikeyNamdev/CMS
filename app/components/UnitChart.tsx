@@ -1,9 +1,10 @@
 "use client";
+import { AgChartOptions } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { useState } from "react";
 
 const UnitsChart = () => {
-  const [chartOptions] = useState({
+  const [chartOptions] = useState<AgChartOptions>({
     // 1. Transparent Background
     background: {
       visible: false,
@@ -16,7 +17,7 @@ const UnitsChart = () => {
     // 3. Series Configuration
     series: [
       {
-        type: "donut",
+        type: "donut" as const,
         angleKey: "count",
         calloutLabelKey: "type",
         sectorLabelKey: "count",
@@ -24,13 +25,13 @@ const UnitsChart = () => {
         // Donut dimensions
         innerRadiusRatio: 0.6,
         outerRadiusRatio: 0.9,
-        corner: 4,
+
         // Colors
         fills: [
-          "#fbced5", // Captive (White)
           "#b22828", // Public (Darker Red/Brown)
+          "#fbced5", // Captive (Light Pink)
         ],
-        // Stroke (Border) colors - Match the outer red segment
+        // Stroke (Border) colors
         strokes: ["#fbced5", "#fbced5"],
 
         strokeWidth: 4, // Increased stroke width to create the visual separation
@@ -41,8 +42,7 @@ const UnitsChart = () => {
           color: "white", // White text for 80% and 20%
           fontWeight: "bold",
           fontSize: 16,
-          offset: 10, // Push label slightly away from the center
-          formatter: ({ datum }) => {
+          formatter: ({ datum }: { datum: { count: string } }) => {
             return `${datum.count}%`;
           },
         },
@@ -55,29 +55,18 @@ const UnitsChart = () => {
     // 4. Legend Configuration (Bottom)
     legend: {
       enabled: true,
-      position: "bottom",
+      position: "bottom" as const,
       item: {
         label: {
           color: "white", // White text
           fontSize: 14,
         },
         marker: {
-          shape: "square", // Using square markers for visual distinction
-          fill: ({ legendItem }) => {
-            // Match legend marker color to series fill color
-            return legendItem.label === "Captive" ? "white" : "#b22828";
-          },
-          stroke: "transparent",
+          shape: "square" as const, // Using square markers for visual distinction
         },
         paddingX: 20,
       },
     },
-    // Inner text configuration (Optional: if you want a total count in the center)
-    innerLabels: [
-      // Example: Placeholder for Total Units
-      // { text: "100", fontSize: 24, color: "white" },
-      // { text: "Total Units", spacing: 5, color: "gray" },
-    ],
   });
 
   return (

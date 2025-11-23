@@ -121,7 +121,7 @@ export const Dashboard = () => {
               onClick={() => {}}
             >
               <PlusIcon className="w-5 h-5" />
-              Add Client
+              Add Station
             </button>
           </Link>
         </div>

@@ -1,10 +1,11 @@
 "use client";
 import { AgCharts } from "ag-charts-react";
 import { useState } from "react";
+import { AgChartOptions } from "ag-charts-community";
 
 const DCLicenseChart = () => {
   // Uses similar structure to TransactionDonut for DC License data
-  const [chartOptions] = useState({
+  const [chartOptions] = useState<AgChartOptions>({
     background: { visible: false },
     data: [
       { status: "Total DC License", count: 40 },
@@ -13,7 +14,7 @@ const DCLicenseChart = () => {
     ],
     series: [
       {
-        type: "pie",
+        type: "donut",
         angleKey: "count",
         legendItemKey: "status",
         innerRadiusRatio: 0.5,

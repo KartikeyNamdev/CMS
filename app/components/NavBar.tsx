@@ -54,8 +54,14 @@ export const NavBar = () => {
       {/* 3. Profile (Right) */}
       <div className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-900 transition-colors">
         {/* Placeholder Avatar */}
-        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-semibold text-lg">
-          D
+        <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center font-semibold text-lg">
+          <Image
+            src={"/Guy.png"}
+            alt="Face"
+            height={100}
+            width={100}
+            className="object-contain"
+          />
         </div>
         <span className="text-white font-medium">Dabas</span>
         <ChevronDownIcon className="w-5 h-5 text-gray-400" />

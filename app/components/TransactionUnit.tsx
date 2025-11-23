@@ -1,139 +1,77 @@
 "use client";
+import { AgChartOptions } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { useState } from "react";
 
-// Mock Data Structure
-const chartData = [
-  { month: "JAN", public: 1.0, captive: 0.5 },
-  { month: "FEB", public: 4.5, captive: 2.5 },
-  { month: "MAR", public: 6.2, captive: 2.3 }, // Peak label is here (public 6.2)
-  { month: "APR", public: 5.0, captive: 4.5 },
-  { month: "MAY", public: 7.5, captive: 4.0 },
-  { month: "JUN", public: 8.1, captive: 5.5 },
-];
-
-const TransactionUnit = () => {
-  const [chartOptions] = useState({
+const UnitsChart = () => {
+  const [chartOptions] = useState<AgChartOptions>({
     // 1. Transparent Background
     background: {
       visible: false,
     },
-    title: { enabled: false },
-    subtitle: { enabled: false },
-
-    // 2. Data
-    data: chartData,
-
+    // 2. Data (Matches screenshot: 80% Public, 20% Captive)
+    data: [
+      { type: "Public", count: 80 },
+      { type: "Captive", count: 20 },
+    ],
     // 3. Series Configuration
     series: [
-      // Series 1: Public (Line + Area Fill)
       {
-        type: "area", // Use 'area' for the Public series to get the fill effect
-        xKey: "month",
-        yKey: "public",
-        yName: "Public",
+        type: "donut" as const,
+        angleKey: "count",
+        calloutLabelKey: "type",
+        sectorLabelKey: "count",
 
-        // Red Line and Area Fill
-        stroke: "#C83B3B",
-        strokeWidth: 2,
-        marker: {
-          shape: "circle",
-          size: 6,
-          fill: "white",
-          stroke: "#C83B3B",
-        },
-        // Area fill with gradient from red to white/transparent
-        fill: {
-          type: "gradient",
-          colorStops: [
-            { offset: 0, color: "rgba(200, 59, 59, 0.4)" }, // Red-tinted start
-            { offset: 1, color: "rgba(255, 255, 255, 0.0)" }, // Transparent end
-          ],
-        },
+        // Donut dimensions
+        innerRadiusRatio: 0.6,
+        outerRadiusRatio: 0.9,
 
-        // Data label for the peak point (MAR in mock data)
-        label: {
+        // Colors
+        fills: [
+          "#fbced5", // Captive (White)
+          "#b22828", // Public (Darker Red/Brown)
+        ],
+        // Stroke (Border) colors - Match the outer red segment
+        strokes: ["#fbced5", "#fbced5"],
+
+        strokeWidth: 4, // Increased stroke width to create the visual separation
+
+        // Labels inside the segments (e.g., "80%", "20%")
+        sectorLabel: {
           enabled: true,
-          formatter: ({ datum }) => {
-            // Only show the label for the highest point in our mock data
-            if (datum.month === "MAR") {
-              return `$${datum.public}`;
-            }
-            return "";
+          color: "white", // White text for 80% and 20%
+          fontWeight: "bold",
+          fontSize: 16,
+          formatter: ({
+            datum,
+          }: {
+            datum: {
+              count: string;
+            };
+          }) => {
+            return `${datum.count}%`;
           },
-          // Custom label styling to match the red box in the screenshot
-          color: "white",
-          backgroundColor: "#C83B3B",
-          borderColor: "#C83B3B",
-          borderWidth: 1,
-          padding: { top: 4, bottom: 4, left: 8, right: 8 },
-          minSpacing: 20,
         },
-      },
-      // Series 2: Captive (Line Only)
-      {
-        type: "line", // Use 'line' for Captive (no fill needed)
-        xKey: "month",
-        yKey: "captive",
-        yName: "Captive",
 
-        stroke: "#FBCED5", // Light pink line
-        strokeWidth: 2,
-        marker: {
-          shape: "circle",
-          size: 6,
-          fill: "white",
-          stroke: "#FBCED5",
-        },
-        fill: "transparent", // Ensure no area fill
-      },
-    ],
-    // 4. Axes Configuration
-    axes: [
-      {
-        type: "category",
-        position: "bottom",
-        title: { text: "week", color: "#9CA3AF" },
-        label: { color: "white" },
-        line: { color: "#374151" },
-        gridLine: { style: [{ stroke: "transparent" }] },
-      },
-      {
-        type: "number",
-        position: "left",
-        title: { text: "Total transaction unit", color: "white" },
-        label: { color: "white" },
-        line: { color: "#374151" },
-        // Horizontal Grid Lines (subtle gray)
-        gridLine: {
-          style: [
-            {
-              stroke: "#374151",
-              lineDash: [4, 4],
-            },
-          ],
+        calloutLabel: {
+          enabled: false,
         },
       },
     ],
-    // 5. Legend
+    // 4. Legend Configuration (Bottom)
     legend: {
       enabled: true,
-      position: "top-right",
+      position: "bottom" as const,
       item: {
         label: {
-          color: "white",
+          color: "white", // White text
           fontSize: 14,
         },
         marker: {
-          shape: "square",
+          shape: "square" as const, // Using square markers for visual distinction
         },
+        paddingX: 20,
       },
-    },
-    padding: {
-      top: 20,
-      right: 20,
-      bottom: 20,
-      left: 20,
     },
   });
 
@@ -143,4 +81,5 @@ const TransactionUnit = () => {
     </div>
   );
 };
-export default TransactionUnit;
+
+export default UnitsChart;

@@ -1,9 +1,10 @@
 "use client";
 import { AgCharts } from "ag-charts-react";
 import { useState } from "react";
+import type { AgChartOptions } from "ag-charts-community";
 
 const RevenueDonut = () => {
-  const [chartOptions] = useState({
+  const [chartOptions] = useState<AgChartOptions>({
     // 1. Transparent Background
     background: {
       visible: false,
@@ -16,7 +17,7 @@ const RevenueDonut = () => {
     // 3. Series Configuration
     series: [
       {
-        type: "donut",
+        type: "donut" as const,
         angleKey: "count",
         calloutLabelKey: "type",
         sectorLabelKey: "count",
@@ -43,7 +44,7 @@ const RevenueDonut = () => {
           color: "#C83B3B", // Red text for 60%
           fontWeight: "bold",
           fontSize: 14,
-          formatter: ({ datum }) => {
+          formatter: ({ datum }: { datum: { count: string } }) => {
             // Custom logic to match screenshot colors per label if needed
             // For now, we just return the value + %
             return `${datum.count}%`;
@@ -57,7 +58,11 @@ const RevenueDonut = () => {
 
         // Tooltip
         tooltip: {
-          renderer: ({ datum }) => ({
+          renderer: ({
+            datum,
+          }: {
+            datum: { type: string; count: string };
+          }) => ({
             title: datum.type,
             content: `${datum.count}%`,
           }),
@@ -67,14 +72,14 @@ const RevenueDonut = () => {
     // 4. Legend Configuration (Bottom)
     legend: {
       enabled: true,
-      position: "bottom",
+      position: "bottom" as const,
       item: {
         label: {
           color: "white", // White text
           fontSize: 14,
         },
         marker: {
-          shape: "circle",
+          shape: "circle" as const,
           size: 10,
         },
         paddingX: 20, // Spacing between items

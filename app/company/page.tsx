@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 // Assuming Card is imported from a relative path
 import Card from "../components/Card";
 // Import chart placeholders
@@ -14,7 +15,17 @@ import DCLicenseChart from "../components/DCLicenseChart";
 import ACLicenseChart from "../components/ACLicenceChart";
 
 // --- Stat Card Component (Internal Helper) ---
-export const StatCard = ({ title, value, icon: Icon }) => (
+export const StatCard = ({
+  title,
+  value,
+  icon: Icon,
+}: {
+  title: string;
+  value: string;
+  icon: React.ForwardRefExoticComponent<
+    Omit<React.SVGProps<SVGSVGElement>, "ref"> & { title?: string }
+  >;
+}) => (
   <Card className="flex flex-col p-4 justify-between min-h-[120px]">
     <p className="text-white text-3xl font-semibold mt-2">{value}</p>
     <div className="flex justify-between items-start">
@@ -86,7 +97,7 @@ export const CompanyManagement = () => {
       {/* --- ROW 3: CHARGER LICENSES (2-COLUMN GRID) --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 content-center">
         <Card title="DC Charger License">
-          <DCLicenseChart />
+          <ACLicenseChart />
           <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-400 justify-center">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-red-600"></span> Total DC

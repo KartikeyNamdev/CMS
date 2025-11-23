@@ -55,7 +55,7 @@ export const Dashboard = () => {
           onChange={setCharger}
           className="min-w-[140px]"
         />
-        <div className="relative flex items-center h-12 bg-white rounded-xl shadow-md min-w-[140px] text-gray-400">
+        <div className="relative flex items-center h-12 bg-white rounded-xl shadow-md min-w-[140px] text-gray-500 p-6">
           <input
             type="date"
             name="bday"

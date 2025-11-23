@@ -27,7 +27,7 @@ function FilterDialog({
 }: {
   data: dataType[];
   title: string;
-  onClose: () => void;
+  onClose: () => void | null;
 }) {
   return (
     <Dialog>
