@@ -10,8 +10,10 @@ import {
   ClockIcon,
   MapIcon,
   FaceFrownIcon,
+  CurrencyDollarIcon,
+  CheckBadgeIcon,
 } from "@heroicons/react/24/solid";
-import { CrownIcon, UserIcon } from "lucide-react";
+import { CrownIcon, EvChargerIcon, UserIcon } from "lucide-react";
 
 // Dashboard Links
 export const DashBoardlinks = [
@@ -68,5 +70,22 @@ export const userManagementLinks = [
     name: "Adminstrator",
     href: "/user/admin",
     icon: CrownIcon,
+  },
+];
+export const BillsAndPaymentLinks = [
+  {
+    name: "Overview",
+    href: "/bills",
+    icon: CurrencyDollarIcon,
+  },
+  {
+    name: "Charging Sessions",
+    href: "/bills/charging-session",
+    icon: EvChargerIcon,
+  },
+  {
+    name: "License",
+    href: "/bills/license",
+    icon: CheckBadgeIcon,
   },
 ];

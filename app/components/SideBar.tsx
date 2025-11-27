@@ -22,7 +22,7 @@ export const DashBoardSideBar = ({
     <aside
       className={`
         group fixed left-0 z-20
-        w-16 hover:w-64 
+        w-16 hover:w-54 border 
         bg-black/50 bg-opacity-20 backdrop-filter backdrop-blur-lg
         border-r border-gray-700 border-opacity-30
         transition-all duration-300 ease-in-out

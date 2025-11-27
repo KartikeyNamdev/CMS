@@ -6,13 +6,13 @@ import TransactionDonut from "../components/TransactionDonut";
 
 import TransactionRevenue from "../components/TransactionRevenue";
 
-import TransactionUnit from "../components/TransactionUnit";
 import DropdownFilter from "../components/DropdownFilter";
 import { useState } from "react";
 import { CalendarIcon } from "@heroicons/react/24/solid";
 import TotalTransactionValue from "../components/TotalTransactionChart";
 import RevenueDonut from "../components/RevenueDonut";
-import UnitsChart from "../components/TransactionUnit";
+import UnitDonut from "../components/UnitDonut";
+import TransactionUnitChart from "../components/TransactionUnit";
 
 // Options for dropdowns
 const stateOptions = [
@@ -123,12 +123,12 @@ export const Dashboard = () => {
 
         {/* Units (1 Column) */}
         <Card title="Units" className="col-span-1">
-          <UnitsChart />
+          <UnitDonut />
         </Card>
 
         {/* Transaction Unit (Spans 2 columns on desktop) */}
         <Card title="Transaction Unit" className="col-span-1 lg:col-span-2">
-          <TransactionUnit />
+          <TransactionUnitChart />
         </Card>
       </div>
     </div>

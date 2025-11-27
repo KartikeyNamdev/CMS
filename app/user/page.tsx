@@ -4,8 +4,10 @@ import React from "react";
 import Card from "@/app/components/Card"; // Custom dark Card component
 // Import icons for the stat cards and charts
 import { ChartBarIcon, UserGroupIcon } from "@heroicons/react/24/solid";
-import TransactionUnit from "../components/TransactionUnit";
-import UnitsChart from "../components/UnitChart";
+import TransactionUnit, {
+  TransactionUnitChart2,
+} from "../components/TransactionUnit";
+import UnitsChart from "../components/UnitDonut";
 
 // --- Internal Helper Components ---
 
@@ -135,7 +137,9 @@ export const UserManagementOverview = () => {
             { label: "Inactive Users", color: "bg-gray-400" },
           ]}
         />
-        <UserTrendChart title="Unique Customer" />
+        <Card title="Transaction Unit" className="col-span-1 lg:col-span-2">
+          <TransactionUnitChart2 />
+        </Card>
       </div>
     </div>
   );

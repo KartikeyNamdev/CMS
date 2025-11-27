@@ -28,7 +28,7 @@ const UnitsChart = () => {
 
         // Colors
         fills: [
-          "#b22828", // Public (Darker Red/Brown)
+          "#b22828", // Public (Darker Red/Brown)tran
           "#fbced5", // Captive (Light Pink)
         ],
         // Stroke (Border) colors

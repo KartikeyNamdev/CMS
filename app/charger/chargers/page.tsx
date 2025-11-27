@@ -37,7 +37,7 @@ const ClientOptions = [
   { value: "rishika", label: "Kartikey Namdev" },
 ];
 
-const ColumnOptions = [
+export const ColumnOptions = [
   { value: "select all", label: "Select All" },
   { value: "zone", label: "Zone" },
   { value: "spoc details", label: "SPOC Details" },

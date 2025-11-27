@@ -4,6 +4,8 @@ import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import type { ColDef } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+// Import CustomCellRendererProps type for correct typing
+import type { CustomCellRendererProps } from "ag-grid-react";
 import { AgGridReact } from "ag-grid-react";
 
 // Register necessary modules
@@ -37,7 +39,6 @@ const useMockData = (url: string) => {
       emspChargers: "3",
       accessType: "Private",
       openingHours: "08:00 - 22:00",
-      visibilityStatus: "Disabled",
       url: "/charger/station/ELTRAX101",
     },
     {
@@ -51,7 +52,6 @@ const useMockData = (url: string) => {
       emspChargers: "1",
       accessType: "Public",
       openingHours: "24 Hours",
-      visibilityStatus: "Enabled",
       url: "/charger/station/CPX200A",
     },
     {
@@ -65,7 +65,6 @@ const useMockData = (url: string) => {
       emspChargers: "0",
       accessType: "Private",
       openingHours: "24 Hours",
-      visibilityStatus: "Enabled",
       url: "/charger/station/TSLX990",
     },
   ];
@@ -73,9 +72,11 @@ const useMockData = (url: string) => {
   return { data: mockData, loading: false };
 };
 
-// Custom Cell Renderer for URL Links
-const URLRenderer = (props: any) => {
-  const url = props.value;
+// 🚨 FIX: Correctly receive 'params' and extract 'data' and 'url'
+const URLRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
+  // Use optional chaining for safety, and access 'data' which holds the whole row
+  const url = params.data?.url;
+
   if (!url) return <span className="text-gray-400">--</span>;
 
   return (
@@ -88,7 +89,7 @@ const URLRenderer = (props: any) => {
   );
 };
 
-// Custom Cell Renderer for Actions
+// Custom Cell Renderer for Actions (Placeholder)
 const ActionsRenderer = () => (
   <div className="flex items-center justify-center h-full text-white text-sm">
     <button className="text-red-300 hover:text-white font-medium">Edit</button>

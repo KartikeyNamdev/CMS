@@ -1,5 +1,6 @@
 "use client";
 import { AgCharts } from "ag-charts-react";
+import Card from "./Card";
 
 // 1. Data to match the image
 const chartData = [
@@ -80,9 +81,10 @@ const TransactionDonut = () => {
   };
 
   return (
-    <div className="h-72 w-full">
+    // 🚨 FIX: Removed Card wrapper. Sizing is now handled by parent component.
+    <Card className="h-full w-full ">
       <AgCharts options={options} />
-    </div>
+    </Card>
   );
 };
 export default TransactionDonut;

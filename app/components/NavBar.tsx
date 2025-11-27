@@ -2,11 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react"; // <-- Import useState
-import {
-  ChevronDownIcon,
-  Bars3Icon,
-  XMarkIcon,
-} from "@heroicons/react/24/solid"; // <-- Import toggle icons
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid"; // <-- Import toggle icons
 import { usePathname } from "next/navigation";
 
 export const NavBar = () => {
@@ -27,7 +23,7 @@ export const NavBar = () => {
   return (
     <>
       {/* --- Main Navigation Bar: ADDED w-full --- */}
-      <nav className="bg-[#0B0B0B] w-full min-h-16 flex items-center justify-between px-8 text-white border-b border-gray-500 relative z-30">
+      <nav className="bg-[#0B0B0B] w-full h-18 flex items-center justify-between px-8 text-white border-b border-gray-500 relative z-30">
         {/* 1. Logo (Left) */}
         <Image
           src={"/logo.png"}
