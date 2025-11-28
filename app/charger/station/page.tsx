@@ -1,6 +1,7 @@
 "use client";
 import DropdownFilter from "@/app/components/DropdownFilter";
 import FilterDialog from "@/app/components/FilterDialog";
+import StationTable from "@/app/components/StationTable";
 import ChargerGrid from "@/app/components/Table";
 import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
@@ -126,7 +127,7 @@ export const Dashboard = () => {
           </Link>
         </div>
       </div>
-      <ChargerGrid />
+      <StationTable />
       {/* </Card> */}
     </div>
   );

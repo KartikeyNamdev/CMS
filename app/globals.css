@@ -46,6 +46,8 @@
 body {
   background-image: url("/bg.png");
   background-size: cover;
+  background-color: black;
+  scroll-behavior: smooth;
 }
 
 :root {

@@ -1,12 +1,14 @@
-"use client"; // <--- ADD THIS LINE AT THE TOP
+"use client";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 interface SidebarItem {
   name: string;
   href: string;
   icon: React.ElementType;
 }
+
 interface DashBoardSideBarProps {
   items?: SidebarItem[];
   className?: string;
@@ -21,22 +23,23 @@ export const DashBoardSideBar = ({
   return (
     <aside
       className={`
-        group fixed left-0 z-20
-        w-16 hover:w-54 border 
+        group fixed left-0 top-1/2 -translate-y-1/2
+        z-50
+        w-16 hover:w-52
         bg-black/50 bg-opacity-20 backdrop-filter backdrop-blur-lg
-        border-r border-gray-700 border-opacity-30
+        border rounded-r-2xl border-gray-700 border-opacity-30
         transition-all duration-300 ease-in-out
         ${className}
       `}
-      // Default top-20 (5rem) to sit under a standard navbar
-      style={{ top: 400 }}
+      style={{
+        height: "fit-content",
+      }}
     >
-      <nav className="flex flex-col gap-2 p-2 pt-4">
+      <nav className="flex flex-col gap-2 p-2">
         {items.map((item) => {
           const Icon = item.icon;
 
           // Check if the current path starts with the link href
-          // (unless it's root "/", then require exact match)
           const isActive =
             item.href === "/"
               ? pathname === "/"

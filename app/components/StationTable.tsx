@@ -93,7 +93,7 @@ const URLRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
 const ActionsRenderer = () => (
   <div className="flex items-center justify-center h-full text-white text-sm">
     <button
-      className="text-red-300 hover:text-white font-medium"
+      className="text-red-300 hover:to-white font-medium"
       onClick={() => {
         console.log("Hello");
       }}
@@ -101,11 +101,28 @@ const ActionsRenderer = () => (
       Edit
     </button>
     <span className="text-gray-500 mx-2">|</span>
-    <button className="text-red-300 hover:text-white font-medium">
-      Delete
-    </button>
+    <button className="text-red-300 hover:to-white font-medium">Delete</button>
   </div>
 );
+
+// 🚨 FIX: New NameRenderer Component
+const NameRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
+  const name = params.data?.name;
+  const url = params.data?.url;
+
+  if (!name || !url) return <span>{name || "--"}</span>;
+
+  return (
+    <div className="flex items-center justify-start h-full text-sm text-blue-400">
+      <Link
+        href={`/charger/station/profile/${name}`}
+        className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
+      >
+        {name}
+      </Link>
+    </div>
+  );
+};
 
 // Row Data Interface with URL field added
 interface IChargerRow {
@@ -123,14 +140,19 @@ interface IChargerRow {
   url: string;
 }
 
-const ChargerGrid = () => {
+const StationTable = () => {
   const { data: rowData, loading } = useMockData(
     "https://api.your-dabas-data.com/chargers"
   );
 
   // Column Definitions with URL field added
   const [colDefs] = useState<ColDef<IChargerRow>[]>([
-    { field: "name", headerName: "Name", width: 100 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 100,
+      cellRenderer: NameRenderer, // <-- Used the new renderer here
+    },
     { field: "stationId", headerName: "Stations/Site ID", width: 100 },
     { field: "source", headerName: "Source", width: 100 },
     { field: "locations", headerName: "Locations", width: 150 },
@@ -160,7 +182,6 @@ const ChargerGrid = () => {
       sortable: false,
       filter: false,
       resizable: false,
-      pinned: "right",
     },
   ]);
 
@@ -256,4 +277,4 @@ const ChargerGrid = () => {
   );
 };
 
-export default ChargerGrid;
+export default StationTable;

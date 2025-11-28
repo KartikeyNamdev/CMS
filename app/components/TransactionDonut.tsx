@@ -82,9 +82,8 @@ const TransactionDonut = () => {
 
   return (
     // 🚨 FIX: Removed Card wrapper. Sizing is now handled by parent component.
-    <Card className="h-full w-full ">
-      <AgCharts options={options} />
-    </Card>
+
+    <AgCharts options={options} />
   );
 };
 export default TransactionDonut;

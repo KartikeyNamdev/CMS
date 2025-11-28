@@ -75,7 +75,7 @@ const UserRatioChart = ({
 
 export const UserManagementOverview = () => {
   return (
-    <div className="w-full p-6 lg:px-55 min-h-screen">
+    <div className="w-full p-6 lg:px-50 min-h-screen">
       {/* Header/Status Row */}
       <div className="mb-6 text-gray-400 text-sm">
         Last refreshed at: 07/10/23, 16:44 | Pluginp:{" "}
