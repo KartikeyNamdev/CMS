@@ -1,13 +1,38 @@
 "use client";
-import { AgCharts } from "ag-charts-react";
-import { useState } from "react";
-import { type AgChartOptions } from "ag-charts-community";
+
+import React, { useMemo } from "react";
+// 1. Chart.js Imports
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  ChartOptions,
+} from "chart.js";
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 // Mock Data Structure (Months JAN to JUN)
 const chartData = [
   { month: "JAN", public: 1.0, captive: 0.5 },
   { month: "FEB", public: 2.8, captive: 2.0 },
-  { month: "MAR", public: 4.5, captive: 2.4 }, // 4.5 is the public value where the label is shown in the image
+  { month: "MAR", public: 4.5, captive: 2.4 }, // Peak for label placement
   { month: "APR", public: 6.0, captive: 5.0 },
   { month: "MAY", public: 4.0, captive: 4.8 },
   { month: "JUN", public: 7.0, captive: 5.5 },
@@ -16,270 +41,139 @@ const chartData = [
 const chartData2 = [
   { month: "JAN", public: 3.0, captive: 3.5 },
   { month: "FEB", public: 1.8, captive: 1.0 },
-  { month: "MAR", public: 6.5, captive: 6.4 }, // 4.5 is the public value where the label is shown in the image
+  { month: "MAR", public: 6.5, captive: 6.4 }, // Peak for label placement
   { month: "APR", public: 3.0, captive: 3.0 },
   { month: "MAY", public: 8.0, captive: 8.8 },
   { month: "JUN", public: 4.0, captive: 4.5 },
 ];
+
+// --- Reusable Options Generator ---
+const generateChartConfig = (data: typeof chartData, titleEnabled: boolean) => {
+  const labels = data.map((d) => d.month);
+
+  const options: ChartOptions<"line"> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "top" as const,
+        labels: {
+          color: "white",
+          usePointStyle: true,
+          boxWidth: 10,
+        },
+      },
+      title: {
+        display: titleEnabled,
+        text: "Transaction Unit",
+        color: "white",
+        font: { size: 18, weight: "bold" },
+        padding: { top: 10, bottom: 20 },
+      },
+      tooltip: {
+        mode: "index" as const,
+        intersect: false,
+      },
+    },
+    scales: {
+      x: {
+        type: "category" as const,
+        ticks: { color: "white" },
+        grid: { display: false },
+        title: { display: true, text: "Month", color: "#9CA3AF" },
+        border: { color: "#374151" },
+      },
+      y: {
+        type: "linear" as const,
+        min: 0,
+        max: 9,
+        ticks: {
+          color: "white",
+        },
+        grid: {
+          color: "rgba(55, 65, 81, 0.5)",
+          lineWidth: 1,
+        },
+        border: { color: "#374151" },
+      },
+    },
+  };
+
+  const datasets = [
+    // Series 1: Public (Area Fill)
+    {
+      label: "Public",
+      data: data.map((d) => d.public),
+      borderColor: "#C83B3B",
+      backgroundColor: (context) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(
+          0,
+          0,
+          0,
+          context.chart.height
+        );
+        gradient.addColorStop(0, "rgba(200, 59, 59, 0.7)");
+        gradient.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+        return gradient;
+      },
+      borderWidth: 2,
+      pointBackgroundColor: "white",
+      pointBorderColor: "#C83B3B",
+      pointBorderWidth: 2,
+      pointRadius: 4,
+      fill: "start" as const,
+      tension: 0.2,
+      order: 1,
+    },
+    // Series 2: Captive (Line Only)
+    {
+      label: "Captive",
+      data: data.map((d) => d.captive),
+      borderColor: "#FBCED5",
+      backgroundColor: "transparent",
+      borderWidth: 2,
+      pointBackgroundColor: "white",
+      pointBorderColor: "#FBCED5",
+      pointBorderWidth: 2,
+      pointRadius: 4,
+      fill: false,
+      tension: 0.2,
+      order: 0,
+    },
+  ];
+
+  return {
+    data: { labels: labels, datasets: datasets },
+    options: options,
+  };
+};
+
+// --- Component 1: Default Transaction Unit Chart ---
 export default function TransactionUnitChart() {
-  const [chartOptions] = useState<AgChartOptions>({
-    // 1. Transparent Background
-    background: {
-      visible: false,
-    },
-    title: { enabled: false },
-    subtitle: { enabled: false },
-
-    // 2. Data
-    data: chartData,
-
-    // 3. Series Configuration
-    series: [
-      // Series 1: Public (Line + Area Fill)
-      {
-        type: "area",
-        xKey: "month",
-        yKey: "public",
-        yName: "Public",
-
-        // Red Line and Area Fill
-        stroke: "#C83B3B",
-        strokeWidth: 2,
-        marker: {
-          shape: "circle",
-          size: 6,
-          fill: "white",
-          stroke: "#C83B3B",
-        },
-        // Area fill with gradient from red to white/transparent
-        fill: {
-          type: "gradient",
-          colorStops: [
-            { offset: 0, color: "rgba(200, 59, 59, 0.4)" }, // Red-tinted start
-            { offset: 1, color: "rgba(255, 255, 255, 0.0)" }, // Transparent end
-          ],
-        },
-
-        // Data label for the peak point (MAR in mock data)
-        label: {
-          enabled: true,
-          formatter: ({ datum }) => {
-            // Logic to show label only on a specific point (e.g., peak/latest)
-            if (datum.month === "MAR") {
-              return `$${datum.public.toFixed(1)}`;
-            }
-            return "";
-          },
-          // Custom label styling to match the red box in the screenshot
-          color: "white",
-          backgroundColor: "#C83B3B",
-          borderColor: "#C83B3B",
-          borderWidth: 1,
-          padding: { top: 4, bottom: 4, left: 8, right: 8 },
-          minSpacing: 20,
-        },
-      },
-      // Series 2: Captive (Line Only)
-      {
-        type: "line",
-        xKey: "month",
-        yKey: "captive",
-        yName: "Captive",
-
-        stroke: "#FBCED5", // Light pink line
-        strokeWidth: 2,
-        marker: {
-          shape: "circle",
-          size: 6,
-          fill: "white",
-          stroke: "#FBCED5",
-        },
-      },
-    ],
-    // 4. Axes Configuration
-    axes: [
-      {
-        type: "category",
-        position: "bottom",
-        title: { text: "Month", color: "#9CA3AF" },
-        label: { color: "white" },
-        line: { color: "#374151" },
-        gridLine: { style: [{ stroke: "transparent" }] },
-        paddingInner: 0.4, // Add padding to make bars wider
-      },
-      {
-        type: "number",
-        position: "left",
-        title: { text: "", color: "white" }, // Title is often omitted on line charts
-        label: { color: "white" },
-        line: { color: "#374151" },
-        // Horizontal Grid Lines (subtle gray)
-        gridLine: {
-          style: [
-            {
-              stroke: "#374151",
-              lineDash: [4, 4],
-            },
-          ],
-        },
-      },
-    ],
-    // 5. Legend
-    legend: {
-      enabled: true,
-      position: "top-right",
-      item: {
-        label: {
-          color: "white",
-          fontSize: 14,
-        },
-        marker: {
-          shape: "square",
-        },
-      },
-    },
-    padding: {
-      top: 20,
-      right: 20,
-      bottom: 20,
-      left: 20,
-    },
-  });
+  const { data, options } = useMemo(
+    () => generateChartConfig(chartData, false),
+    []
+  );
 
   return (
     <div className="h-72 w-full">
-      <AgCharts options={chartOptions} />
+      <Line data={data} options={options} />
     </div>
   );
 }
+
+// --- Component 2: Second Transaction Unit Chart ---
 export const TransactionUnitChart2 = () => {
-  const [chartOptions] = useState<AgChartOptions>({
-    // 1. Transparent Background
-    background: {
-      visible: false,
-    },
-    title: { enabled: true },
-    subtitle: { enabled: false },
-
-    // 2. Data
-    data: chartData2,
-
-    // 3. Series Configuration
-    series: [
-      // Series 1: Public (Line + Area Fill)
-      {
-        type: "area",
-        xKey: "month",
-        yKey: "public",
-        yName: "Public",
-
-        // Red Line and Area Fill
-        stroke: "#C83B3B",
-        strokeWidth: 2,
-        marker: {
-          shape: "circle",
-          size: 6,
-          fill: "white",
-          stroke: "#C83B3B",
-        },
-        // Area fill with gradient from red to white/transparent
-        fill: {
-          type: "gradient",
-          colorStops: [
-            { offset: 0, color: "rgba(200, 59, 59, 0.4)" }, // Red-tinted start
-            { offset: 1, color: "rgba(255, 255, 255, 0.0)" }, // Transparent end
-          ],
-        },
-
-        // Data label for the peak point (MAR in mock data)
-        label: {
-          enabled: true,
-          formatter: ({ datum }) => {
-            // Logic to show label only on a specific point (e.g., peak/latest)
-            if (datum.month === "MAR") {
-              return `$${datum.public.toFixed(1)}`;
-            }
-            return "";
-          },
-          // Custom label styling to match the red box in the screenshot
-          color: "white",
-          backgroundColor: "#C83B3B",
-          borderColor: "#C83B3B",
-          borderWidth: 1,
-          padding: { top: 4, bottom: 4, left: 8, right: 8 },
-          minSpacing: 20,
-        },
-      },
-      // Series 2: Captive (Line Only)
-      {
-        type: "line",
-        xKey: "month",
-        yKey: "captive",
-        yName: "Captive",
-
-        stroke: "#FBCED5", // Light pink line
-        strokeWidth: 2,
-        marker: {
-          shape: "circle",
-          size: 6,
-          fill: "white",
-          stroke: "#FBCED5",
-        },
-      },
-    ],
-    // 4. Axes Configuration
-    axes: [
-      {
-        type: "category",
-        position: "bottom",
-        title: { text: "Month", color: "#9CA3AF" },
-        label: { color: "white" },
-        line: { color: "#374151" },
-        gridLine: { style: [{ stroke: "transparent" }] },
-        paddingInner: 0.4, // Add padding to make bars wider
-      },
-      {
-        type: "number",
-        position: "left",
-        title: { text: "", color: "white" }, // Title is often omitted on line charts
-        label: { color: "white" },
-        line: { color: "#374151" },
-        // Horizontal Grid Lines (subtle gray)
-        gridLine: {
-          style: [
-            {
-              stroke: "#374151",
-              lineDash: [4, 4],
-            },
-          ],
-        },
-      },
-    ],
-    // 5. Legend
-    legend: {
-      enabled: true,
-      position: "top-right",
-      item: {
-        label: {
-          color: "white",
-          fontSize: 14,
-        },
-        marker: {
-          shape: "square",
-        },
-      },
-    },
-    padding: {
-      top: 20,
-      right: 20,
-      bottom: 20,
-      left: 20,
-    },
-  });
+  const { data, options } = useMemo(
+    () => generateChartConfig(chartData2, true),
+    []
+  );
 
   return (
     <div className="h-72 w-full">
-      <AgCharts options={chartOptions} />
+      <Line data={data} options={options} />
     </div>
   );
 };

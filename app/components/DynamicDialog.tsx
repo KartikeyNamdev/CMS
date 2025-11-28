@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input"; // Assuming this is available
 import { Label } from "@/components/ui/label";
-import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 // Define a type for the data structure being passed
 type DialogField = {
@@ -104,13 +103,15 @@ const ADD_ADMIN_FIELDS: DialogField[] = [
 
 export const AddAdminDialog = ({
   triggerButton,
+  onClose,
 }: {
   triggerButton: React.ReactNode;
+  onClose?: () => void;
 }) => (
   <BaseDialog
     title="Add New Administrator"
     data={ADD_ADMIN_FIELDS}
-    onClose={() => {}}
+    onClose={onClose}
     triggerButton={triggerButton}
   />
 );
@@ -125,13 +126,15 @@ const ADD_GROUP_FIELDS: DialogField[] = [
 
 export const AddGroupDialog = ({
   triggerButton,
+  onClose,
 }: {
   triggerButton: React.ReactNode;
+  onClose?: () => void;
 }) => (
   <BaseDialog
     title="Add New Charger Group"
     data={ADD_GROUP_FIELDS}
-    onClose={() => {}}
+    onClose={onClose}
     triggerButton={triggerButton}
   />
 );

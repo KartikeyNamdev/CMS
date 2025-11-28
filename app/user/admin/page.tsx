@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 // --- DIALOG IMPORTS ---
 
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 // Mock Data Options (reused from AdminView, with adjusted focus for Roles)
@@ -27,7 +26,6 @@ const RoleTypeOptions = [
 
 // --- ADMIN VIEW ---
 const AdminView = ({ setAddAdminOpen, isAddAdminOpen }) => {
-  const navigate = useRouter();
   const [columnFilter, setColumnFilter] = useState("");
   const [roleType, setRoleType] = useState("");
 
@@ -126,7 +124,7 @@ const AdminView = ({ setAddAdminOpen, isAddAdminOpen }) => {
         <AddAdminDialog
           // Render the full dialog when state is true
           triggerButton={<div />} // Trigger is already rendered
-          onClose={() => setAddAdminOpen(false)}
+          onClose={setAddAdminOpen(false)}
         />
       )}
     </div>
@@ -135,7 +133,6 @@ const AdminView = ({ setAddAdminOpen, isAddAdminOpen }) => {
 
 // --- ROLES VIEW ---
 const RolesView = ({ setAddRoleOpen, isAddRoleOpen }) => {
-  const [columnFilter, setColumnFilter] = useState("");
   const [roleType, setRoleType] = useState("");
 
   const AddRoleButton = (
@@ -199,10 +196,9 @@ const RolesView = ({ setAddRoleOpen, isAddRoleOpen }) => {
       {/* DIALOG RENDERING */}
       {isAddRoleOpen && (
         <AddAdminDialog
-          title="Add Custom Role" // Reusing Admin dialog structure for role creation
-          data={[{ label: "Role Name", placeholder: "Enter Role Name" }]}
+          // Reusing Admin dialog structure for role creation
           triggerButton={<div />}
-          onClose={() => setAddRoleOpen(false)}
+          onClose={setAddRoleOpen(false)}
         />
       )}
     </div>
@@ -298,7 +294,7 @@ const GroupsView = ({ setAddGroupOpen, isAddGroupOpen }) => {
       {isAddGroupOpen && (
         <AddGroupDialog
           triggerButton={<div />}
-          onClose={() => setAddGroupOpen(false)}
+          onClose={setAddGroupOpen(false)}
         />
       )}
     </div>
