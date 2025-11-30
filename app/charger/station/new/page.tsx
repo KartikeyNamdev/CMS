@@ -5,6 +5,7 @@ import React, { useState, useMemo } from "react";
 import Card from "@/app/components/Card";
 import FormInput, { MultipeChoosableInput } from "@/app/components/FormInput"; // Assuming FormInput supports the options prop
 import { Button } from "@/components/ui/button";
+import MultipleSelectCheckmarks from "@/app/components/Checkmark";
 
 // --- Selected Indian States Data ---
 // This data is imported directly from the selected Canvas file structure.
@@ -299,18 +300,16 @@ export const AddChargerForm = () => {
               ]}
             />
 
-            <FormInput
+            <MultipleSelectCheckmarks
               label="Amenities"
-              options={[
-                { label: "RestRoom", value: "RestRoom" },
-                { label: "Cafe", value: "Cafe" },
-                { label: "Store", value: "Store" },
-                { label: "Car Care", value: "Car Care" },
-                { label: "Lodging", value: "Lodging" },
-                { label: "Wifi", value: "Wifi" },
+              data={[
+                "RestRoom",
+                "Cafe",
+                "Store",
+                "Car Care",
+                "Lodging",
+                "Wifi",
               ]}
-              placeholder="Enter"
-              required={false}
             />
             <FormInput
               label="Station Visibility Status"

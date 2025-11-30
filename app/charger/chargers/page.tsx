@@ -4,13 +4,14 @@ import React, { useState } from "react";
 // Assuming paths:
 import DropdownFilter from "@/app/components/DropdownFilter";
 // Renamed the imported table component to ChargerGrid for clarity
-import ChargerGrid from "@/app/components/Table";
+import ChargerGrid from "@/app/components/ChargerTable";
 
 import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 
 import FilterDialog from "@/app/components/FilterDialog";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import StationTable from "@/app/components/StationTable";
 
 // Mock Data Options (Updated to match screenshot needs)
 const ChargerFilterTypes = [

@@ -1,8 +1,9 @@
 "use client";
+import MultipleSelectCheckmarks from "@/app/components/Checkmark";
 import DropdownFilter from "@/app/components/DropdownFilter";
 import FilterDialog from "@/app/components/FilterDialog";
 import StationTable from "@/app/components/StationTable";
-import ChargerGrid from "@/app/components/Table";
+
 import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
@@ -108,17 +109,22 @@ export const Dashboard = () => {
           <button className="h-12 px-4 rounded-xl text-white bg-white/10 hover:bg-white/20 transition-colors shadow-md border border-white/20 flex items-center gap-2">
             <ArrowDownTrayIcon className="w-5 h-5" />
           </button>
-          <DropdownFilter
-            placeholder="Column"
-            options={ColumnOptions}
-            selectedValue={""}
-            onChange={() => {}}
-            className="min-w-[140px]"
+          <MultipleSelectCheckmarks
+            label="Column"
+            data={[
+              "Spoc details",
+              "Parking fees",
+              "Connection Type",
+              "Zone",
+              "Guard details",
+              "CCTV",
+              "Internet Connection Type",
+            ]}
           />
 
           <Link href={"/charger/station/new"}>
             <button
-              className="h-12 px-6 rounded-xl text-white font-semibold bg-[#b22828] hover:bg-red-600 transition-colors shadow-md flex items-center gap-2"
+              className="h-12 px-6 rounded-xl text-sm text-white font-semibold bg-[#b22828] hover:bg-red-600 transition-colors shadow-md flex items-center gap-2"
               onClick={() => {}}
             >
               <PlusIcon className="w-5 h-5" />

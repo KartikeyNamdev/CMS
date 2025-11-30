@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 import FilterDialog from "@/app/components/FilterDialog";
-import ChargerGrid from "@/app/components/Table";
+import ChargerGrid from "@/app/components/ChargerTable";
 import DropdownFilter from "@/app/components/DropdownFilter";
 
 // --- Placeholder Components ---
