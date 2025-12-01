@@ -185,7 +185,7 @@ const ChargerGrid = () => {
     },
     { field: "cinSerial", headerName: "Serial Number", width: 90 },
     { field: "stationName", headerName: "Station Name", width: 120 },
-    { field: "source", headerName: "Source", width: 100 },
+    { field: "source", headerName: "Source", width: 80 },
     { field: "ocppId", headerName: "OCPP ID", width: 120 },
     {
       field: "locationStateCity",
@@ -205,7 +205,7 @@ const ChargerGrid = () => {
     {
       field: "visibilityStatus",
       headerName: "Station Visibility Status",
-      width: 150,
+      width: 120,
     },
     {
       field: "connectorStatuses",

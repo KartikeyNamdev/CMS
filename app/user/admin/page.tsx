@@ -308,8 +308,8 @@ export const UserSegmentedControl = () => {
   const [addRoleOpen, setAddRoleOpen] = useState(false);
   const [addGroupOpen, setAddGroupOpen] = useState(false);
 
-  const [choosen, setChoosen] = useState<"admin" | "roles" | "groups">("admin");
-  type Protocol = "admin" | "roles" | "groups";
+  const [choosen, setChoosen] = useState<"admin" | "roles">("admin");
+  type Protocol = "admin" | "roles";
 
   const buttonClasses = (protocol: Protocol, index: number) => {
     const isChosen = choosen === protocol;
@@ -323,7 +323,7 @@ export const UserSegmentedControl = () => {
 
     if (index === 0) {
       classes += " rounded-l-xl rounded-r-none";
-    } else if (index === 2) {
+    } else if (index === 1) {
       classes += " rounded-r-xl rounded-l-none -ml-[1px]";
     } else {
       classes += " rounded-none -ml-[1px]";
@@ -334,7 +334,6 @@ export const UserSegmentedControl = () => {
   const protocols: { name: string; key: Protocol }[] = [
     { name: "Admin", key: "admin" },
     { name: "Roles", key: "roles" },
-    { name: "Groups", key: "groups" },
   ];
 
   return (
@@ -368,12 +367,12 @@ export const UserSegmentedControl = () => {
             isAddRoleOpen={addRoleOpen}
           />
         )}
-        {choosen === "groups" && (
+        {/* {choosen === "groups" && (
           <GroupsView
             setAddGroupOpen={setAddGroupOpen}
             isAddGroupOpen={addGroupOpen}
           />
-        )}
+        )} */}
       </div>
     </div>
   );

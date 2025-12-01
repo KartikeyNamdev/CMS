@@ -7,6 +7,9 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 import FilterDialog from "@/app/components/FilterDialog";
 import ChargerGrid from "@/app/components/ChargerTable";
 import DropdownFilter from "@/app/components/DropdownFilter";
+import AgDynamicTable from "@/app/components/AgDynamicTable";
+import OcpiLogsTable from "@/app/components/AdminAgTable";
+import OcppLogsTable from "@/app/components/OCPPLogsTable";
 
 // --- Placeholder Components ---
 // These components will render conditionally based on the 'choosen' state.
@@ -26,15 +29,13 @@ const ChargerFilter = [
 ];
 const OCPPLogs = () => (
   <div className="min-h-80 flex flex-col items-center justify-center text-gray-400">
-    {/* Placeholder for the table structure */}
-
-    <p className="text-red-500 font-bold mt-4">No Data Found!</p>
+    <OcppLogsTable />
   </div>
 );
 
 const OCPILogs = () => (
   <div className="min-h-80 flex flex-col items-center justify-center text-gray-400">
-    <ChargerGrid />
+    <OcpiLogsTable />
   </div>
 );
 

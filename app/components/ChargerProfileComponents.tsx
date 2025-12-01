@@ -1,10 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Card from "@/app/components/Card";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 import DropdownFilter from "./DropdownFilter"; // Assuming path is correct
 import { EvChargerIcon } from "lucide-react";
+import Performance from "./Performance";
+import ChargerHealthSection from "./ChargerHealthSection";
+import StakeholderInformationSection from "./StakeHolderInfo";
+import ChargerLogsSection from "./ChargingLogsSection";
 
 // --- Interfaces for Mock Data ---
 interface IConnectorData {
@@ -51,8 +55,8 @@ export const InfoCard: React.FC<{
 
   return (
     <div className={`p-1 ${className}`}>
-      <h1 className="font-semibold text-gray-300 text-sm">{label}</h1>
-      <p className={`text-white text-base ${colorClass}`}>{value}</p>
+      <h1 className="font-bold text-gray-300 text-md">{label}</h1>
+      <p className={`text-gray-100 text-base ${colorClass}`}>{value}</p>
     </div>
   );
 };
@@ -111,32 +115,15 @@ export const ConnectorBlock: React.FC<{ data: IConnectorData }> = ({
 
 // --- 3. Placeholder for Sub-Sections (Performance, Health, etc.) ---
 export const SubSectionContent: React.FC<{ title: string }> = ({ title }) => {
-  const [dateRange, setDateRange] = useState("Daily");
+  switch (title) {
+    case "performance":
+      return <Performance />;
+    case "health":
+      return <ChargerHealthSection />;
+    case "stakeholder":
+      return <StakeholderInformationSection />;
 
-  return (
-    <Card title={title} className="p-4 mt-4 min-h-[300px]">
-      {/* Dynamic Filter Row */}
-      <div className="flex flex-wrap items-center gap-4 mb-4 border-b border-gray-700 pb-3">
-        <h4 className="text-white font-semibold">Performance</h4>
-        <div className="flex items-center gap-2 ml-auto">
-          <DropdownFilter
-            placeholder={dateRange}
-            selectedValue={dateRange}
-            onChange={setDateRange}
-            className="h-10 w-24"
-            options={[{ label: "Daily", value: "Daily" }]}
-          />
-          <button className="h-10 px-4 rounded-xl text-white font-semibold bg-red-700">
-            Search
-          </button>
-          <button className="h-10 w-10 rounded-xl bg-white text-black flex items-center justify-center">
-            <ArrowDownTrayIcon className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-      <p className="text-gray-500">
-        Content for {title} (e.g., Uptime Graphs or Log Table)
-      </p>
-    </Card>
-  );
+    case "logs":
+      return <ChargerLogsSection />;
+  }
 };

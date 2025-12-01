@@ -1,0 +1,19 @@
+.ag-theme-dabas {
+  --ag-background-color: #6d2021;
+  --ag-header-background-color: #b22828;
+  --ag-odd-row-background-color: #9d3536;
+  --ag-even-row-background-color: #6d2021;
+
+  --ag-header-text-color: #ffffff;
+  --ag-font-size: 13px;
+  --ag-foreground-color: #ffffff;
+
+  --ag-row-hover-color: rgba(178, 40, 40, 0.7);
+
+  /* Border + Grid Colors */
+  --ag-border-color: #4c1617;
+  --ag-row-border-color: #4c1617;
+
+  /* Sorting icons */
+  --ag-icon-color: #ffffff;
+}
