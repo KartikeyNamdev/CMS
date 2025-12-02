@@ -6,13 +6,13 @@ import { useState } from "react";
 // Mock Data structure based on the chart shape (Weeks 31-36)
 const chartData = [
   { date: "31", sessions: 0.2 },
-  { date: "32", sessions: 2.5 },
-  { date: "33", sessions: 3.0 },
-  { date: "34", sessions: 4.5 },
-  { date: "35", sessions: 6.0 },
-  { date: "36", sessions: 7.5 },
-  { date: "37", sessions: 7.8 },
-  { date: "38", sessions: 8.0 },
+  { date: "32", sessions: 5 },
+  { date: "33", sessions: 10 },
+  { date: "34", sessions: 16 },
+  { date: "35", sessions: 1 },
+  { date: "36", sessions: 20 },
+  { date: "37", sessions: 23 },
+  { date: "38", sessions: 25 },
 ];
 
 const ChargingSessionsChart = () => {
@@ -48,16 +48,16 @@ const ChargingSessionsChart = () => {
       {
         type: "category",
         position: "bottom",
-        title: { text: "Date", color: "white" },
-        label: { color: "white" },
+        title: { text: "Date", color: "black" },
+        label: { color: "black" },
         line: { stroke: "#374151" },
         gridLine: { style: [{ stroke: "transparent" }] },
       },
       {
         type: "number",
         position: "left",
-        title: { text: "No. of Charging Sessions", color: "white" },
-        label: { color: "white" },
+        title: { text: "No. of Charging Sessions", color: "black" },
+        label: { color: "black" },
         line: { stroke: "#374151" },
         gridLine: {
           style: [

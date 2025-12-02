@@ -37,18 +37,19 @@ export default function MultipleSelectCheckmarks({
   return (
     <FormControl
       fullWidth
-      className="text-white"
-      sx={{ maxWidth: "280px", minWidth: "100px" }}
+      className="text-black"
+      sx={{ maxWidth: "280px", minWidth: "100px", border: "black" }}
     >
       <InputLabel
         id="checkbox-select-label"
         sx={{
-          color: "white !important",
+          color: "black !important",
+          border: "black",
           "&.Mui-focused": {
-            color: "white !important",
+            color: "black !important",
           },
           "&.MuiInputLabel-shrink": {
-            color: "white !important",
+            color: "black !important",
           },
         }}
       >
@@ -67,7 +68,7 @@ export default function MultipleSelectCheckmarks({
           backgroundColor: "transparent",
           borderRadius: "8px",
           height: "48px",
-          color: "white",
+          color: "black",
 
           ".MuiOutlinedInput-notchedOutline": {
             borderColor: "rgba(255, 255, 255, 0.2)",
@@ -76,7 +77,7 @@ export default function MultipleSelectCheckmarks({
             borderColor: "rgba(255, 255, 255, 0.35)",
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#ff3232",
+            borderColor: "rgba(255, 255, 255, 0.2)",
             borderWidth: "1.5px",
           },
 
@@ -90,7 +91,7 @@ export default function MultipleSelectCheckmarks({
           },
 
           ".MuiSelect-icon": {
-            color: "white",
+            color: "black",
           },
         }}
       >
@@ -114,9 +115,9 @@ export default function MultipleSelectCheckmarks({
             <Checkbox
               checked={personName.includes(name)}
               sx={{
-                color: "white",
+                color: "black",
                 "&.Mui-checked": {
-                  color: "white",
+                  color: "black",
                 },
               }}
             />
@@ -124,7 +125,7 @@ export default function MultipleSelectCheckmarks({
               primary={name}
               sx={{
                 "& .MuiTypography-root": {
-                  color: "white",
+                  color: "black",
                 },
               }}
             />

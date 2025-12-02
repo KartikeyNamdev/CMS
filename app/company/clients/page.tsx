@@ -17,6 +17,7 @@ const clientTypeOptions = [
 const ClientPage = () => {
   const [clientName, setClientName] = useState("");
   const [clientType, setClientType] = useState("");
+  // const { stats } = useCompanySectionHooks();
 
   // State for whether data is loaded (currently false to show "No Data Found!")
   const [hasData] = useState(false);
@@ -30,7 +31,7 @@ const ClientPage = () => {
       {/* --- ROW 1: HEADER AND STATUS --- */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-gray-400 text-sm">
-          <span className="text-white font-semibold">IST +05:30</span> | INR
+          <span className="text-gray-700 font-semibold">IST +05:30</span> | INR
         </div>
       </div>
 
@@ -66,7 +67,7 @@ const ClientPage = () => {
         {/* Right Side: Action Buttons */}
         <div className="flex gap-4">
           <button className="h-12 px-4 rounded-xl text-white bg-white/10 hover:bg-white/20 transition-colors shadow-md border border-white/20 flex items-center gap-2">
-            <ArrowDownTrayIcon className="w-5 h-5" />
+            <ArrowDownTrayIcon className="w-5 h-5 text-black" />
           </button>
 
           <Link href={"/company/clients/new"}>
@@ -84,7 +85,7 @@ const ClientPage = () => {
       {/* --- ROW 3: CONTENT AREA --- */}
       <div className="mt-12 text-center">
         {!hasData ? (
-          <p className="text-gray-200 text-xl">No Data Found!</p>
+          <p className="text-gray-600 text-xl">No Data Found!</p>
         ) : (
           <div className="text-white">
             {/* Client table/grid will go here */}

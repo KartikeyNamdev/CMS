@@ -59,7 +59,7 @@ const generateChartConfig = (data: typeof chartData, titleEnabled: boolean) => {
         display: true,
         position: "top" as const,
         labels: {
-          color: "white",
+          color: "black",
           usePointStyle: true,
           boxWidth: 10,
         },
@@ -67,7 +67,7 @@ const generateChartConfig = (data: typeof chartData, titleEnabled: boolean) => {
       title: {
         display: titleEnabled,
         text: "Transaction Unit",
-        color: "white",
+        color: "black",
         font: { size: 18, weight: "bold" },
         padding: { top: 10, bottom: 20 },
       },
@@ -79,7 +79,7 @@ const generateChartConfig = (data: typeof chartData, titleEnabled: boolean) => {
     scales: {
       x: {
         type: "category" as const,
-        ticks: { color: "white" },
+        ticks: { color: "black" },
         grid: { display: false },
         title: { display: true, text: "Month", color: "#9CA3AF" },
         border: { color: "#374151" },
@@ -89,7 +89,7 @@ const generateChartConfig = (data: typeof chartData, titleEnabled: boolean) => {
         min: 0,
         max: 9,
         ticks: {
-          color: "white",
+          color: "black",
         },
         grid: {
           color: "rgba(55, 65, 81, 0.5)",

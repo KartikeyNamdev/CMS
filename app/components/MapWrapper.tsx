@@ -16,7 +16,7 @@ const Map = dynamic(
 
 export default function StationMapPage() {
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-full p-6 py-10 bg-background">
       <Map />
     </div>
   );

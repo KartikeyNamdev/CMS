@@ -52,7 +52,7 @@ const SourceTypeOptions = [
     label: "OCPI",
   },
 ];
-export const Dashboard = () => {
+export const Home = () => {
   return (
     <div className="w-full p-6 lg:px-40 min-h-screen">
       {/* --- ROW 2: FILTERS AND ACTIONS --- */}
@@ -107,20 +107,22 @@ export const Dashboard = () => {
             onClose={() => {}}
           />
           <button className="h-12 px-4 rounded-xl text-white bg-white/10 hover:bg-white/20 transition-colors shadow-md border border-white/20 flex items-center gap-2">
-            <ArrowDownTrayIcon className="w-5 h-5" />
+            <ArrowDownTrayIcon className="w-5 h-5 text-black" />
           </button>
-          <MultipleSelectCheckmarks
-            label="Column"
-            data={[
-              "Spoc details",
-              "Parking fees",
-              "Connection Type",
-              "Zone",
-              "Guard details",
-              "CCTV",
-              "Internet Connection Type",
-            ]}
-          />
+          <div className="border border-gray-400 rounded-2xl">
+            <MultipleSelectCheckmarks
+              label="Column"
+              data={[
+                "Spoc details",
+                "Parking fees",
+                "Connection Type",
+                "Zone",
+                "Guard details",
+                "CCTV",
+                "Internet Connection Type",
+              ]}
+            />
+          </div>
 
           <Link href={"/charger/station/new"}>
             <button
@@ -138,4 +140,4 @@ export const Dashboard = () => {
     </div>
   );
 };
-export default Dashboard;
+export default Home;

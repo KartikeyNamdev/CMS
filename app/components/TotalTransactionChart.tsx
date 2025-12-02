@@ -32,7 +32,7 @@ const TotalTransactionValue = () => {
         // Labels inside the bars (e.g., "49M")
         label: {
           enabled: true,
-          color: "black", // Dark text inside red bars for contrast
+          color: "white", // Dark text inside red bars for contrast
           formatter: ({ datum }: { datum: { label: string } }) => datum.label,
           fontSize: 10,
         },
@@ -57,10 +57,10 @@ const TotalTransactionValue = () => {
         position: "bottom" as const,
         title: {
           text: "week",
-          color: "#9CA3AF", // Gray text
+          color: "#000000", // Gray text
         },
         label: {
-          color: "white",
+          color: "black",
         },
         line: {
           stroke: "#374151", // Dark gray axis line
@@ -74,7 +74,7 @@ const TotalTransactionValue = () => {
         position: "left" as const,
         title: {
           text: "Total transaction value",
-          color: "#9CA3AF", // Gray text
+          color: "#000000", // Gray text
         },
         label: {
           color: "white",

@@ -33,8 +33,8 @@ const RevenueDonut = () => {
         ],
         // Stroke (Border) colors
         strokes: [
-          "white", // White border around segments
-          "white",
+          // "black", // black border around segments
+          // "black",
         ],
         strokeWidth: 2,
 
@@ -75,7 +75,7 @@ const RevenueDonut = () => {
       position: "bottom" as const,
       item: {
         label: {
-          color: "white", // White text
+          color: "black", // White text
           fontSize: 14,
         },
         marker: {
@@ -89,14 +89,6 @@ const RevenueDonut = () => {
 
   return (
     <div className="h-72 w-full relative">
-      {/* 5. Dotted Circle Overlay (CSS) 
-          The screenshot has a dotted circle INSIDE the donut.
-          We can achieve this with a simple absolute positioned div.
-      */}
-      {/* <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-32 h-32 rounded-full border-2 border-dashed border-gray-500/50" />
-      </div> */}
-
       <AgCharts options={chartOptions} />
     </div>
   );

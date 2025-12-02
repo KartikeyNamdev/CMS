@@ -32,16 +32,16 @@ const UnitsChart = () => {
           "#fbced5", // Captive (Light Pink)
         ],
         // Stroke (Border) colors
-        strokes: ["#fbced5", "#fbced5"],
+        strokes: ["#b22828", "#fbced5"],
 
-        strokeWidth: 4, // Increased stroke width to create the visual separation
+        strokeWidth: 2, // Increased stroke width to create the visual separation
 
         // Labels inside the segments (e.g., "80%", "20%")
         sectorLabel: {
           enabled: true,
-          color: "white", // White text for 80% and 20%
+          color: "#C83B3B", // Red text for 60%
           fontWeight: "bold",
-          fontSize: 16,
+          fontSize: 14,
           formatter: ({ datum }: { datum: { count: string } }) => {
             return `${datum.count}%`;
           },
@@ -58,19 +58,19 @@ const UnitsChart = () => {
       position: "bottom" as const,
       item: {
         label: {
-          color: "white", // White text
+          color: "black", // White text
           fontSize: 14,
         },
         marker: {
-          shape: "square" as const, // Using square markers for visual distinction
+          shape: "circle" as const,
+          size: 10,
         },
-        paddingX: 20,
+        paddingX: 20, // Spacing between items
       },
     },
   });
-
   return (
-    <div className="h-72 w-full">
+    <div className="h-72 w-full relative">
       <AgCharts options={chartOptions} />
     </div>
   );

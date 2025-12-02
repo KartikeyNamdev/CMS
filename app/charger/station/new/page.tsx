@@ -189,11 +189,11 @@ export const AddChargerForm = () => {
 
   return (
     <div className="w-full p-16 lg:px-66 min-h-screen">
-      <Card title={null} className="p-8 bg-black/30">
+      <Card title={null} className="p-8 bg-gray-200">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* --- 1. CHARGER LOCATION DETAILS --- */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            <h2 className="text-white font-bold text-lg md:col-span-2 border-b border-gray-700 pb-2">
+            <h2 className="text-gray-700 font-bold text-lg md:col-span-2 pb-4">
               Location & Address
             </h2>
             <FormInput
@@ -275,8 +275,8 @@ export const AddChargerForm = () => {
           </div>
 
           {/* --- 2. CHARGER ACCESS & VISIBILITY (Remaining sections untouched) --- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-8 border-t border-gray-800">
-            <h2 className="text-white font-bold text-lg md:col-span-2 border-b border-gray-700 pb-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-8 ">
+            <h2 className="text-gray-700 font-bold text-lg md:col-span-2  pb-2">
               Access & Operational
             </h2>
 
@@ -341,11 +341,11 @@ export const AddChargerForm = () => {
             />
 
             <div className="flex flex-col gap-1 md:col-span-1">
-              <label className="text-gray-400 text-sm font-medium">
+              <label className="text-black text-sm font-medium">
                 Opening Hours <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-4 items-center">
-                <label className="flex items-center gap-2 text-white">
+                <label className="flex items-center gap-2 text-gray-700">
                   <input
                     type="radio"
                     name="opening_hours"
@@ -354,7 +354,7 @@ export const AddChargerForm = () => {
                   />
                   Custom
                 </label>
-                <label className="flex items-center gap-2 text-white">
+                <label className="flex items-center gap-2 text-gray-700">
                   <input
                     type="radio"
                     name="opening_hours"
@@ -369,8 +369,8 @@ export const AddChargerForm = () => {
           </div>
 
           {/* --- 3. SPOC (Single Point of Contact) DETAILS --- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-8 border-t border-gray-800">
-            <h2 className="text-white font-bold text-lg md:col-span-2 border-b border-gray-700 pb-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-8 ">
+            <h2 className="text-gray-700 font-bold text-lg md:col-span-2  pb-2">
               SPOC Details
             </h2>
 
@@ -387,8 +387,8 @@ export const AddChargerForm = () => {
           {/* </div> */}
 
           {/* --- 4. GUARD DETAILS --- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-8 border-t border-gray-800">
-            <h2 className="text-white font-bold text-lg md:col-span-2 border-b border-gray-700 pb-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-8 ">
+            <h2 className="text-gray-700 font-bold text-lg md:col-span-2  pb-2">
               Guard Details
             </h2>
 
@@ -406,8 +406,8 @@ export const AddChargerForm = () => {
           </div>
 
           {/* --- 5. PARKING & INTERNET DETAILS --- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-8 border-t border-gray-800">
-            <h2 className="text-white font-bold text-lg md:col-span-2 border-b border-gray-700 pb-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 pt-8 ">
+            <h2 className="text-gray-700 font-bold text-lg md:col-span-2  pb-2">
               Parking & Internet
             </h2>
 
@@ -436,7 +436,7 @@ export const AddChargerForm = () => {
           </div>
 
           {/* --- SUBMIT BUTTONS --- */}
-          <div className="pt-8 flex justify-end gap-4 border-t border-gray-800">
+          <div className="pt-8 flex justify-end gap-4 ">
             <button
               type="button"
               className="px-8 py-3 rounded-xl text-white font-semibold bg-gray-700 hover:bg-gray-600 transition-colors"

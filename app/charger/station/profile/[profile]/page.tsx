@@ -10,8 +10,8 @@ import { use, useState } from "react";
 export const Info = ({ label, value }: { label: string; value: string }) => {
   return (
     <div className="">
-      <h1 className="font-bold">{label}</h1>
-      <p className="text-gray-400">{value}</p>
+      <h1 className="font-semibold text-black">{label}</h1>
+      <p className="text-gray-700">{value}</p>
     </div>
   );
 };
@@ -45,7 +45,7 @@ export default function StationPage({
       // Active state styling (Red background)
       choosen === protocol
         ? "bg-red-600 text-white z-10"
-        : "bg-gray-800 text-gray-400 hover:bg-gray-700" // Inactive state (Dark background)
+        : "bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-black" // Inactive state (Dark background)
     }
     
     /* Rounded corners and border separation */
@@ -57,9 +57,9 @@ export default function StationPage({
     <div className="p-6 lg:px-60">
       <div className="flex gap-6 text-white  p-4">
         <Link href={"/charger/station"}>
-          <ArrowLeftIcon className="w-6 h-6 hover:text-gray-300" />
+          <ArrowLeftIcon className="w-6 h-6 text-gray-600 hover:text-black" />
         </Link>
-        <p className="text-2xl">Station Profile</p>
+        <p className="text-2xl text-black">Station Profile</p>
       </div>
       <Card>
         <div className="grid grid-cols-4 gap-4">

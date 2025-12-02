@@ -31,7 +31,7 @@ export const MultipeChoosableInput = ({
           // Custom styling for single select (h-10)
           className={`
             h-10 
-            bg-black/10 text-white border border-gray-700 p-2 
+            bg-black/10 text-gray-700 border border-gray-700 p-2 
             rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none 
             transition-colors
             appearance-none /* Ensure it renders as a dropdown with arrow */
@@ -48,7 +48,7 @@ export const MultipeChoosableInput = ({
               key={opt.value}
               value={opt.value}
               // Standard background color for options in dark mode
-              className="bg-[#0D0D0D] text-white"
+              className="bg-[#0D0D0D] text-gray-700"
             >
               {opt.label}
             </option>
@@ -63,7 +63,7 @@ export const MultipeChoosableInput = ({
         type={type}
         placeholder={placeholder}
         required={required}
-        className="h-10 bg-black/10 text-white placeholder-gray-600 border border-gray-700 p-3 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors"
+        className="h-10 bg-black/10 text-gray-700 placeholder-gray-600 border border-gray-700 p-3 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors"
       />
     );
   };
@@ -73,7 +73,7 @@ export const MultipeChoosableInput = ({
     if (radioName) {
       return (
         <div className="flex gap-4 items-center mt-2">
-          <label className="flex items-center gap-2 text-white">
+          <label className="flex items-center gap-2 text-gray-700">
             <input
               type="radio"
               name={radioName}
@@ -83,7 +83,7 @@ export const MultipeChoosableInput = ({
             />
             Yes
           </label>
-          <label className="flex items-center gap-2 text-white">
+          <label className="flex items-center gap-2 text-gray-700">
             <input
               type="radio"
               name={radioName}
@@ -101,7 +101,7 @@ export const MultipeChoosableInput = ({
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-gray-200 text-sm font-medium">
+      <label className="text-gray-800 text-sm font-medium">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       {radioName ? renderRadioOrCheckbox() : renderInput()}
@@ -123,17 +123,17 @@ const FormInput: React.FC<FormInputProps> = ({
       // Select Dropdown
       return (
         <select
-          className="h-10 bg-black/10 text-white border border-gray-700 p-2 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors appearance-none"
+          className="h-10 bg-white/30 text-gray-700 border border-gray-400 p-2 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors appearance-none"
           required={required}
         >
-          <option value="" disabled hidden>
+          <option value="" className="bg-white" disabled hidden>
             {placeholder}
           </option>
           {options.map((opt) => (
             <option
               key={opt.value}
               value={opt.value}
-              className="bg-[#0D0D0D] text-white"
+              className="bg-[#fffbfb] text-gray-700"
             >
               {opt.label}
             </option>
@@ -148,7 +148,7 @@ const FormInput: React.FC<FormInputProps> = ({
         type={type}
         placeholder={placeholder}
         required={required}
-        className="h-10 bg-black/10 text-white placeholder-gray-600 border border-gray-700 p-3 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors"
+        className="h-10 bg-white/40 text-gray-700 placeholder-gray-600 border border-gray-400 p-3 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors"
       />
     );
   };
@@ -158,7 +158,7 @@ const FormInput: React.FC<FormInputProps> = ({
     if (radioName) {
       return (
         <div className="flex gap-4 items-center mt-2">
-          <label className="flex items-center gap-2 text-white">
+          <label className="flex items-center gap-2 text-black">
             <input
               type="radio"
               name={radioName}
@@ -168,7 +168,7 @@ const FormInput: React.FC<FormInputProps> = ({
             />
             Yes
           </label>
-          <label className="flex items-center gap-2 text-white">
+          <label className="flex items-center gap-2 text-black">
             <input
               type="radio"
               name={radioName}
@@ -186,7 +186,7 @@ const FormInput: React.FC<FormInputProps> = ({
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-gray-200 text-sm font-medium">
+      <label className="text-gray-800 text-sm font-medium">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       {radioName ? renderRadioOrCheckbox() : renderInput()}

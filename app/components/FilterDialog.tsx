@@ -31,7 +31,7 @@ function FilterDialog({
 }) {
   return (
     <Dialog>
-      <form className="h-full">
+      <form className="h-full border border-white">
         <DialogTrigger asChild className="h-12 w-12">
           {/* Trigger Button (using h-10 w-10 for consistency) */}
           <Button variant="outline" className="h-12 w-12 p-0">
@@ -42,15 +42,16 @@ function FilterDialog({
         {/* --- SCROLLING FIXES APPLIED HERE --- */}
         <DialogContent
           className="
-            sm:max-w-[425px] rounded-lg shadow-xl text-white border border-gray-600 border-opacity-30 
-            flex flex-col max-h-[60vh] 
-            /* Custom dark background styles */
-            bg-white/15 backdrop-filter backdrop-blur-md 
+            sm:max-w-[425px] rounded-lg shadow-xl 
+            flex flex-col max-h-[60vh]
+            bg-white/65 backdrop-filter backdrop-blur-md 
           "
         >
           <DialogHeader className="flex">
-            <DialogTitle className="text-white text-xl">{title}</DialogTitle>
-            <DialogDescription className="flex border-b border-gray-700 pb-2"></DialogDescription>
+            <DialogTitle className="text-gray-700 text-xl text-bold">
+              {title}
+            </DialogTitle>
+            <DialogDescription className="flex border-b border-gray-800 pb-2"></DialogDescription>
           </DialogHeader>
 
           {/* --- SCROLLABLE CONTENT AREA --- */}
@@ -60,7 +61,7 @@ function FilterDialog({
               const uniqueId = `${"field"}-${idx}`;
               return (
                 <div className="flex justify-between pt-2 gap-3" key={uniqueId}>
-                  <Label htmlFor={uniqueId} className="text-gray-200">
+                  <Label htmlFor={uniqueId} className="text-gray-700 text-bold">
                     {field.label}
                   </Label>
                   <SlideBtn />
@@ -69,7 +70,7 @@ function FilterDialog({
             })}
           </div>
 
-          <DialogFooter className="mt-4 pt-4 border-t border-gray-700/50">
+          <DialogFooter className="mt-4 pt-4 border-t border-gray-800">
             <DialogClose asChild>
               <Button
                 onClick={onClose}

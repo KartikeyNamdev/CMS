@@ -103,9 +103,11 @@ const ADD_ADMIN_FIELDS: DialogField[] = [
 
 export const AddAdminDialog = ({
   triggerButton,
+  open,
   onClose,
 }: {
   triggerButton: React.ReactNode;
+  open?: boolean;
   onClose?: () => void;
 }) => (
   <BaseDialog
@@ -126,9 +128,11 @@ const ADD_GROUP_FIELDS: DialogField[] = [
 
 export const AddGroupDialog = ({
   triggerButton,
+  open,
   onClose,
 }: {
   triggerButton: React.ReactNode;
+  open?: boolean;
   onClose?: () => void;
 }) => (
   <BaseDialog

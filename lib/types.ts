@@ -24,3 +24,21 @@ interface ChargerLog {
   responsePayload: object;
   responseTimestamp: string;
 }
+export interface ChargingSession {
+  bookingId: string;
+  chargerName: string;
+  platform: string;
+  startDate: string;
+  stopDate: string;
+  updatedAt: string;
+  promo: string;
+  price: number;
+}
+
+export interface ChargingColumn {
+  headerName: string;
+  field?: string;
+  width?: number;
+  minWidth?: number;
+  cellRenderer?: unknown; // AG Grid only accepts `any` here
+}

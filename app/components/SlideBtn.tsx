@@ -4,7 +4,7 @@ const SlideBtn = ({}) => {
       <input type="checkbox" value="" className="sr-only peer" />
       <div
         className="
-          relative w-10 h-6 bg-gray-700 
+          relative w-10 h-6 bg-gray-400 
           peer-focus:outline-none peer-focus:ring-1 peer-focus:ring-green-200 
           rounded-full peer 
           

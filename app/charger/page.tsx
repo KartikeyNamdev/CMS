@@ -19,7 +19,7 @@ export const Dashboard = () => {
   return (
     <div className="w-full p-6 lg:p-20 lg:px-65 min-h-screen justify-center">
       {/* Header/Status Row */}
-      <div className="mb-6 text-gray-400 text-sm">
+      <div className="mb-6 text-gray-700 text-sm">
         Last refreshed at: 19 November 2025, 16:44 | Pluginp:{" "}
         <span className="text-green-400 font-semibold">OPO</span>
       </div>
@@ -38,7 +38,7 @@ export const Dashboard = () => {
       <div className="mb-6 ">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8 text-sm text-gray-300">
           <div className="flex gap-4 flex-col">
-            <h1 className="text-xl  text-semibold ">From </h1>
+            <h1 className="text-xl  text-semibold text-gray-700">From </h1>
             <div className="relative w-20 p-6 flex items-center h-12 bg-white rounded-xl shadow-md min-w-[200px] text-gray-400">
               <input
                 type="date"
@@ -50,7 +50,7 @@ export const Dashboard = () => {
             </div>
           </div>
           <div className="flex gap-4 flex-col">
-            <h1 className="text-xl  text-semibold">To </h1>
+            <h1 className="text-xl  text-semibold text-gray-700">To </h1>
             <div className="relative w-20 gap-10 p-6  flex items-center h-12 bg-white rounded-xl shadow-md min-w-[200px] text-gray-400">
               <input
                 type="date"
@@ -75,7 +75,7 @@ export const Dashboard = () => {
         </div>
       </div>
       {/* --- ROW 3 --- */}
-      <Card title="Units" className="col-span-1 max-w-[800px]">
+      <Card title="Charging Sessions" className="col-span-1 max-w-full px-6">
         <div className="h-72 w-full flex items-center justify-center">
           <ChargingSessionsChart />
         </div>

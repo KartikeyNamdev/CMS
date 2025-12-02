@@ -71,7 +71,7 @@ const TransactionDonut = () => {
       position: "bottom" as const, // At the bottom
       item: {
         label: {
-          color: "white", // White text
+          color: "black", // White text
         },
         marker: {
           shape: "circle" as const, // Circular markers

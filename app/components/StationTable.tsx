@@ -82,7 +82,7 @@ const URLRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
   return (
     <Link
       href={url}
-      className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
+      className="text-[#1f51ff] hover:text-[#002fd8] hover:underline font-medium transition-colors"
     >
       View Details
     </Link>
@@ -91,9 +91,9 @@ const URLRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
 
 // Custom Cell Renderer for Actions (Placeholder)
 const ActionsRenderer = () => (
-  <div className="flex items-center justify-center h-full text-white text-sm">
+  <div className="flex items-center justify-center h-full text-black text-sm">
     <button
-      className="text-red-300 hover:to-white font-medium"
+      className="text-red-500 hover:to-black font-medium"
       onClick={() => {
         console.log("Hello");
       }}
@@ -101,7 +101,7 @@ const ActionsRenderer = () => (
       Edit
     </button>
     <span className="text-gray-500 mx-2">|</span>
-    <button className="text-red-300 hover:to-white font-medium">Delete</button>
+    <button className="text-red-500 hover:to-black font-medium">Delete</button>
   </div>
 );
 
@@ -116,7 +116,7 @@ const NameRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
     <div className="flex items-center justify-start h-full text-sm text-blue-400">
       <Link
         href={`/charger/station/profile/${name}`}
-        className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
+        className="text-[#1f51ff] hover:text-[#0031e3] hover:underline font-medium transition-colors"
       >
         {name}
       </Link>
@@ -195,7 +195,7 @@ const StationTable = () => {
       cellStyle: () => ({
         display: "flex",
         alignItems: "center",
-        color: "white",
+        color: "black",
         backgroundColor: "transparent",
       }),
       headerClass: "text-white bg-[#9d3536] font-bold",
@@ -210,12 +210,12 @@ const StationTable = () => {
         .custom-dabas-theme {
           --ag-background-color: transparent;
           --ag-header-background-color: #6d2021;
-          --ag-row-hover-color: rgba(178, 40, 40, 0.7);
-          --ag-border-color: #444;
-          --ag-foreground-color: white;
+          --ag-row-hover-color: rgba(255, 142, 142, 0.7);
+          --ag-border-color: #8f8e8e;
+          --ag-foreground-color: black;
           --ag-font-size: 14px;
-          --ag-header-foreground-color: white;
-          --ag-row-border-color: #333;
+          --ag-header-foreground-color: black;
+          --ag-row-border-color: #7d7d7d;
           --ag-row-border-style: none;
         }
 
@@ -247,7 +247,7 @@ const StationTable = () => {
         }
 
         .custom-dabas-theme .ag-paging-panel {
-          color: white;
+          color: black;
           background-color: transparent;
         }
       `}</style>
@@ -270,7 +270,7 @@ const StationTable = () => {
           console.log(`New Cell Value: ${event.value}`)
         }
       />
-      <div className="text-center text-white text-sm mt-3">
+      <div className="text-center text-black text-sm mt-3">
         Showing 1 - {rowData.length} of {rowData.length} Items
       </div>
     </div>

@@ -49,19 +49,19 @@ const TransactionRevenue = () => {
         position: "bottom" as const,
         title: {
           text: "week",
-          color: "#9CA3AF",
+          color: "#000000",
         },
         label: {
-          color: "white",
+          color: "black",
         },
         line: {
-          stroke: "#374151",
+          stroke: "#000000",
         },
         // Vertical Grid Lines (visible in your screenshot)
         gridLine: {
           style: [
             {
-              stroke: "#374151",
+              stroke: "#000000",
               lineDash: [4, 4],
             },
           ],
@@ -72,13 +72,13 @@ const TransactionRevenue = () => {
         position: "left" as const,
         title: {
           text: "Total transaction Revenue",
-          color: "white",
+          color: "black",
         },
         label: {
-          color: "white",
+          color: "black",
         },
         line: {
-          stroke: "#374151",
+          stroke: "#000000",
         },
         // Hide Horizontal Grid Lines
         gridLine: {

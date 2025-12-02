@@ -102,28 +102,28 @@ const Map = () => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="bg-black/20 backdrop-blur p-4 border-b border-gray-700">
+      <div className="bg-background/95 backdrop-blur-2xl p-4 border-b border-gray-300">
         <div className="flex gap-3 items-end">
           <div className="flex-1">
-            <label className="block text-sm text-gray-300 mb-1">Latitude</label>
+            <label className="block text-sm text-gray-700 mb-1">Latitude</label>
             <input
               type="text"
               value={latInput}
               onChange={(e) => setLatInput(e.target.value)}
-              className="w-full px-3 py-2 bg-black/20 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-black/10 border border-gray-600 rounded text-black text-sm focus:outline-none focus:border-red-500"
               placeholder="Enter latitude"
             />
           </div>
 
           <div className="flex-1">
-            <label className="block text-sm text-gray-300 mb-1">
+            <label className="block text-sm text-gray-700 mb-1">
               Longitude
             </label>
             <input
               type="text"
               value={lngInput}
               onChange={(e) => setLngInput(e.target.value)}
-              className="w-full px-3 py-2 bg-black/20 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-black/10 border border-gray-600 rounded text-black text-sm focus:outline-none focus:border-red-500"
               placeholder="Enter longitude"
             />
           </div>

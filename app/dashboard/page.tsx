@@ -41,7 +41,7 @@ export const Dashboard = () => {
     // Padding should be uniform (p-6 or lg:p-10)
     <div className="p-6 lg:px-60 ">
       {/* --- FILTER BAR (Responsive) --- */}
-      <div className="flex flex-wrap items-end gap-4 mb-8 border-b border-gray-700 pb-4">
+      <div className="flex flex-wrap items-end gap-4 mb-6 border-b border-gray-500 pb-6">
         {/* Dropdown Filters (Consistent width and height) */}
         <DropdownFilter
           placeholder="State"
@@ -70,7 +70,7 @@ export const Dashboard = () => {
         <div
           className={`relative flex items-center bg-white rounded-xl shadow-md ${INPUT_WIDTH_CLASS} ${ITEM_HEIGHT_CLASS} px-3`}
         >
-          <CalendarIcon className="w-5 h-5 text-gray-500 mr-2" />
+          <CalendarIcon className="w-5 h-5 text-gray-600 mr-2" />
           <input
             type="text"
             placeholder="Choose Date"
@@ -78,7 +78,7 @@ export const Dashboard = () => {
             onFocus={(e) => (e.target.type = "date")} // Show date picker on focus
             onBlur={(e) => (e.target.type = "text")} // Hide date picker on blur
             onChange={(e) => setDateRange(e.target.value)}
-            className="w-full h-full text-black bg-transparent focus:outline-none placeholder-gray-500 text-sm"
+            className="w-full h-full text-gray-700 bg-transparent focus:outline-none placeholder-gray-500 text-sm"
           />
         </div>
 

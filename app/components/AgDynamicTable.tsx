@@ -17,14 +17,19 @@ export default function AgDynamicTable({ columns, rowData }) {
   );
 
   return (
-    <div style={{ height: 500, width: "100%" }}>
+    <div
+      className="ag-theme-quartz-dark border border-gray-700 rounded-xl mt-6"
+      style={{ height: 500, width: "100%" }}
+    >
       <AgGridReact
-        theme={themeDabas} // ⭐ NEW WAY
+        theme={themeDabas}
         columnDefs={columns}
         rowData={rowData}
         defaultColDef={defaultColDef}
-        pagination={true}
+        pagination
         paginationPageSize={10}
+        rowHeight={45}
+        headerHeight={48}
       />
     </div>
   );

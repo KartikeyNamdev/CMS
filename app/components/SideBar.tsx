@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,56 +23,41 @@ export const DashBoardSideBar = ({
 
   return (
     <aside
-      className={`
-        group fixed left-0 top-1/2 -translate-y-1/2
-        z-50
-        w-16 hover:w-52
-        bg-black/50 bg-opacity-20 backdrop-filter backdrop-blur-lg
-        border rounded-r-2xl border-gray-700 border-opacity-30
-        transition-all duration-300 ease-in-out
-        ${className}
-      `}
-      style={{
-        height: "fit-content",
-      }}
+      className={`group fixed left-0 top-1/2 -translate-y-1/2
+                  z-50 w-16 hover:w-54 
+                  rounded-r-2xl bg-black/9
+                   backdrop-blur-lg
+                  transition-all duration-500 ease-in-out
+                  ${className}`}
     >
       <nav className="flex flex-col gap-2 p-2">
         {items.map((item) => {
           const Icon = item.icon;
 
-          // Check if the current path starts with the link href
-          const isActive =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname?.endsWith(item.href);
+          // simple, reliable active state
+          const isActive = pathname?.endsWith(item.href);
 
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={`
-                flex items-center h-12 px-3 rounded-lg
-                font-medium transition-all duration-200 overflow-hidden
-                whitespace-nowrap
-                ${
-                  isActive
-                    ? "bg-[#b22828] hover:bg-red-500 text-white shadow-lg shadow-red-900/20"
-                    : "text-gray-400 hover:bg-white/5 hover:text-white"
-                }
-              `}
+              className={`flex items-center h-12 px-3 rounded-lg 
+                          font-medium transition-all duration-200 overflow-hidden
+                          whitespace-nowrap
+                          ${
+                            isActive
+                              ? "bg-[#b22828] text-white shadow-lg shadow-red-900/20"
+                              : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
+                          }`}
             >
-              {/* Icon - Always visible */}
               <div className="min-w-6 flex items-center justify-center">
                 <Icon className="w-6 h-6" />
               </div>
 
-              {/* Text - Hides when collapsed, Shows on hover */}
               <span
-                className={`
-                  ml-4 opacity-0 group-hover:opacity-100 
-                  transition-opacity duration-300 delay-75
-                  ${isActive ? "text-white" : ""}
-                `}
+                className={`ml-4 opacity-0 group-hover:opacity-100 
+                            transition-opacity duration-300 delay-75
+                            ${isActive ? "text-white" : ""}`}
               >
                 {item.name}
               </span>

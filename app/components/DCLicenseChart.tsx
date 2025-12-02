@@ -12,6 +12,7 @@ const DCLicenseChart = () => {
       { status: "Available DC License", count: 30 },
       { status: "Active DC License", count: 30 },
     ],
+
     series: [
       {
         type: "donut",
@@ -20,7 +21,7 @@ const DCLicenseChart = () => {
         innerRadiusRatio: 0.5,
         outerRadiusOffset: -10,
         fills: ["#E53935", "#FBCED5", "#2E2E2E"],
-        strokes: ["white", "white", "white"],
+        strokes: ["#E53935", "#FBCED5", "#2E2E2E"],
         strokeWidth: 2,
         sectorLabel: { enabled: false },
         calloutLabel: { enabled: false },
