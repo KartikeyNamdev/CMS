@@ -24,7 +24,7 @@ export const options = {
         stepSize: 1,
         callback: (value: number) => (value === 1 ? "1" : "0"),
       },
-      grid: { color: "rgba(255,255,255,0.1)" },
+      grid: { color: "rgba(255, 250, 250, 0.1)" },
     },
     x: {
       grid: { display: false },
@@ -53,7 +53,7 @@ export default function CustomBarChart({
 }) {
   return (
     <div className={className}>
-      <Bar data={{ labels, datasets }} options={options} />
+      <Bar className="bg-white" data={{ labels, datasets }} options={options} />
     </div>
   );
 }

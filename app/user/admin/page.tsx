@@ -235,7 +235,7 @@ const GroupsView = ({ setAddGroupOpen, isAddGroupOpen }) => {
   );
 
   return (
-    <div className="text-gray-400">
+    <div className="text-gray-600">
       <div className="mb-8 border-b border-gray-700 pb-4 flex flex-wrap justify-between gap-4">
         <div className="flex flex-wrap gap-4">
           <input

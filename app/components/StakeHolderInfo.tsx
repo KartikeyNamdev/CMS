@@ -18,14 +18,14 @@ export const StakeholderInformationSection = () => {
   } = useStakeholderInfo();
 
   return (
-    <Card className="p-6 mt-6 bg-black/40 border border-gray-800">
+    <Card className="p-6 mt-6 bg-black/40 border border-gray-300">
       {/* Title */}
-      <h2 className="text-xl font-bold text-white mb-6">
+      <h2 className="text-xl font-bold text-gray-700 mb-6">
         Stakeholder Information
       </h2>
 
       {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-gray-700 pb-3 mb-6">
+      <div className="flex items-center gap-6 border-b border-gray-300 pb-3 mb-6">
         {tabs.map((tab) => (
           <button
             key={tab}
@@ -36,7 +36,7 @@ export const StakeholderInformationSection = () => {
             className={`pb-2 text-sm font-semibold transition ${
               activeTab === tab
                 ? "text-red-500 border-b-2 border-red-500"
-                : "text-gray-400 hover:text-gray-200"
+                : "text-gray-500 hover:text-black"
             }`}
           >
             {tab}
@@ -44,7 +44,7 @@ export const StakeholderInformationSection = () => {
         ))}
 
         {/* Download */}
-        <button className="ml-auto bg-white/10 p-2 rounded-lg text-white border border-gray-700 hover:bg-white/20">
+        <button className="ml-auto bg-white/10 p-2 rounded-lg text-gray-700 border border-gray-400 hover:bg-white/20">
           ⬇️
         </button>
       </div>
@@ -62,7 +62,7 @@ export const StakeholderInformationSection = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="text-gray-300 border-b border-gray-700">
+                <tr className="text-gray-600 border-b border-gray-300">
                   <th className="py-3">Company Name</th>
                   <th className="py-3">Type</th>
                   <th className="py-3">Company Mapping Date</th>
@@ -79,7 +79,7 @@ export const StakeholderInformationSection = () => {
                 {paginatedRows.map((row, index) => (
                   <tr
                     key={index}
-                    className="border-b border-gray-800 hover:bg-white/5 text-gray-100"
+                    className="border-b border-gray-300 hover:bg-white/5 text-gray-600"
                   >
                     <td className="py-4">{row.name}</td>
                     <td className="py-4">{row.type}</td>
@@ -99,7 +99,7 @@ export const StakeholderInformationSection = () => {
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between mt-4 text-gray-300 text-sm">
+          <div className="flex items-center justify-between mt-4 text-gray-600 text-sm">
             {/* Rows per page */}
             <div className="flex items-center gap-2">
               Rows per page
@@ -109,7 +109,7 @@ export const StakeholderInformationSection = () => {
                   setRowsPerPage(Number(e.target.value));
                   goToPage(1);
                 }}
-                className="bg-white/10 text-white px-3 py-1 rounded border border-gray-700"
+                className="bg-white/10 text-gray-700 px-3 py-1 rounded"
               >
                 {[5, 10, 15, 20].map((num) => (
                   <option key={num} value={num} className="text-black">
@@ -136,7 +136,7 @@ export const StakeholderInformationSection = () => {
                 ‹
               </button>
 
-              <span className="px-3 py-1 bg-white/10 rounded border border-gray-700 text-white">
+              <span className="px-3 py-1 bg-white/10 rounded border border-gray-400 text-gray-700">
                 {page}
               </span>
 

@@ -5,9 +5,9 @@ import React, { useState } from "react";
 
 import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 import FilterDialog from "@/app/components/FilterDialog";
-import ChargerGrid from "@/app/components/ChargerTable";
+
 import DropdownFilter from "@/app/components/DropdownFilter";
-import AgDynamicTable from "@/app/components/AgDynamicTable";
+
 import OcpiLogsTable from "@/app/components/AdminAgTable";
 import OcppLogsTable from "@/app/components/OCPPLogsTable";
 
@@ -52,7 +52,7 @@ export const ProtocolSelector = () => {
       // Active state styling (Red background)
       choosen === protocol
         ? "bg-red-600 text-white z-10"
-        : "bg-gray-800 text-gray-400 hover:bg-gray-700" // Inactive state (Dark background)
+        : "bg-gray-200 text-gray-700 hover:bg-gray-400 hover:text-white" // Inactive state (Dark background)
     }
     
     /* Rounded corners and border separation */
@@ -66,7 +66,7 @@ export const ProtocolSelector = () => {
 
   return (
     <div className="p-6 lg:px-60 min-h-screen">
-      {/* Page Title */}\
+      {/* Page Title */}
       <div className="p-4">
         <div className="flex justify-between items-center mb-6">
           {/* --- SEGMENTED CONTROL BUTTONS --- */}

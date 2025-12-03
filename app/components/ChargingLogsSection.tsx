@@ -26,19 +26,19 @@ export const ChargerLogsSection = () => {
         json={drawerData}
       />
 
-      <Card className="p-6 mt-6 bg-black/40 border border-gray-800">
+      <Card className="p-6 mt-6 bg-black/40 border border-gray-300">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-white">Charger Logs</h2>
+          <h2 className="text-xl font-bold text-gray-700">Charger Logs</h2>
 
           <div className="flex items-center gap-3">
-            <button className="bg-white/10 p-2 rounded-lg border border-gray-700 text-gray-200 hover:bg-white/20">
+            <button className="bg-white/10 p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-white/20">
               ↻
             </button>
-            <button className="bg-white/10 p-2 rounded-lg border border-gray-700 text-gray-200 hover:bg-white/20">
+            <button className="bg-white/10 p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-white/20">
               ⚙️
             </button>
-            <button className="bg-white/10 p-2 rounded-lg border border-gray-700 text-gray-200 hover:bg-white/20">
+            <button className="bg-white/10 p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-white/20">
               ⬇️
             </button>
           </div>
@@ -46,7 +46,7 @@ export const ChargerLogsSection = () => {
 
         {/* Loading */}
         {loading && (
-          <div className="py-20 text-center text-gray-300">Loading logs…</div>
+          <div className="py-20 text-center text-gray-600">Loading logs…</div>
         )}
 
         {/* Table */}
@@ -54,7 +54,7 @@ export const ChargerLogsSection = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead>
-                <tr className="text-gray-300 border-b border-gray-700">
+                <tr className="text-gray-600 border-b border-gray-300">
                   <th className="py-3">Log ID</th>
                   <th className="py-3">OCPP ID</th>
                   <th className="py-3">Connector Name</th>
@@ -70,7 +70,7 @@ export const ChargerLogsSection = () => {
                 {logs.map((log: ChargerLog, index: number) => (
                   <tr
                     key={index}
-                    className="border-b border-gray-800 hover:bg-white/5 text-gray-100"
+                    className="border-b border-gray-300 hover:bg-white/5 text-gray-600"
                   >
                     <td className="py-4">{log.logId}</td>
                     <td className="py-4">{log.ocppId}</td>

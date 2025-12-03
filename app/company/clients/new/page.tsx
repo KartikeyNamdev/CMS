@@ -22,7 +22,7 @@ const FormInput: React.FC<FormInputProps> = ({
   required = true,
 }) => (
   <div className="flex flex-col gap-1">
-    <label className="text-gray-200 text-sm font-medium">
+    <label className="text-gray-700 text-sm font-medium">
       {label} {required && <span className="text-[#b22828]">*</span>}
     </label>
     <input
@@ -56,7 +56,7 @@ export const ClientForm: React.FC = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
       {/* Category Section (Spans 2 columns) */}
       <div className="md:col-span-2">
-        <label className="text-gray-200 text-sm font-medium block mb-2">
+        <label className="text-gray-700 text-sm font-medium block mb-2">
           Category <span className="text-[#b22828]">*</span>
         </label>
         <div className="flex gap-4">
@@ -67,7 +67,7 @@ export const ClientForm: React.FC = () => {
             className={`flex items-center gap-2 p-3 rounded-xl text-white text-sm font-semibold shadow-lg transition-colors ${
               category === "host"
                 ? "bg-[#b22828] hover:bg-red-600"
-                : "bg-gray-700 hover:bg-gray-600"
+                : "bg-gray-400 hover:bg-gray-600"
             }`}
           >
             <UserIcon className="w-5 h-5" /> Host
@@ -79,7 +79,7 @@ export const ClientForm: React.FC = () => {
             className={`flex items-center gap-2 p-3 rounded-xl text-white text-sm font-semibold shadow-lg transition-colors ${
               category === "investor"
                 ? "bg-[#b22828] hover:bg-red-600"
-                : "bg-gray-700 hover:bg-gray-600"
+                : "bg-gray-400 hover:bg-gray-600"
             }`}
           >
             <BriefcaseIcon className="w-5 h-5" /> Investor
@@ -105,7 +105,7 @@ export const ClientForm: React.FC = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
       {/* Category Section (Spans 2 columns) - Shows selected category */}
       <div className="md:col-span-2">
-        <label className="text-gray-200 text-sm font-medium block mb-2">
+        <label className="text-gray-700 text-sm font-medium block mb-2">
           Category <span className="text-[#b22828]">*</span>
         </label>
         <div className="flex gap-4">
@@ -158,7 +158,7 @@ export const ClientForm: React.FC = () => {
         title={null}
       >
         {/* NEW HEADER DESIGN */}
-        <div className="border-b border-gray-700 pb-6 mb-6">
+        <div className="border-b border-gray-400 pb-6 mb-6">
           {/* Title with Close Button */}
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-[#b22828] text-2xl font-bold pl-70">
@@ -168,7 +168,7 @@ export const ClientForm: React.FC = () => {
               onClick={() => {
                 redirect("/company/clients");
               }}
-              className="p-2 rounded-full bg-gray-700 hover:bg-[#b22828] transition-colors text-white"
+              className="p-2 rounded-full bg-gray-400 hover:bg-[#b22828] transition-colors text-white"
               type="button"
             >
               <XMarkIcon className="w-6 h-6" />
@@ -184,7 +184,7 @@ export const ClientForm: React.FC = () => {
                 className={`flex items-center justify-center w-10 h-10 rounded-full ${
                   currentStep === "client"
                     ? "bg-[#b22828] text-white"
-                    : "bg-gray-600 text-white"
+                    : "bg-gray-400 text-white"
                 } font-semibold text-lg`}
               >
                 1
@@ -209,14 +209,14 @@ export const ClientForm: React.FC = () => {
             <div className="flex items-center gap-8">
               <span
                 className={`text-base font-medium ${
-                  currentStep === "client" ? "text-white" : "text-gray-200"
+                  currentStep === "client" ? "text-white" : "text-gray-700"
                 }`}
               >
                 Client Details
               </span>
               <span
                 className={`text-base font-medium ${
-                  currentStep === "admin" ? "text-white" : "text-gray-200"
+                  currentStep === "admin" ? "text-white" : "text-gray-700"
                 }`}
               >
                 Admin Details

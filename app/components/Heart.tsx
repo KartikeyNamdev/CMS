@@ -7,30 +7,42 @@ import {
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/solid";
 import Image from "next/image";
-
-interface StationHealthMonitorProps {
-  stationId?: string;
-}
+import { useGetHeartbeat } from "@/hooks/useGetHeartBeat";
 
 export default function StationHealthMonitor({
   stationId,
-}: StationHealthMonitorProps) {
+}: {
+  stationId: string;
+}) {
+  const { response, loading } = useGetHeartbeat({ stationId: stationId });
+
   return (
     <div className="w-full p-6 lg:p-10 min-h-[500px] flex items-center justify-center bg-transparent">
       {/* --- Inner Container for reduced width and centering --- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-3xl lg:max-w-4xl mx-auto">
         {/* --- LEFT SECTION: HEART VISUAL --- */}
         <div className="flex flex-col items-center justify-center p-4">
-          <Image
-            src="/tb1.png"
-            alt="Beating Heart"
-            className="w-full max-w-sm h-auto heart-beat-animation"
-            width={100}
-            height={100}
-          />
+          {response?.visibilityStatus ? (
+            <Image
+              src="/tb1.png"
+              alt="Beating Heart"
+              className="w-full max-w-sm h-auto heart-beat-animation"
+              width={100}
+              height={100}
+            />
+          ) : (
+            <Image
+              src="/tb2.jpg"
+              alt="Stopped Heart"
+              className="w-full max-w-sm h-auto heart-beat-animation"
+              width={100}
+              height={100}
+            />
+          )}
+
           {/* Title below heart */}
           <h1 className="mt-6 text-xl lg:text-3xl font-extrabold tracking-tight bg-linear-to-tr from-gray-300 to-red-500 bg-clip-text text-transparent">
-            System Connected
+            {response?.visibilityStatus ? "System Connected" : "Disconnected"}
           </h1>
         </div>
 

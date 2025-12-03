@@ -12,6 +12,7 @@ import FilterDialog from "@/app/components/FilterDialog";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import StationTable from "@/app/components/StationTable";
+import AllChargersTable from "@/app/components/ChargerTable";
 
 // Mock Data Options (Updated to match screenshot needs)
 const ChargerFilterTypes = [
@@ -64,7 +65,7 @@ export const ChargersPage = () => {
       <div className="flex justify-between items-center mb-6">
         {/* Status Line */}
         <div className="text-gray-400 text-sm">
-          <span className="text-white font-semibold">IST +05:30</span> | INR
+          <span className="text-gray-600 font-semibold">IST +05:30</span> | INR
         </div>
       </div>
 
@@ -188,7 +189,7 @@ export const ChargersPage = () => {
         </div>
       </div>
 
-      <ChargerGrid />
+      <AllChargersTable />
     </div>
   );
 };

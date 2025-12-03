@@ -43,7 +43,7 @@ export const InfoCard: React.FC<{
   value: string;
   className?: string;
 }> = ({ label, value, className = "" }) => {
-  let colorClass = "text-gray-400";
+  let colorClass = "text-gray-500";
   if (label.includes("Operational Status") && value.includes("Active")) {
     colorClass = "text-green-500";
   } else if (
@@ -55,7 +55,9 @@ export const InfoCard: React.FC<{
 
   return (
     <div className={`p-1 ${className}`}>
-      <h1 className="font-bold text-gray-300 text-md">{label}</h1>
+      <h1 className="font-bold text-gray-600 text-md text-semibold ">
+        {label}
+      </h1>
       <p className={`text-gray-100 text-base ${colorClass}`}>{value}</p>
     </div>
   );
@@ -82,15 +84,15 @@ export const ConnectorBlock: React.FC<{ data: IConnectorData }> = ({
     <Card title={null} className={`p-4 ${bgColor} min-w-[280px]`}>
       <div className="flex items-center gap-3 mb-3 border-b border-gray-700 pb-2">
         <EvChargerIcon className={`w-6 h-6 ${iconColor}`} />
-        <h3 className="text-white font-bold">Connector {data.id}</h3>
+        <h3 className="text-gray-700 font-bold">Connector {data.id}</h3>
       </div>
 
       <div className="grid grid-cols-2 gap-y-2 text-sm">
         <p className="text-gray-400">Power Rating:</p>
-        <p className="text-white font-medium">{data.powerRating} kW</p>
+        <p className="text-gray-700 font-medium">{data.powerRating} kW</p>
 
         <p className="text-gray-400">Units Consumed:</p>
-        <p className="text-white font-medium">{data.unitsConsumed} kWh</p>
+        <p className="text-gray-700 font-medium">{data.unitsConsumed} kWh</p>
 
         <p className="text-gray-400">Info:</p>
         <p
@@ -102,7 +104,7 @@ export const ConnectorBlock: React.FC<{ data: IConnectorData }> = ({
         </p>
 
         <p className="text-gray-400">Error Code:</p>
-        <p className="text-white font-medium">{data.errorCode}</p>
+        <p className="text-gray-700 font-medium">{data.errorCode}</p>
 
         <p className="text-gray-400">Last Status:</p>
         <p className={`${iconColor} font-medium col-span-1`}>
@@ -122,7 +124,6 @@ export const SubSectionContent: React.FC<{ title: string }> = ({ title }) => {
       return <ChargerHealthSection />;
     case "stakeholder":
       return <StakeholderInformationSection />;
-
     case "logs":
       return <ChargerLogsSection />;
   }

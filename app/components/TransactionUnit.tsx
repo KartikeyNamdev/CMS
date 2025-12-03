@@ -64,13 +64,13 @@ const generateChartConfig = (data: typeof chartData, titleEnabled: boolean) => {
           boxWidth: 10,
         },
       },
-      title: {
-        display: titleEnabled,
-        text: "Transaction Unit",
-        color: "black",
-        font: { size: 18, weight: "bold" },
-        padding: { top: 10, bottom: 20 },
-      },
+      // title: {
+      //   display: titleEnabled,
+      //   text: "Transaction Unit",
+      //   color: "black",
+      //   font: { size: 18, weight: "bold" },
+      //   padding: { top: 10, bottom: 20 },
+      // },
       tooltip: {
         mode: "index" as const,
         intersect: false,

@@ -19,9 +19,7 @@ const internetOptions = [
 // --- Step 1: Charger Details Form Content ---
 const renderStepOne = (handleNext: () => void) => (
   <>
-    <h3 className="text-white text-xl font-bold mb-4 border-b border-gray-700 pb-2">
-      List A Charger
-    </h3>
+    <h3 className="text-black text-xl font-bold mb-4  pb-2">List A Charger</h3>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
       {/* 1. First Column */}
       <div className="space-y-6">
@@ -102,7 +100,7 @@ const renderStepOne = (handleNext: () => void) => (
 
         {/* Toggle 1: Auto Charge */}
         <div className="flex justify-between pt-2 gap-3 items-center">
-          <Label className="text-gray-200">Auto Charge</Label>
+          <Label className="text-gray-700">Auto Charge</Label>
           <SlideBtn />
         </div>
         <MultipeChoosableInput
@@ -153,7 +151,7 @@ const renderStepOne = (handleNext: () => void) => (
     </div>
 
     {/* Navigation Button */}
-    <div className="flex justify-end pt-8 border-t border-gray-700/50 mt-8">
+    <div className="flex justify-end pt-8  mt-8">
       <button
         type="button"
         onClick={handleNext}
@@ -171,9 +169,7 @@ const renderStepTwo = (
   handleSubmit: (e: React.FormEvent) => void
 ) => (
   <>
-    <h3 className="text-white text-xl font-bold mb-4 border-b border-gray-700 pb-2">
-      Deal Details
-    </h3>
+    <h3 className="text-black text-xl font-bold mb-4  pb-2">Deal Details</h3>
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Pricing and Ownership */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -216,7 +212,7 @@ const renderStepTwo = (
       </div>
 
       {/* Financial Structure */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 pt-8 border-t border-gray-800">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 pt-8 ">
         <MultipeChoosableInput
           label="Type Of Company Mapping"
           placeholder="Enter Type"
@@ -255,13 +251,13 @@ const renderStepTwo = (
       </div>
 
       {/* Navigation Buttons (Back & Submit) */}
-      <div className="flex justify-between pt-8 border-t border-gray-800">
+      <div className="flex justify-between pt-8 ">
         <button
           type="button"
           onClick={handleBack}
           className="px-6 py-3 rounded-xl text-white font-semibold bg-gray-700 hover:bg-gray-600 transition-colors flex items-center gap-2"
         >
-          <ArrowLeftIcon className="w-5 h-5" />
+          <ArrowLeftIcon className="w-5 h-5 text-white" />
           Back
         </button>
         <button
@@ -296,13 +292,13 @@ export const AddChargerForm = () => {
 
   return (
     <div className="w-full p-6 lg:px-72 min-h-screen">
-      <h1 className="text-white text-2xl font-bold mb-6 flex items-center justify-center">
+      <h1 className="text-black text-2xl font-bold mb-6 flex items-center justify-center flex-col gap-4">
         Add New Charger
         {/* Step Indicator */}
         <div className="flex items-center ml-4 text-sm text-gray-400">
           <span
             className={`w-6 h-6 rounded-full flex items-center justify-center font-bold ${
-              currentStep === 1 ? "bg-red-600 text-white" : "bg-gray-700"
+              currentStep === 1 ? "bg-red-600 text-white" : "bg-gray-300"
             }`}
           >
             1
@@ -310,7 +306,9 @@ export const AddChargerForm = () => {
           <span className="w-8 h-px bg-gray-700 mx-2"></span>
           <span
             className={`w-6 h-6 rounded-full flex items-center justify-center font-bold ${
-              currentStep === 2 ? "bg-red-600 text-white" : "bg-gray-700"
+              currentStep === 2
+                ? "bg-red-600 text-white"
+                : "bg-gray-400 text-white"
             }`}
           >
             2

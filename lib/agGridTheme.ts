@@ -1,12 +1,12 @@
 import { themeQuartz } from "ag-grid-community";
 
 export const themeDabas = themeQuartz.withParams({
-  backgroundColor: "#120000",
-  foregroundColor: "white",
+  backgroundColor: "#white",
+  foregroundColor: "black",
 
   headerBackgroundColor: "#b22828",
   headerTextColor: "white",
-
+  rowBorder: "#b22828",
   //   rowBackgroundColor: "#6d2021",
   //   rowAltBackgroundColor: "#9d3536",
 

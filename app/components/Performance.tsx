@@ -14,9 +14,9 @@ const Performance = () => {
   const ranges: UptimeRange[] = ["1M", "3M", "6M", "1Y", "YTD", "All"];
 
   return (
-    <Card title={null} className="p-6 mt-6 bg-black/40 border border-gray-800">
+    <Card title={null} className="p-6 mt-6  border border-gray-300 ">
       {/* TOP TABS */}
-      <div className="flex items-center gap-6 border-b border-gray-700 pb-3">
+      <div className="flex items-center gap-6 border-b border-gray-300 pb-3">
         <button className="text-[#b22828] font-semibold border-b-2 border-red-500 pb-2">
           Uptime
         </button>
@@ -26,23 +26,25 @@ const Performance = () => {
         {/* LEFT STATS */}
         <div className="space-y-4">
           <div className="bg-white/10 rounded-xl p-4">
-            <p className="text-gray-300 text-sm">Avg Uptime</p>
-            <h1 className="text-3xl font-bold text-white mt-2">96.21%</h1>
+            <p className="text-gray-900 text-sm">Avg Uptime</p>
+            <h1 className="text-3xl font-bold text-gray-700 mt-2">96.21%</h1>
           </div>
 
           <div className="bg-white/10 rounded-xl p-4">
-            <p className="text-gray-300 text-sm">Revenue</p>
-            <h1 className="text-2xl font-bold text-white mt-2">INR 45658.50</h1>
+            <p className="text-gray-900 text-sm">Revenue</p>
+            <h1 className="text-2xl font-bold text-gray-700 mt-2">
+              INR 45658.50
+            </h1>
           </div>
 
           <div className="bg-white/10 rounded-xl p-4">
-            <p className="text-gray-300 text-sm">No. of Transactions</p>
-            <h1 className="text-2xl font-bold text-white mt-2">225</h1>
+            <p className="text-gray-900 text-sm">No. of Transactions</p>
+            <h1 className="text-2xl font-bold text-gray-700 mt-2">225</h1>
           </div>
         </div>
 
         {/* RIGHT CHART */}
-        <div className="col-span-3 bg-white/5 rounded-xl p-6 border border-gray-800">
+        <div className="col-span-3 bg-white/5 rounded-xl p-6 border border-gray-300">
           {/* FILTERS */}
           <div className="flex items-center gap-3 justify-end mb-6 flex-wrap">
             <div className="flex gap-1 bg-white/10 px-2 py-1 rounded-lg">
@@ -52,7 +54,7 @@ const Performance = () => {
                   className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${
                     dateRange === r
                       ? "bg-[#b22828] text-white"
-                      : "text-gray-300 hover:text-white"
+                      : "text-gray-700 hover:bg-gray-400 hover:text-white"
                   }`}
                   onClick={() => setDateRange(r)}
                 >
@@ -64,7 +66,7 @@ const Performance = () => {
             <input
               type="text"
               placeholder="01/01/2020 - 30/01/2020"
-              className="bg-white/10 text-gray-200 px-3 py-2 rounded-lg w-48 border border-gray-700"
+              className="bg-white/10 text-gray-900 px-3 py-2 rounded-lg w-48 border border-gray-300"
             />
 
             <button className="bg-[#b22828] hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg">
@@ -77,16 +79,17 @@ const Performance = () => {
           </div>
 
           {/* TITLE */}
-          <h2 className="text-lg font-semibold text-white mb-4">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">
             Charger Uptime Graph ({dateRange})
           </h2>
 
           {/* CHART */}
-          <div className="w-full h-[280px] bg-black/30 border border-gray-800 rounded-lg flex items-center justify-center">
+          <div className="w-full h-[280px] bg-black/30 border border-gray-300 rounded-lg flex items-center justify-center">
             {loading ? (
-              <span className="text-gray-400">Loading...</span>
+              <span className="text-gray-900">Loading...</span>
             ) : (
               <LineChart
+                className="bg-white"
                 labels={selectedChart.labels}
                 datasets={selectedChart.datasets}
               />

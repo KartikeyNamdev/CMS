@@ -31,10 +31,10 @@ function FilterDialog({
 }) {
   return (
     <Dialog>
-      <form className="h-full border border-white">
+      <form className="h-full">
         <DialogTrigger asChild className="h-12 w-12">
           {/* Trigger Button (using h-10 w-10 for consistency) */}
-          <Button variant="outline" className="h-12 w-12 p-0">
+          <Button className="bg-white border-gray-300 h-12 w-12 p-0">
             <AdjustmentsHorizontalIcon className="h-5 w-5" />
           </Button>
         </DialogTrigger>
@@ -42,7 +42,7 @@ function FilterDialog({
         {/* --- SCROLLING FIXES APPLIED HERE --- */}
         <DialogContent
           className="
-            sm:max-w-[425px] rounded-lg shadow-xl 
+            sm:max-w-[425px] rounded-lg  
             flex flex-col max-h-[60vh]
             bg-white/65 backdrop-filter backdrop-blur-md 
           "
@@ -51,7 +51,7 @@ function FilterDialog({
             <DialogTitle className="text-gray-700 text-xl text-bold">
               {title}
             </DialogTitle>
-            <DialogDescription className="flex border-b border-gray-800 pb-2"></DialogDescription>
+            <DialogDescription className="flex border-b border-gray-300 pb-2"></DialogDescription>
           </DialogHeader>
 
           {/* --- SCROLLABLE CONTENT AREA --- */}
@@ -70,7 +70,7 @@ function FilterDialog({
             })}
           </div>
 
-          <DialogFooter className="mt-4 pt-4 border-t border-gray-800">
+          <DialogFooter className="mt-4 pt-4 border-t border-gray-300">
             <DialogClose asChild>
               <Button
                 onClick={onClose}

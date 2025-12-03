@@ -27,10 +27,10 @@ const StatCard = ({
 }) => (
   <Card className="flex flex-col p-4 justify-between min-h-[120px]">
     <div className="flex justify-between items-start">
-      <h3 className="text-gray-400 text-sm font-medium">{title}</h3>
+      <h3 className="text-gray-700 text-sm font-medium">{title}</h3>
       <Icon className="w-6 h-6 text-red-500" />
     </div>
-    <p className={`text-white text-3xl font-semibold mt-2 ${valueClass}`}>
+    <p className={`text-gray-500 text-3xl font-semibold mt-2 ${valueClass}`}>
       {value}
     </p>
   </Card>
@@ -77,9 +77,9 @@ export const UserManagementOverview = () => {
   return (
     <div className="w-full p-6 lg:px-50 min-h-screen">
       {/* Header/Status Row */}
-      <div className="mb-6 text-gray-400 text-sm">
+      <div className="mb-6 text-gray-600 text-sm">
         Last refreshed at: 07/10/23, 16:44 | Pluginp:{" "}
-        <span className="text-green-400 font-semibold">OPO</span>
+        <span className="text-green-500 font-semibold">OPO</span>
       </div>
 
       {/* --- ROW 1: STATS CARDS (3-COLUMN GRID) --- */}
