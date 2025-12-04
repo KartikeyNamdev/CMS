@@ -2,13 +2,13 @@
 
 const themeClass = "ag-theme-alpine-dark custom-dabas-theme";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import type { ColDef } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import type { CustomCellRendererProps } from "ag-grid-react";
 import Link from "next/link";
-
+import ConnectorDialog from "./ConnectorDialog";
 import { CpuChipIcon } from "@heroicons/react/24/solid";
 import { useAllChargers, IChargerRow } from "@/hooks/useAllChargers";
 
@@ -30,13 +30,18 @@ const NameRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
   );
 };
 
-const ConnectorRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
+// -------- RENDERERS WITH DIALOG OPEN CONTROL ----------
+const ConnectorRenderer = (
+  params: CustomCellRendererProps<IChargerRow>,
+  openDialog: (v: boolean) => void
+) => {
   return (
     <div className="flex gap-1 justify-center">
       {params.data?.connectorStatuses?.map((status, i) => (
         <span
           key={i}
-          className={`w-6 h-6 flex items-center justify-center rounded text-white ${
+          onClick={() => openDialog(true)}
+          className={`w-6 h-6 flex items-center justify-center rounded cursor-pointer ${
             status === "Available" ? "bg-green-500" : "bg-red-500"
           }`}
         >
@@ -69,6 +74,7 @@ const OperationalStatusRenderer = (
 // -------- UI COMPONENT ----------
 const AllChargersTable = () => {
   const { data: rowData, loading } = useAllChargers();
+  const [connectorDialog, setConnectorDialog] = useState(false);
 
   const colDefs: ColDef<IChargerRow>[] = [
     {
@@ -97,9 +103,9 @@ const AllChargersTable = () => {
       field: "connectorStatuses",
       headerName: "Connectors",
       width: 120,
-      cellRenderer: ConnectorRenderer,
       sortable: false,
       filter: false,
+      cellRenderer: (params) => ConnectorRenderer(params, setConnectorDialog),
     },
   ];
 
@@ -163,7 +169,7 @@ const AllChargersTable = () => {
         }
 
         .custom-dabas-theme .ag-paging-panel {
-          color: white;
+          color: black;
           background-color: transparent;
         }
       `}</style>
@@ -183,6 +189,12 @@ const AllChargersTable = () => {
       <p className="text-center text-black text-sm mt-2">
         Showing {rowData.length} items
       </p>
+      {connectorDialog && (
+        <ConnectorDialog
+          onClose={() => setConnectorDialog(false)}
+          open={connectorDialog}
+        />
+      )}
     </div>
   );
 };

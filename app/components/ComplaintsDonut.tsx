@@ -26,7 +26,7 @@ export default function ComplaintsDonut() {
     //   enabled: true,
     //   text: "Complaints",
 
-    //   color: "white", // <--- FIX: Set title color to white for visibility on dark background
+    //   color: "black", // <--- FIX: Set title color to black for visibility on dark background
     //   fontWeight: "bold",
     //   fontFamily: "Inter, sans-serif",
     // },
@@ -48,7 +48,7 @@ export default function ComplaintsDonut() {
 
         // Colors based on the image (Blue and Orange/Red)
         fills: complaintsData.map((d) => d.color),
-        strokes: ["white", "white"], // White stroke for clean separation
+        // strokes: ["black", "black"], // black stroke for clean separation
         strokeWidth: 4,
 
         // Remove individual segment labels
@@ -66,7 +66,7 @@ export default function ComplaintsDonut() {
           {
             text: TOTAL_COMPLAINTS.toString(),
             fontSize: 32,
-            color: "white", // <--- FIX: Center label must also be white
+            color: "black", // <--- FIX: Center label must also be black
             fontWeight: "bold",
             spacing: 5,
           },
@@ -83,7 +83,7 @@ export default function ComplaintsDonut() {
       position: "bottom" as const,
       item: {
         label: {
-          color: "white", // <--- FIX: Legend labels must be white
+          color: "black", // <--- FIX: Legend labels must be black
         },
         marker: {
           shape: "circle" as const, // Circular markers

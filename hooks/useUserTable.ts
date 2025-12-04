@@ -52,7 +52,11 @@ export default function useUserTables(type: TableType) {
             { headerName: "Role Name", field: "roleName", width: 160 },
             { headerName: "Company Type", field: "companyType", width: 140 },
             { headerName: "Company Name", field: "companyName", width: 160 },
-            { headerName: "Description", field: "description", flex: 1 },
+            {
+              headerName: "No. of active Admins",
+              field: "active",
+              flex: 1,
+            },
           ]);
 
           setRows([
@@ -61,7 +65,7 @@ export default function useUserTables(type: TableType) {
               roleName: "Admin",
               companyType: "CPO",
               companyName: "PLUGUP",
-              description: "Full system access",
+              active: "0",
             },
           ]);
         }

@@ -3,9 +3,11 @@
 import React, { useState, useMemo } from "react";
 // Use the Card component for styling
 import Card from "@/app/components/Card";
+import { MoveLeftIcon } from "lucide-react";
 import FormInput, { MultipeChoosableInput } from "@/app/components/FormInput"; // Assuming FormInput supports the options prop
 import { Button } from "@/components/ui/button";
 import MultipleSelectCheckmarks from "@/app/components/Checkmark";
+import Link from "next/link";
 
 // --- Selected Indian States Data ---
 // This data is imported directly from the selected Canvas file structure.
@@ -189,6 +191,9 @@ export const AddChargerForm = () => {
 
   return (
     <div className="w-full p-16 lg:px-66 min-h-screen">
+      <Link href={"/charger/station"}>
+        <MoveLeftIcon className="mb-4 hover:text-gray-500" />
+      </Link>
       <Card title={null} className="p-8 bg-gray-200">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* --- 1. CHARGER LOCATION DETAILS --- */}

@@ -1,12 +1,17 @@
+// /app/components/AgDynamicTable.tsx
 "use client";
 
 import "@/lib/agGrid";
 import { themeDabas } from "@/lib/agGridTheme";
-
 import { AgGridReact } from "ag-grid-react";
 import { useMemo } from "react";
 
-export default function AgDynamicTable({ columns, rowData }) {
+export default function AgDynamicTable({
+  columns,
+  rowData,
+  gridOptions,
+  context,
+}) {
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
@@ -30,6 +35,8 @@ export default function AgDynamicTable({ columns, rowData }) {
         paginationPageSize={10}
         rowHeight={45}
         headerHeight={48}
+        context={context} // <-- REQUIRED !!!
+        {...gridOptions}
       />
     </div>
   );

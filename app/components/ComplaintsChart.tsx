@@ -64,7 +64,7 @@ export default function ComplaintsChart() {
           borderColor: "#3699FF", // Blue Line
           backgroundColor: "rgba(54, 153, 255, 0.2)", // Optional subtle fill
           borderWidth: 2,
-          pointBackgroundColor: "white",
+          pointBackgroundColor: "black",
           pointBorderColor: "#3699FF",
           pointBorderWidth: 2,
           pointRadius: 4, // Marker size
@@ -79,7 +79,7 @@ export default function ComplaintsChart() {
   const options: ChartOptions<"line"> = useMemo(() => {
     // Dark theme axis styling
     const axisStyle = {
-      color: "white",
+      color: "black",
       font: { weight: "bold" as const },
     };
     const gridStyle = {
@@ -96,7 +96,7 @@ export default function ComplaintsChart() {
         title: {
           display: true,
           text: "Complaints",
-          color: "white",
+          color: "black",
           font: { size: 18, weight: "bold" },
           padding: { top: 10, bottom: 20 },
         },
@@ -111,7 +111,7 @@ export default function ComplaintsChart() {
           title: { display: true, text: "Date", ...axisStyle },
           labels: chartData.labels,
           ticks: {
-            color: "white",
+            color: "black",
             maxRotation: 45,
             minRotation: 45,
           },
@@ -125,7 +125,7 @@ export default function ComplaintsChart() {
           max: 6, // Based on mock data peak
           beginAtZero: true,
           ticks: {
-            color: "white",
+            color: "black",
             stepSize: 1, // Force integer steps
           },
           grid: { ...gridStyle, drawOnChartArea: true },
@@ -136,7 +136,7 @@ export default function ComplaintsChart() {
   }, []);
 
   return (
-    <Card className="text-white">
+    <Card className="text-black">
       <div className="h-[350px] w-full p-4">
         {/* 4. Render the Line Chart */}
         <Line data={data} options={options} />

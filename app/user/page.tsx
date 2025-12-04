@@ -30,7 +30,7 @@ const StatCard = ({
       <h3 className="text-gray-700 text-sm font-medium">{title}</h3>
       <Icon className="w-6 h-6 text-red-500" />
     </div>
-    <p className={`text-gray-500 text-3xl font-semibold mt-2 ${valueClass}`}>
+    <p className={`text-black text-3xl font-semibold mt-2 ${valueClass}`}>
       {value}
     </p>
   </Card>

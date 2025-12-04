@@ -39,7 +39,7 @@ const BaseDialog = ({
     <form className="h-full" onSubmit={onClose}>
       <DialogContent
         className="
-            sm:max-w-md rounded-lg shadow-xl text-white border border-gray-600 border-opacity-30 
+            sm:max-w-md rounded-lg shadow-xl text-white border border-gray-300 border-opacity-30 
             flex flex-col max-h-[90vh] 
             /* Custom dark background styles */
             bg-white/30 backdrop-filter backdrop-blur-md 
@@ -55,7 +55,7 @@ const BaseDialog = ({
             />
           </DialogClose>
         </DialogHeader>
-        <DialogDescription className="border-b border-gray-400 pb-2"></DialogDescription>
+        <DialogDescription className="border-b border-gray-300 pb-2"></DialogDescription>
 
         {/* --- SCROLLABLE CONTENT AREA --- */}
         <div className="grid gap-4 grow overflow-y-auto pr-2 pt-4">
@@ -70,7 +70,7 @@ const BaseDialog = ({
                   id={uniqueId}
                   type={field.type || "text"}
                   placeholder={field.placeholder}
-                  className="h-10 bg-black/50 text-white placeholder-gray-300 border border-gray-500 focus:ring-red-500 focus:border-red-500"
+                  className="h-10 bg-gray-100 text-black placeholder-gray-400 "
                 />
               </div>
             );

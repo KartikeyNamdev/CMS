@@ -7,6 +7,8 @@ import MultipeChoosableInput from "@/app/components/FormInput"; // Assuming Form
 import { Label } from "@/components/ui/label";
 import SlideBtn from "@/app/components/SlideBtn";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import { MoveLeftIcon } from "lucide-react";
 
 // --- Mock Data ---
 const internetOptions = [
@@ -19,7 +21,14 @@ const internetOptions = [
 // --- Step 1: Charger Details Form Content ---
 const renderStepOne = (handleNext: () => void) => (
   <>
-    <h3 className="text-black text-xl font-bold mb-4  pb-2">List A Charger</h3>
+    <div className="flex gap-4">
+      <Link href={"/charger/chargers"} className="">
+        <MoveLeftIcon className="mb-4 hover:text-gray-500" />
+      </Link>
+      <h3 className="text-black text-xl font-bold mb-4  pb-2">
+        List A Charger
+      </h3>
+    </div>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
       {/* 1. First Column */}
       <div className="space-y-6">
@@ -169,7 +178,12 @@ const renderStepTwo = (
   handleSubmit: (e: React.FormEvent) => void
 ) => (
   <>
-    <h3 className="text-black text-xl font-bold mb-4  pb-2">Deal Details</h3>
+    <div className="flex gap-4">
+      <Link href={"/charger/chargers"} className="">
+        <MoveLeftIcon className="mb-4 hover:text-gray-500" />
+      </Link>
+      <h3 className="text-black text-xl font-bold mb-4  pb-2">Deal Details</h3>
+    </div>
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Pricing and Ownership */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">

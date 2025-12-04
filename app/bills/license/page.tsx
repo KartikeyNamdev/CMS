@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
-import FilterDialog from "@/app/components/FilterDialog";
-import DropdownFilter from "@/app/components/DropdownFilter";
+import AgDynamicTable from "@/app/components/AgDynamicTable";
 
 // --- INTERFACES ---
 interface ILicenseLog {
@@ -24,38 +23,118 @@ interface IInvoiceLog {
   date: string;
   status: string;
 }
+// --- BUY / RENEW CELL RENDERER ---
+// --- BUY/RENEW renderer ---
+import { CustomCellRendererProps } from "ag-grid-react";
+import BuyLicenseDialog from "@/app/components/dialogs/BuyLicenseDialog";
+import RenewLicenseDialog from "@/app/components/dialogs/RenewDialog";
+
+const BuyOrRenewRenderer = (params: CustomCellRendererProps<ILicenseLog>) => {
+  const isPurchased = params.data?.availability === "InUse";
+
+  return (
+    <button
+      onClick={() => {
+        if (!params.context) return console.warn("AG Context Missing!");
+        else
+          return isPurchased
+            ? params.context.openRenew(params.data)
+            : params.context.openBuy(params.data);
+      }}
+      className={`px-3 py-1 rounded-lg text-sm font-semibold 
+      ${
+        isPurchased
+          ? "bg-yellow-100 text-yellow-700"
+          : "bg-green-600 text-white"
+      } 
+      hover:opacity-80 transition`}
+    >
+      {isPurchased ? "Renew License" : "Buy License"}
+    </button>
+  );
+};
 
 // --- MOCK DATA ---
 const mockLicenseData: ILicenseLog[] = [
   {
-    licenseId: "2444231",
-    chargerName: "Pluguphere360kw",
+    licenseId: "LIC_12127123000",
+    chargerName: "Avani Resort (Dabas EV Charge)...",
     type: "DC",
-    dateOfIssue: "2025-2-11",
+    dateOfIssue: "2023-12-28",
     status: "Active",
     availability: "InUse",
-    dateOfExpiry: "2025-2-11",
+    dateOfExpiry: "2024-12-27",
     licenseFee: "INR 0.0",
   },
   {
-    licenseId: "2444232",
-    chargerName: "Site101AC",
-    type: "AC",
-    dateOfIssue: "2025-1-01",
+    licenseId: "LIC_12127123001",
+    chargerName: "Aryan Hotel (Dabas EV Charge) ...",
+    type: "DC",
+    dateOfIssue: "2023-12-28",
     status: "Active",
-    availability: "Available",
-    dateOfExpiry: "2026-1-01",
-    licenseFee: "INR 500.0",
+    availability: "InUse",
+    dateOfExpiry: "2024-12-27",
+    licenseFee: "INR 0.0",
   },
   {
-    licenseId: "2444233",
-    chargerName: "ElectraFast",
+    licenseId: "LIC_12127123002",
+    chargerName: "Mitran Da Dhaba (Dabas EV Char...",
     type: "DC",
-    dateOfIssue: "2024-11-20",
-    status: "Expired",
+    dateOfIssue: "2023-12-28",
+    status: "Active",
     availability: "InUse",
-    dateOfExpiry: "2024-12-20",
-    licenseFee: "INR 1000.0",
+    dateOfExpiry: "2024-12-27",
+    licenseFee: "INR 0.0",
+  },
+  {
+    licenseId: "LIC_12127123003",
+    chargerName: "Hotel S.Rattan (Dabas EV Charg...",
+    type: "DC",
+    dateOfIssue: "2025-03-20",
+    status: "Active",
+    availability: "InUse",
+    dateOfExpiry: "2026-03-20",
+    licenseFee: "INR 0.0",
+  },
+  {
+    licenseId: "LIC_12127123004",
+    chargerName: "-",
+    type: "DC",
+    dateOfIssue: "-",
+    status: "Active",
+    availability: "Available",
+    dateOfExpiry: "2024-12-27",
+    licenseFee: "INR 0.0",
+  },
+  {
+    licenseId: "LIC_12127123005",
+    chargerName: "-",
+    type: "DC",
+    dateOfIssue: "-",
+    status: "Active",
+    availability: "Available",
+    dateOfExpiry: "2024-12-27",
+    licenseFee: "INR 0.0",
+  },
+  {
+    licenseId: "LIC_12127123006",
+    chargerName: "Aryan Hotel (Dabas EV Charge) ...",
+    type: "DC",
+    dateOfIssue: "2025-07-03",
+    status: "Active",
+    availability: "InUse",
+    dateOfExpiry: "2026-07-03",
+    licenseFee: "INR 0.0",
+  },
+  {
+    licenseId: "LIC_12127123007",
+    chargerName: "Pooth Haveli DC Charger Phone-...",
+    type: "DC",
+    dateOfIssue: "2025-05-05",
+    status: "Active",
+    availability: "InUse",
+    dateOfExpiry: "2026-05-05",
+    licenseFee: "INR 0.0",
   },
 ];
 
@@ -83,151 +162,117 @@ const mockInvoiceData: IInvoiceLog[] = [
   },
 ];
 
-// --- LICENSE TABLE COMPONENT ---
-const LicenseTable = ({ data }: { data: ILicenseLog[] }) => {
+// --- CELL RENDERER FOR CHECKBOX ---
+const checkboxRenderer = (params: any) => {
   return (
-    <div className="overflow-x-auto rounded-lg">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="bg-red-900/60">
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              License ID
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Charger Name
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Type
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Date Of Issue
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Status
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Availability
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Date Of Expiry
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold">
-              License Fee
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr
-              key={row.licenseId}
-              className="bg-red-900/40 hover:bg-red-900/50 transition-colors border-b border-red-800/50"
-            >
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.licenseId}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.chargerName}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.type}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.dateOfIssue}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.status}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.availability}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.dateOfExpiry}
-              </td>
-              <td className="px-4 py-3 text-pink-200">{row.licenseFee}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-// --- INVOICE TABLE COMPONENT ---
-const InvoiceTable = ({ data }: { data: IInvoiceLog[] }) => {
-  return (
-    <div className="overflow-x-auto rounded-lg">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="bg-red-900/60">
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Invoice ID
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Client
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Amount
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold border-r border-red-800">
-              Date
-            </th>
-            <th className="px-4 py-3 text-left text-white font-semibold">
-              Status
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row) => (
-            <tr
-              key={row.invoiceId}
-              className="bg-red-900/40 hover:bg-red-900/50 transition-colors border-b border-red-800/50"
-            >
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.invoiceId}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.clientName}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.amount}
-              </td>
-              <td className="px-4 py-3 text-white border-r border-red-800/50">
-                {row.date}
-              </td>
-              <td className="px-4 py-3 text-white">{row.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <input
+      type="checkbox"
+      className="w-4 h-4 cursor-pointer"
+      onChange={(e) => {
+        console.log("Checkbox clicked:", params.data);
+      }}
+    />
   );
 };
 
 // --- Main Component ---
-export const ProtocolSelector = () => {
+export default function LicensePage() {
   const [choosen, setChoosen] = useState<"License" | "Invoice">("License");
+  const [licenseIdFilter, setLicenseIdFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [availabilityFilter, setAvailabilityFilter] = useState("");
+  const [openBuy, setOpenBuy] = useState<any | null>(null);
+  const [openRenew, setOpenRenew] = useState<any | null>(null);
+
+  // License columns for AG Grid
+  const licenseColumns = useMemo(
+    () => [
+      { field: "licenseId", headerName: "License ID", width: 180 },
+      { field: "chargerName", headerName: "Charger Name", width: 260 },
+      { field: "type", headerName: "Type", width: 100 },
+      { field: "dateOfIssue", headerName: "Date of Issue", width: 130 },
+      { field: "status", headerName: "Status", width: 120 },
+      { field: "availability", headerName: "Availability", width: 130 },
+      { field: "dateOfExpiry", headerName: "Date of Expiry", width: 130 },
+      { field: "licenseFee", headerName: "License Fee", width: 120 },
+
+      // 🆕 new column —
+      {
+        field: "action",
+        headerName: "Buy / Renew",
+        width: 160,
+        cellRenderer: BuyOrRenewRenderer,
+      },
+    ],
+    []
+  );
+
+  // Invoice columns for AG Grid
+  const invoiceColumns = useMemo(
+    () => [
+      {
+        field: "invoiceId",
+        headerName: "Invoice ID",
+        width: 180,
+      },
+      {
+        field: "clientName",
+        headerName: "Client",
+        width: 250,
+      },
+      {
+        field: "amount",
+        headerName: "Amount",
+        width: 150,
+      },
+      {
+        field: "date",
+        headerName: "Date",
+        width: 150,
+      },
+      {
+        field: "status",
+        headerName: "Status",
+        width: 120,
+      },
+    ],
+    []
+  );
 
   const buttonClasses = (protocol: "License" | "Invoice") => `
     h-10 px-6 font-semibold transition-colors
     ${
       choosen === protocol
         ? "bg-red-600 text-white z-10"
-        : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+        : "bg-white text-gray-700 hover:bg-gray-100"
     }
-    ${
-      protocol === "License"
-        ? "rounded-l-xl border-r border-red-700"
-        : "rounded-r-xl"
-    }
-    border border-red-600 
+    ${protocol === "License" ? "rounded-l-xl" : "rounded-r-xl"}
+    border border-gray-300
   `;
 
+  // Calculate totals
+  const totalLicenseAC = mockLicenseData.filter((l) => l.type === "AC").length;
+  const totalLicenseDC = mockLicenseData.filter((l) => l.type === "DC").length;
+
   return (
-    <div className="p-6 lg:p-10 min-h-screen bg-gradient-to-br from-black via-red-950/20 to-black">
+    <div className="p-6 lg:px-40 min-h-screen bg-transparent">
+      {/* Stats Cards */}
+      <div className="flex gap-4 mb-6">
+        <div className="bg-white/70 rounded-xl shadow-md px-6 py-4 border border-gray-200">
+          <div className="text-sm text-gray-500">Total License AC</div>
+          <div className="text-2xl font-bold">{totalLicenseAC}</div>
+        </div>
+        <div className="bg-white/70 rounded-xl shadow-md px-6 py-4 border border-gray-200">
+          <div className="text-sm text-gray-500">Total License DC</div>
+          <div className="text-2xl font-bold">{totalLicenseDC}</div>
+        </div>
+      </div>
+
       {/* Header/Actions Container */}
       <div className="flex items-center justify-between mb-6">
         {/* --- SEGMENTED CONTROL BUTTONS --- */}
-        <div className="flex shadow-lg rounded-xl overflow-hidden">
+        <div className="flex shadow-md rounded-xl overflow-hidden">
           <button
             onClick={() => setChoosen("License")}
             className={buttonClasses("License")}
@@ -244,77 +289,104 @@ export const ProtocolSelector = () => {
 
         {/* --- RIGHT ACTION BUTTONS --- */}
         <div className="flex items-center gap-4">
-          <FilterDialog
-            onClose={() => {}}
-            title="Filter"
-            data={[
-              { label: "Date Range", value: "" },
-              { label: "Client ID", value: "" },
-            ]}
-          />
+          <button className="h-10 w-10 rounded-xl text-black font-semibold bg-white hover:bg-gray-100 transition-colors shadow-md border border-gray-300 flex items-center justify-center">
+            📋
+          </button>
           <button className="h-10 w-10 rounded-xl text-black font-semibold bg-white hover:bg-gray-100 transition-colors shadow-md border border-gray-300 flex items-center justify-center">
             <ArrowDownTrayIcon className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-      {/* --- MASTER FILTER BAR --- */}
-      <div className="flex flex-wrap items-center justify-start gap-4 mb-4 border-b border-gray-700 pb-4">
+      {/* --- FILTER BAR --- */}
+      <div className="flex flex-wrap items-center justify-start gap-4 mb-4">
         <input
           type="text"
-          placeholder={choosen === "License" ? "License ID" : "Invoice ID"}
-          className="h-12 py-2 px-4 text-black bg-white rounded-xl border border-gray-300 shadow-md focus:outline-none focus:ring-2 focus:ring-[#b22828] w-40 transition-all"
+          placeholder={choosen === "License" ? "Invoice Id" : "Invoice ID"}
+          value={licenseIdFilter}
+          onChange={(e) => setLicenseIdFilter(e.target.value)}
+          className="h-12 py-2 px-4 text-black bg-white rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 w-48 transition-all"
         />
-        <DropdownFilter
-          placeholder="Types"
-          options={
-            choosen === "License"
-              ? [
-                  { value: "DC", label: "DC" },
-                  { value: "AC", label: "AC" },
-                ]
-              : [{ value: "no option", label: "no option" }]
-          }
-          selectedValue=""
-          onChange={() => {}}
-          className="w-40 h-12"
-        />
-        <DropdownFilter
-          placeholder="Status"
-          options={
-            choosen === "License"
-              ? [
-                  { value: "Active", label: "Active" },
-                  { value: "Expired", label: "Expired" },
-                  { value: "Pending", label: "Pending" },
-                ]
-              : [
-                  { value: "Paid", label: "Paid" },
-                  { value: "Pending", label: "Pending" },
-                ]
-          }
-          selectedValue=""
-          onChange={() => {}}
-          className="w-40 h-12"
-        />
-        <button className="h-12 px-6 rounded-xl text-white font-semibold bg-[#b22828] hover:bg-red-600 transition-colors shadow-md">
+
+        {choosen === "License" && (
+          <>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="h-12 py-2 px-4 text-gray-700 bg-white rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 w-48 transition-all"
+            >
+              <option value="">Type of License</option>
+              <option value="DC">DC</option>
+              <option value="AC">AC</option>
+            </select>
+
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="h-12 py-2 px-4 text-gray-700 bg-white rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 w-48 transition-all"
+            >
+              <option value="">Status</option>
+              <option value="Active">Active</option>
+              <option value="Expired">Expired</option>
+              <option value="Pending">Pending</option>
+            </select>
+
+            <select
+              value={availabilityFilter}
+              onChange={(e) => setAvailabilityFilter(e.target.value)}
+              className="h-12 py-2 px-4 text-gray-700 bg-white rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 w-48 transition-all"
+            >
+              <option value="">Availability</option>
+              <option value="InUse">In Use</option>
+              <option value="Available">Available</option>
+            </select>
+          </>
+        )}
+
+        <button className="h-12 px-6 rounded-xl text-white font-semibold bg-red-600 hover:bg-red-700 transition-colors shadow-md">
           Search
         </button>
-        <button className="h-12 px-6 rounded-xl text-black font-semibold bg-white hover:bg-gray-100 transition-colors shadow-md border border-gray-300">
+        <button
+          onClick={() => {
+            setLicenseIdFilter("");
+            setTypeFilter("");
+            setStatusFilter("");
+            setAvailabilityFilter("");
+          }}
+          className="h-12 px-6 rounded-xl text-black font-semibold bg-white hover:bg-gray-100 transition-colors shadow-md border border-gray-300"
+        >
           Clear
         </button>
       </div>
 
-      {/* --- TABLE RENDERING --- */}
-      <div className="mt-4">
-        {choosen === "License" ? (
-          <LicenseTable data={mockLicenseData} />
-        ) : (
-          <InvoiceTable data={mockInvoiceData} />
-        )}
+      {/* --- AG GRID TABLE --- */}
+      <div className="mt-4 bg-transparent rounded-xl shadow-md p-4">
+        <AgDynamicTable
+          columns={choosen === "License" ? licenseColumns : invoiceColumns}
+          rowData={choosen === "License" ? mockLicenseData : mockInvoiceData}
+          gridOptions={{
+            context: {
+              openBuy: (row: any) => setOpenBuy(row),
+              openRenew: (row: any) => setOpenRenew(row),
+            },
+            rowSelection: "multiple",
+            suppressRowClickSelection: true,
+          }}
+        />
+
+        {/* Dialog Mount */}
+        <BuyLicenseDialog
+          open={!!openBuy}
+          data={openBuy}
+          onClose={() => setOpenBuy(null)}
+        />
+
+        <RenewLicenseDialog
+          open={!!openRenew}
+          data={openRenew}
+          onClose={() => setOpenRenew(null)}
+        />
       </div>
     </div>
   );
-};
-
-export default ProtocolSelector;
+}

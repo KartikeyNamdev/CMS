@@ -3,7 +3,7 @@
 import {
   actionButton,
   bookingLink,
-  priceLink,
+  roundoffLink,
 } from "@/app/components/ChargingSessionsTable";
 import { ChargingColumn, ChargingSession } from "@/lib/types";
 import { useEffect, useState } from "react";
@@ -21,27 +21,27 @@ export default function useChargingSessions(stationId?: string) {
         // AG GRID COLUMN DEFINITIONS (matches UI)
         setColumns([
           {
-            headerName: "Booking ID",
             field: "bookingId",
-            width: 150,
+            headerName: "Booking ID",
             cellRenderer: bookingLink,
-          },
-          { headerName: "Charger Name", field: "chargerName", minWidth: 200 },
-          {
-            headerName: "eMSP / Platform / Fleet",
-            field: "platform",
-            minWidth: 160,
-          },
-          { headerName: "Start Date", field: "startDate", width: 180 },
-          { headerName: "Stop Date", field: "stopDate", width: 180 },
-          { headerName: "Updated At", field: "updatedAt", width: 180 },
-          { headerName: "Promotion Category", field: "promo", width: 180 },
-          {
-            headerName: "Round Off Price",
-            field: "price",
             width: 150,
-            cellRenderer: priceLink,
           },
+          {
+            field: "roundOff",
+            headerName: "Roundoff",
+            cellRenderer: roundoffLink,
+            width: 120,
+          },
+          { field: "chargerName", headerName: "Charger Name", minWidth: 200 },
+          {
+            field: "platform",
+            headerName: "eMSP / Platform / Fleet",
+            width: 160,
+          },
+          { field: "startDate", headerName: "Start Date", width: 170 },
+          { field: "stopDate", headerName: "Stop Date", width: 170 },
+          { field: "updatedAt", headerName: "Updated At", width: 170 },
+          { field: "promo", headerName: "Promotion Category", width: 180 },
           {
             headerName: "Actions",
             field: "actions",
@@ -54,6 +54,7 @@ export default function useChargingSessions(stationId?: string) {
         const fallback = [
           {
             bookingId: "31007743",
+            roundOff: "688", // Added roundOff field
             chargerName: "Aryan Hotel (Dabas EV Charge)",
             platform: "Statiq Platform",
             startDate: "2025-11-26 19:04:29",
@@ -64,6 +65,7 @@ export default function useChargingSessions(stationId?: string) {
           },
           {
             bookingId: "31006780",
+            roundOff: "52", // Added roundOff field
             chargerName: "Aryan Hotel (Dabas EV Charge)",
             platform: "Statiq Platform",
             startDate: "2025-11-26 18:36:47",
@@ -88,5 +90,3 @@ export default function useChargingSessions(stationId?: string) {
 
   return { rows, columns, loading };
 }
-
-// --- Cell Renderers ---

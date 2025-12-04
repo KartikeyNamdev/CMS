@@ -60,13 +60,19 @@ const URLRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
   );
 };
 
-const ActionsRenderer = () => (
-  <div className="flex items-center gap-2 text-sm text-red-500">
-    <button>Edit</button>
-    <span className="text-gray-400">|</span>
-    <button>Delete</button>
-  </div>
-);
+const ActionsRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
+  const id = params.data?.stationId;
+  return (
+    <div className="flex items-center gap-2 text-sm text-red-500">
+      <Link href={id ? `/charger/station/edit/${id}` : "#"}>
+        <button className="hover:text-black">Edit</button>
+      </Link>
+      <span className="text-gray-400">|</span>
+
+      <button>Delete</button>
+    </div>
+  );
+};
 
 /* -------------------------------------------
    MAIN COMPONENT

@@ -16,7 +16,6 @@ export const Dashboard = () => {
   const [from, setFrom] = useState("");
   return (
     <div className="p-6 lg:px-55 ">
-      <h1 className="text-gray-300 text-md p-4">Last refreshed</h1>
       <div className="flex gap-4">
         <Card className="min-w-70">
           <div className="flex justify-between">
@@ -34,7 +33,7 @@ export const Dashboard = () => {
         </Card>
       </div>
       <div className="flex gap-6 py-8 text-white">
-        <p className="pt-2">From</p>
+        <p className="pt-2 text-black">From</p>
         <div
           className={`relative flex items-center bg-white rounded-xl shadow-md h-12 w-42 px-3`}
         >
@@ -49,7 +48,7 @@ export const Dashboard = () => {
             className="w-full h-full text-black bg-transparent focus:outline-none placeholder-gray-500 text-sm"
           />
         </div>
-        <p className="pt-2">To</p>
+        <p className="pt-2 text-black">To</p>
         <div
           className={`relative flex items-center bg-white rounded-xl shadow-md h-12 w-42 px-3`}
         >

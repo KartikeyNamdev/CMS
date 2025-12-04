@@ -20,6 +20,7 @@ import {
 } from "@/app/components/ChargerProfileComponents";
 
 import { useChargerProfile } from "@/hooks/useChargerProfile";
+import SlideBtn from "@/app/components/SlideBtn";
 
 export default function ChargerProfilePage({
   params,
@@ -114,6 +115,7 @@ export default function ChargerProfilePage({
           <button className="text-sm font-semibold text-gray-500 hover:text-black">
             Autocharge
           </button>
+          <SlideBtn />
 
           <button
             onClick={() => setIsDialogOpen(true)}
