@@ -9,6 +9,7 @@ import { ColDef, ColGroupDef, GridOptions } from "ag-grid-community";
 
 import { RowType } from "../user/admin/page";
 import { ColumnType } from "@/lib/agGrid";
+import { IInvoiceLog, ILicenseLog } from "../bills/license/page";
 
 export interface RoleItem {
   roleName: string;
@@ -35,7 +36,8 @@ export default function AgDynamicTable({
   context,
 }: {
   columns: ColumnType[];
-  rowData: RowType[];
+  // FIX: Accept multiple row data types
+  rowData: RowType[] | ILicenseLog[] | IInvoiceLog[];
   // FIX 1: Change type from `[]` (empty array) to the correct AgGrid type (GridOptions)
   gridOptions?: GridOptions;
   // FIX 2: Change type from `[]` (empty array) to the correct AgGrid context type

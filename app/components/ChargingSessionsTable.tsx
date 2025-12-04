@@ -8,11 +8,8 @@ import RoundoffDialog from "./dialogs/RoundOffDialog";
 import ActionDialog from "./dialogs/ActionsDialog";
 import { ColumnType, GridCellParams } from "@/lib/agGrid";
 
-import { RowType } from "../user/admin/page";
-import { ChargingColumn, ChargingSession } from "@/lib/types";
-
 // ---------------- CELL RENDERERS ----------------
-const bookingLink = (params: GridCellParams) => {
+const bookingLink = (params: GridCellParams<unknown>) => {
   return (
     <span onClick={() => params.context?.openBooking?.(params.value)}>
       {params.value || "--"}

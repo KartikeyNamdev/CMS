@@ -5,7 +5,7 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 import AgDynamicTable from "@/app/components/AgDynamicTable";
 
 // --- INTERFACES ---
-interface ILicenseLog {
+export interface ILicenseLog {
   licenseId: string;
   chargerName: string;
   type: "DC" | "AC";
@@ -16,14 +16,14 @@ interface ILicenseLog {
   licenseFee: string;
 }
 
-interface IInvoiceLog {
+export interface IInvoiceLog {
   invoiceId: string;
   clientName: string;
   amount: string;
   date: string;
   status: string;
 }
-// --- BUY / RENEW CELL RENDERER ---
+
 // --- BUY/RENEW renderer ---
 import { CustomCellRendererProps } from "ag-grid-react";
 import BuyLicenseDialog from "@/app/components/dialogs/BuyLicenseDialog";
@@ -162,19 +162,6 @@ const mockInvoiceData: IInvoiceLog[] = [
   },
 ];
 
-// --- CELL RENDERER FOR CHECKBOX ---
-const checkboxRenderer = (params: any) => {
-  return (
-    <input
-      type="checkbox"
-      className="w-4 h-4 cursor-pointer"
-      onChange={(e) => {
-        console.log("Checkbox clicked:", params.data);
-      }}
-    />
-  );
-};
-
 // --- Main Component ---
 export default function LicensePage() {
   const [choosen, setChoosen] = useState<"License" | "Invoice">("License");
@@ -182,8 +169,8 @@ export default function LicensePage() {
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [availabilityFilter, setAvailabilityFilter] = useState("");
-  const [openBuy, setOpenBuy] = useState<any | null>(null);
-  const [openRenew, setOpenRenew] = useState<any | null>(null);
+  const [openBuy, setOpenBuy] = useState<ILicenseLog | null>(null);
+  const [openRenew, setOpenRenew] = useState<ILicenseLog | null>(null);
 
   // License columns for AG Grid
   const licenseColumns = useMemo(
@@ -196,8 +183,6 @@ export default function LicensePage() {
       { field: "availability", headerName: "Availability", width: 130 },
       { field: "dateOfExpiry", headerName: "Date of Expiry", width: 130 },
       { field: "licenseFee", headerName: "License Fee", width: 120 },
-
-      // 🆕 new column —
       {
         field: "action",
         headerName: "Buy / Renew",
@@ -302,7 +287,7 @@ export default function LicensePage() {
       <div className="flex flex-wrap items-center justify-start gap-4 mb-4">
         <input
           type="text"
-          placeholder={choosen === "License" ? "Invoice Id" : "Invoice ID"}
+          placeholder={choosen === "License" ? "License Id" : "Invoice ID"}
           value={licenseIdFilter}
           onChange={(e) => setLicenseIdFilter(e.target.value)}
           className="h-12 py-2 px-4 text-black bg-white rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 w-48 transition-all"
@@ -364,11 +349,11 @@ export default function LicensePage() {
         <AgDynamicTable
           columns={choosen === "License" ? licenseColumns : invoiceColumns}
           rowData={choosen === "License" ? mockLicenseData : mockInvoiceData}
+          context={{
+            openBuy: (row: ILicenseLog) => setOpenBuy(row),
+            openRenew: (row: ILicenseLog) => setOpenRenew(row),
+          }}
           gridOptions={{
-            context: {
-              openBuy: (row: any) => setOpenBuy(row),
-              openRenew: (row: any) => setOpenRenew(row),
-            },
             rowSelection: "multiple",
             suppressRowClickSelection: true,
           }}
