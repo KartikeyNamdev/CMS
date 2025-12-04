@@ -6,57 +6,31 @@ import useChargingSessions from "@/hooks/useChargingSessions";
 import BookingDialog from "./dialogs/BookingDialog";
 import RoundoffDialog from "./dialogs/RoundOffDialog";
 import ActionDialog from "./dialogs/ActionsDialog";
+import { ColumnType, GridCellParams } from "@/lib/agGrid";
+
+import { RowType } from "../user/admin/page";
+import { ChargingColumn, ChargingSession } from "@/lib/types";
 
 // ---------------- CELL RENDERERS ----------------
-const bookingLink = (params: any) => {
-  console.log("Booking clicked:", params.value);
-  const handleClick = () => {
-    if (params?.context?.openBooking) {
-      params.context.openBooking(params.value);
-    }
-  };
-
+const bookingLink = (params: GridCellParams) => {
   return (
-    <span
-      className="text-blue-500 underline cursor-pointer hover:text-blue-700"
-      onClick={handleClick}
-    >
-      {params?.value || "--"}
+    <span onClick={() => params.context?.openBooking?.(params.value)}>
+      {params.value || "--"}
     </span>
   );
 };
 
-const roundoffLink = (params: any) => {
-  console.log("Roundoff clicked:", params.value);
-  const handleClick = () => {
-    if (params?.context?.openRoundoff) {
-      params.context.openRoundoff(params.value);
-    }
-  };
-
+const roundoffLink = (params: GridCellParams) => {
   return (
-    <span
-      className="text-blue-500 underline cursor-pointer hover:text-blue-700"
-      onClick={handleClick}
-    >
-      {params?.value || "--"}
+    <span onClick={() => params.context?.openRoundoff?.(params.value)}>
+      {params.value || "--"}
     </span>
   );
 };
 
-const actionButton = (params: any) => {
-  console.log("Action clicked:", params.data);
-  const handleClick = () => {
-    if (params?.context?.openAction) {
-      params.context.openAction(params.data);
-    }
-  };
-
+const actionButton = (params: GridCellParams) => {
   return (
-    <button
-      onClick={handleClick}
-      className="text-gray-600 hover:text-black text-xl"
-    >
+    <button onClick={() => params.context?.openAction?.(params.data as string)}>
       ⚙️
     </button>
   );
@@ -78,8 +52,8 @@ export default function ChargingSessionsTable() {
   return (
     <>
       <AgDynamicTable
-        columns={columns}
-        rowData={rows}
+        columns={columns as ColumnType[]}
+        rowData={rows as []}
         context={{
           openBooking: (id: string) => setOpenBooking(id),
           openRoundoff: (id: string) => setOpenRoundoff(id),

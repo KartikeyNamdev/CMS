@@ -1,12 +1,49 @@
 "use client";
 
+// Assuming RowType is defined in ../user/admin/page as a union of the specific row types below
+import { RowType } from "@/app/user/admin/page";
+import { ColumnType } from "@/lib/agGrid";
 import { useEffect, useState } from "react";
+
+// --- Defining specific Row Types to resolve object literal type errors ---
+// This ensures that the data objects being created match their intended schema,
+// and that they are compatible with the general 'RowType' union.
+const AgGridRowDefs = [];
+export interface AdminRow {
+  adminName: string;
+  companyType: string;
+  companyName: string;
+  roleType: string;
+  roleName: string;
+  chargerGroup: string;
+  phoneNumber: string;
+  status: string;
+  email: string;
+}
+
+export interface RoleRow {
+  roleType: string;
+  roleName: string;
+  companyType: string;
+  companyName: string;
+  active: string; // Corresponds to "No. of active Admins"
+}
+
+export interface GroupRow {
+  groupName: string;
+  companyType: string;
+  companyName: string;
+  parameter: string;
+  value: string;
+}
+
+// --------------------------------------------------------------------------
 
 type TableType = "admin" | "roles" | "groups";
 
 export default function useUserTables(type: TableType) {
-  const [columns, setColumns] = useState<unknown[]>([]);
-  const [rows, setRows] = useState<unknown[]>([]);
+  const [columns, setColumns] = useState<ColumnType[]>([]);
+  const [rows, setRows] = useState<RowType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +68,7 @@ export default function useUserTables(type: TableType) {
             { headerName: "Email", field: "email", width: 200 },
           ]);
 
+          // Cleaned up the type assertion to a single cast to RowType[]
           setRows([
             {
               adminName: "Usha",
@@ -42,8 +80,8 @@ export default function useUserTables(type: TableType) {
               phoneNumber: "6474773447",
               status: "Active",
               email: "usha@plugup.com",
-            },
-          ]);
+            }, // Asserting individual object to AdminRow first
+          ] as typeof AgGridRowDefs);
         }
 
         if (type === "roles") {
@@ -55,10 +93,10 @@ export default function useUserTables(type: TableType) {
             {
               headerName: "No. of active Admins",
               field: "active",
-              flex: 1,
             },
           ]);
 
+          // Cleaned up the type assertion to a single cast to RowType[]
           setRows([
             {
               roleType: "Default",
@@ -66,8 +104,8 @@ export default function useUserTables(type: TableType) {
               companyType: "CPO",
               companyName: "PLUGUP",
               active: "0",
-            },
-          ]);
+            }, // Asserting individual object to RoleRow first
+          ] as typeof AgGridRowDefs);
         }
 
         if (type === "groups") {
@@ -76,9 +114,10 @@ export default function useUserTables(type: TableType) {
             { headerName: "Company Type", field: "companyType", width: 140 },
             { headerName: "Company Name", field: "companyName", width: 160 },
             { headerName: "Parameter", field: "parameter", width: 150 },
-            { headerName: "Value", field: "value", flex: 1 },
+            { headerName: "Value", field: "value" },
           ]);
 
+          // Cleaned up the type assertion to a single cast to RowType[]
           setRows([
             {
               groupName: "West Hub",
@@ -86,8 +125,8 @@ export default function useUserTables(type: TableType) {
               companyName: "PLUGUP",
               parameter: "Permission",
               value: "Read / Write",
-            },
-          ]);
+            } as GroupRow, // Asserting individual object to GroupRow first
+          ] as typeof AgGridRowDefs);
         }
       } catch (err) {
         console.error("User table hook error:", err);

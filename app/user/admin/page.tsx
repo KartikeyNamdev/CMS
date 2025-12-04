@@ -10,6 +10,7 @@ import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 import useUserTables from "@/hooks/useUserTable";
 import RoleDetailsDialog from "@/app/components/dialogs/RoleDetailsDialog";
 import { AddAdminDialog, AddGroupDialog } from "@/app/components/DynamicDialog";
+import { ColumnType } from "@/lib/agGrid";
 
 /* ---------------------------------------------------
    Mock Filter Options (RETAINED)
@@ -27,10 +28,14 @@ const RoleTypeOptions = [
   { value: "default", label: "Default" },
   { value: "custom", label: "Custom" },
 ];
-export function RoleActionsRenderer(params: any) {
+export function RoleActionsRenderer({
+  params,
+}: {
+  params: Record<string, { openRole: ({}) => void }>;
+}) {
   return (
     <button
-      onClick={() => params.context.openRole(params.data)}
+      onClick={() => params?.context?.openRole(params.data)}
       className="px-3 py-1 rounded-lg bg-[#b22828] text-white text-sm"
     >
       View Role
@@ -44,7 +49,6 @@ export function RoleActionsRenderer(params: any) {
 const AdminView = ({ setAddAdminOpen, isAddAdminOpen }) => {
   const [columnFilter, setColumnFilter] = useState("");
   const [roleType, setRoleType] = useState("");
-  const { columns, rows, loading } = useUserTables("admin");
 
   const AddAdminButton = (
     <button
@@ -140,11 +144,39 @@ const AdminView = ({ setAddAdminOpen, isAddAdminOpen }) => {
 /* ---------------------------------------------------
    ROLES VIEW
 --------------------------------------------------- */
+export interface PermissionItem {
+  title: string;
+  view?: boolean;
+  edit?: boolean;
+  add?: boolean;
+  download?: boolean;
+}
+
+export interface PermissionSection {
+  name: string;
+  enabled: boolean;
+  items: PermissionItem[];
+}
+
+export interface RolesType {
+  RoleType: string;
+  CompanyType: string;
+  roleName: string;
+  company: string;
+  template: string;
+
+  // THIS WAS MISSING ↓
+  permissions: PermissionSection[];
+}
+
+export interface RowType {
+  headerName: "";
+}
 const RolesView = ({ setAddRoleOpen, isAddRoleOpen }) => {
   const { columns, rows } = useUserTables("roles");
-  const [openRoleData, setOpenRoleData] = useState<any | null>(null);
+  const [openRoleData, setOpenRoleData] = useState<RolesType | null>(null);
 
-  const updatedColumns = [
+  const updatedColumns: ColumnType[] = [
     ...columns,
     {
       headerName: "Actions",
