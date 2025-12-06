@@ -14,6 +14,10 @@ import RevenueDonut from "../components/RevenueDonut";
 import UnitDonut from "../components/UnitDonut";
 import TransactionUnitChart from "../components/TransactionUnit";
 
+import DynamicTopPerformers from "../components/DynamicTopPerformers";
+import { DynamicAlertSection } from "../components/DynamicAlertSection";
+import { EnergyForecasting } from "../components/EnergyForecastingSection";
+
 // Options for dropdowns
 const stateOptions = [
   { value: "ca", label: "California" },
@@ -131,6 +135,9 @@ export const Dashboard = () => {
           <TransactionUnitChart />
         </Card>
       </div>
+      <DynamicTopPerformers />
+      <DynamicAlertSection />
+      <EnergyForecasting />
     </div>
   );
 };
