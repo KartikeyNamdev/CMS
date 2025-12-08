@@ -84,16 +84,7 @@ const ClientPage = () => {
       </div>
 
       {/* --- ROW 3: CONTENT AREA --- */}
-      <div className="mt-12 text-center">
-        {!hasData ? (
-          <p className="text-gray-600 text-xl">No Data Found!</p>
-        ) : (
-          <div className="text-white">
-            {/* Client table/grid will go here */}
-            Client Table Content
-          </div>
-        )}
-      </div>
+      <div className="mt-12 text-center"></div>
       <ZustandTestComponent />
     </div>
   );

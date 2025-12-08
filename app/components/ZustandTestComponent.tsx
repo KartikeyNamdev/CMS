@@ -10,15 +10,18 @@ const ZustandTestComponent = () => {
   const {
     companies,
     stations,
+    chargers,
     isLoading,
     fetchCompanies,
     fetchStationsByCompany,
     selectedStation,
     setSelectedStation,
+    fetchChargersByStation,
   } = useDataStore();
 
   // Local state to track which company we are viewing stations for
   const [targetCompanyId, setTargetCompanyId] = useState<string | null>(null);
+  const [targetStationId, setTargetStationId] = useState<string | null>(null);
 
   // 2. Fetch companies on mount
   useEffect(() => {
@@ -31,6 +34,12 @@ const ZustandTestComponent = () => {
       fetchStationsByCompany(targetCompanyId);
     }
   }, [targetCompanyId, fetchStationsByCompany]);
+
+  useEffect(() => {
+    if (targetStationId) {
+      fetchChargersByStation(targetStationId);
+    }
+  }, [targetStationId, fetchChargersByStation]);
 
   // --- Render Logic ---
 
@@ -53,10 +62,11 @@ const ZustandTestComponent = () => {
               key={company.id}
               className={`flex justify-between items-center p-3 rounded-md cursor-pointer transition-colors ${
                 targetCompanyId === company.id
-                  ? "bg-red-700/50"
-                  : "bg-white/60 hover:bg-white/80"
+                  ? "bg-[#b22828] hover:bg-red-600 text-white"
+                  : "bg-white/40 hover:bg-white/80"
               }`}
               onClick={() => setTargetCompanyId(company.id)}
+              //   const colors = ["#CD2C58", "#E06B80", "#FFC69D", "#FFE6D4"];
             >
               <span>
                 {company.name} ({company.type}) - {company.taxId}
@@ -81,13 +91,24 @@ const ZustandTestComponent = () => {
                   key={station.id}
                   className={`p-3 rounded-md cursor-pointer transition-colors ${
                     selectedStation?.id === station.id
-                      ? "bg-blue-400/50"
-                      : "bg-white/60 hover:bg-white/90"
+                      ? "bg-[#b22828] hover:bg-red-600 text-white"
+                      : "bg-white/40 hover:bg-white/80"
                   }`}
-                  onClick={() => setSelectedStation(station)}
+                  onClick={() => {
+                    setSelectedStation(station);
+                    setTargetStationId(station.id);
+                  }}
                 >
-                  <p className="font-medium">{station.name}</p>
-                  <p className="text-sm text-black">{station.address}</p>
+                  <p className="font-medium">{station.stationName}</p>
+                  <p
+                    className={`text-sm ${
+                      selectedStation?.id === station.id
+                        ? "text-white"
+                        : "text-black"
+                    }`}
+                  >
+                    {station.address}
+                  </p>
                 </div>
               ))
             ) : (
@@ -102,17 +123,32 @@ const ZustandTestComponent = () => {
       {/* SECTION 3: Global Selection State */}
       <div className="p-4 border border-gray-700 rounded-lg bg-gray-200">
         <h2 className="text-xl font-semibold mb-3">
-          3. Selected Global Entity
+          3. Available Charger for {selectedStation?.stationName}
         </h2>
         {selectedStation ? (
           <div>
-            <p className="text-lg text-green-400">✅ Station Selected:</p>
-            <p>
-              {selectedStation.name} (ID: {selectedStation.id})
+            <p className="text-lg text-green-500 font-bold">
+              ✅ Station Selected:
             </p>
+            <p>
+              {selectedStation.stationName} (ID: {selectedStation.stationName})
+            </p>
+            {chargers.map((charger) => {
+              return (
+                <div
+                  key={charger.id}
+                  className="p-6 m-2 relative rounded-xl shadow-xl overflow-hidden
+   bg-white/50 content-center justify-center hover:bg-[#FFE6D4]
+backdrop-filter backdrop-blur-md
+border border-gray-300 border-opacity-30 "
+                >
+                  {charger.ocppId}
+                </div>
+              );
+            })}
             <button
               onClick={() => setSelectedStation(null)}
-              className="mt-2 text-sm bg-red-600 px-3 py-1 rounded"
+              className="mt-2 text-sm bg-[#b22828] hover:bg-red-600 px-3 py-3  text-white rounded-lg p-4"
             >
               Clear Selection
             </button>
