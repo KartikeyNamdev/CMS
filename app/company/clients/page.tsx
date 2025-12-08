@@ -6,6 +6,7 @@ import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 // Assuming DropdownFilter is available
 import DropdownFilter from "../../components/DropdownFilter";
 import Link from "next/link";
+import ZustandTestComponent from "@/app/components/ZustandTestComponent";
 
 // Mock Data for filters
 const clientTypeOptions = [
@@ -93,6 +94,7 @@ const ClientPage = () => {
           </div>
         )}
       </div>
+      <ZustandTestComponent />
     </div>
   );
 };
