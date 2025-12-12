@@ -131,8 +131,6 @@ export const useEditStationDetails = (stationId: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-
     // fetch later → now dummy load
     const found = dummyStations.find((s) => s.stationId === stationId);
     setTimeout(() => {

@@ -1,10 +1,7 @@
-"use client";
 import React from "react";
 import { create } from "zustand";
 
-/* ----------------------------
-   Types
----------------------------- */
+// --- Type Definitions ---
 export type CompanyType = "Host" | "CPO" | "EMSP" | "Investor";
 
 export interface Company {
@@ -22,72 +19,73 @@ export interface Station {
   companyId: string;
   stationName: string;
   address: string;
-  locationAxis?: string;
-  state?: string;
-  city?: string;
-  pincode?: string;
-  accessType?: "Public" | "Private" | string;
-  openingHours?: string;
-  stationVisibility?: "Enable" | "Disable" | string;
-  amenities?: string;
+  locationAxis: string;
+  state: string;
+  city: string;
+  pincode: string;
+  accessType: string;
+  openingHours: string;
+  stationVisibility: "Enable" | "Disable";
+  amenities: string;
 }
 
 export interface Charger {
   id: string;
   stationId: string;
   ocppId: string;
-  oem?: string;
-  chargerType?: string;
-  powerRating?: string;
-  numConnectors?: number;
-  operationalStatus?: string;
-  firmware?: string;
-  label?: string;
-  typeOfConnector?: string;
+  oem: string;
+  chargerType: string;
+  powerRating: string;
+  numConnectors: number;
+  operationalStatus: string;
+  firmware: string;
+  label: string;
+  typeOfConnector: string;
 }
 
-/* ----------------------------
-   Store interface
----------------------------- */
+// --- Store Interface ---
 interface DataStore {
-  // state
   companies: Company[];
   stations: Station[];
   chargers: Charger[];
   isLoading: boolean;
   isInitialized: boolean;
 
-  // CRUD methods
-  fetchCompanies: (force?: boolean) => Promise<void>;
+  selectedCompany: Company | null;
+  selectedStation: Station | null;
+  selectedCharger: Charger | null;
+
+  fetchCompanies: (forceRefresh?: boolean) => Promise<void>;
   fetchStationsByCompany: (companyId: string) => Promise<void>;
   fetchChargersByStation: (stationId: string) => Promise<void>;
 
-  createCompany: (c: Partial<Company>) => Promise<Company>;
-  updateCompany: (id: string, updates: Partial<Company>) => Promise<Company>;
-  deleteCompany: (id: string) => Promise<void>;
+  createCompany: (company: Company) => Promise<void>;
+  updateCompany: (
+    companyId: string,
+    updates: Partial<Company>
+  ) => Promise<void>;
+  deleteCompany: (companyId: string) => Promise<void>;
 
-  createStation: (s: Partial<Station>) => Promise<Station>;
-  updateStation: (id: string, updates: Partial<Station>) => Promise<Station>;
-  deleteStation: (id: string) => Promise<void>;
+  /** 🚀 ADD THESE */
+  createStation: (station: Station) => Promise<void>;
+  updateStation: (
+    stationId: string,
+    updates: Partial<Station>
+  ) => Promise<void>;
+  deleteStation: (stationId: string) => Promise<void>;
 
-  createCharger: (c: Partial<Charger>) => Promise<Charger>;
-  updateCharger: (id: string, updates: Partial<Charger>) => Promise<Charger>;
-  deleteCharger: (id: string) => Promise<void>;
-
-  setCompanies: (c: Company[]) => void;
+  setSelectedCompany: (company: Company | null) => void;
+  setSelectedStation: (station: Station | null) => void;
+  setSelectedCharger: (charger: Charger | null) => void;
 }
 
-/* ----------------------------
-   Toggle Mock or Real API
-   (For now we use mock provider)
----------------------------- */
-const USE_MOCK = true;
+// --- Mock API Functions ---
+const delay = (ms: number = 500) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
-/* ----------------------------
-   In-memory mock DB (module-level keeps it during session)
----------------------------- */
-const mockDB = {
-  companies: <Company[]>[
+const mockFetchCompanies = async (): Promise<Company[]> => {
+  await delay();
+  return [
     {
       id: "host-1",
       name: "Aryan Hotel Group",
@@ -106,211 +104,153 @@ const mockDB = {
       currency: "INR",
       timezone: "IST",
     },
-  ],
-  stations: <Station[]>[
-    {
-      id: "station-a",
-      companyId: "host-1",
-      stationName: "Aryan Hotel Station",
-      address: "Jaipur Road",
-      locationAxis: "123.4546N, 78.9012E",
-      state: "Rajasthan",
-      city: "Jaipur",
-      pincode: "302020",
-      accessType: "Public",
-      openingHours: "24Hrs",
-      stationVisibility: "Enable",
-      amenities: "Wifi",
-    },
-  ],
-  chargers: <Charger[]>[
-    {
-      id: "charger-1",
-      stationId: "station-a",
-      ocppId: "OCCP-ARYAN-001",
-      oem: "Exicom",
-      chargerType: "DC",
-      powerRating: "60kW",
-      numConnectors: 2,
-      operationalStatus: "Active",
-      firmware: "4.0.3",
-      label: "Fast Charger",
-      typeOfConnector: "CCS2",
-    },
-  ],
+  ];
 };
 
-/* ----------------------------
-   Helpers (mock provider)
----------------------------- */
-const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const mock = {
-  async fetchCompanies() {
-    await delay();
-    // return shallow clone
-    return JSON.parse(JSON.stringify(mockDB.companies)) as Company[];
-  },
-  async fetchStations(companyId?: string) {
-    await delay();
-    return JSON.parse(
-      JSON.stringify(
-        companyId
-          ? mockDB.stations.filter((s) => s.companyId === companyId)
-          : mockDB.stations
-      )
-    ) as Station[];
-  },
-  async fetchChargers(stationId?: string) {
-    await delay();
-    return JSON.parse(
-      JSON.stringify(
-        stationId
-          ? mockDB.chargers.filter((c) => c.stationId === stationId)
-          : mockDB.chargers
-      )
-    ) as Charger[];
-  },
-  async createCompany(payload: Partial<Company>) {
-    await delay();
-    const c: Company = {
-      id: payload.id ?? `company-${Date.now()}`,
-      name: payload.name ?? "Untitled",
-      type: payload.type ?? "Host",
-      taxId: payload.taxId,
-      timezone: payload.timezone ?? "IST",
-      currency: payload.currency ?? "INR",
-      pincode: payload.pincode ?? "",
-    };
-    mockDB.companies.push(c);
-    return JSON.parse(JSON.stringify(c)) as Company;
-  },
-  async updateCompany(id: string, updates: Partial<Company>) {
-    await delay();
-    mockDB.companies = mockDB.companies.map((c) =>
-      c.id === id ? { ...c, ...updates } : c
-    );
-    const updated = mockDB.companies.find((c) => c.id === id)!;
-    return JSON.parse(JSON.stringify(updated)) as Company;
-  },
-  async deleteCompany(id: string) {
-    await delay();
-    mockDB.companies = mockDB.companies.filter((c) => c.id !== id);
-  },
-
-  async createStation(payload: Partial<Station>) {
-    await delay();
-    const s: Station = {
-      id: payload.id ?? `station-${Date.now()}`,
-      companyId: payload.companyId ?? "",
-      stationName: payload.stationName ?? "Untitled Station",
-      address: payload.address ?? "",
-      locationAxis: payload.locationAxis,
-      state: payload.state,
-      city: payload.city,
-      pincode: payload.pincode,
-      accessType: payload.accessType,
-      openingHours: payload.openingHours,
-      stationVisibility: payload.stationVisibility,
-      amenities: payload.amenities,
-    };
-    mockDB.stations.push(s);
-    return JSON.parse(JSON.stringify(s)) as Station;
-  },
-  async updateStation(id: string, updates: Partial<Station>) {
-    await delay();
-    mockDB.stations = mockDB.stations.map((s) =>
-      s.id === id ? { ...s, ...updates } : s
-    );
-    return JSON.parse(
-      JSON.stringify(mockDB.stations.find((s) => s.id === id)!)
-    ) as Station;
-  },
-  async deleteStation(id: string) {
-    await delay();
-    mockDB.stations = mockDB.stations.filter((s) => s.id !== id);
-  },
-
-  async createCharger(payload: Partial<Charger>) {
-    await delay();
-    const c: Charger = {
-      id: payload.id ?? `charger-${Date.now()}`,
-      stationId: payload.stationId ?? "",
-      ocppId: payload.ocppId ?? "",
-      oem: payload.oem,
-      chargerType: payload.chargerType,
-      powerRating: payload.powerRating,
-      numConnectors: payload.numConnectors ?? 1,
-      operationalStatus: payload.operationalStatus,
-      firmware: payload.firmware,
-      label: payload.label,
-      typeOfConnector: payload.typeOfConnector,
-    };
-    mockDB.chargers.push(c);
-    return JSON.parse(JSON.stringify(c)) as Charger;
-  },
-  async updateCharger(id: string, updates: Partial<Charger>) {
-    await delay();
-    mockDB.chargers = mockDB.chargers.map((c) =>
-      c.id === id ? { ...c, ...updates } : c
-    );
-    return JSON.parse(
-      JSON.stringify(mockDB.chargers.find((c) => c.id === id)!)
-    ) as Charger;
-  },
-  async deleteCharger(id: string) {
-    await delay();
-    mockDB.chargers = mockDB.chargers.filter((c) => c.id !== id);
-  },
+const mockFetchStations = async (companyId: string): Promise<Station[]> => {
+  await delay();
+  if (companyId === "host-1") {
+    return [
+      {
+        id: "station-a",
+        companyId: "host-1",
+        stationName: "Aryan Hotel Station",
+        address: "Jaipur Road",
+        locationAxis: "123.4546N, 78.9012E",
+        state: "Rajasthan",
+        city: "Jaipur",
+        pincode: "302020",
+        accessType: "Public",
+        openingHours: "24Hrs",
+        stationVisibility: "Enable",
+        amenities: "Wifi",
+      },
+      {
+        id: "station-b",
+        companyId: "host-1",
+        stationName: "Avani Resorts Station",
+        address: "Kangra Valley",
+        locationAxis: "32.1234N, 76.5678E",
+        state: "Himachal Pradesh",
+        city: "Kangra",
+        pincode: "176001",
+        accessType: "Public",
+        openingHours: "24Hrs",
+        stationVisibility: "Enable",
+        amenities: "Wifi",
+      },
+    ];
+  }
+  return [];
+};
+const mockCreateStation = async (station: Station): Promise<Station> => {
+  await delay();
+  console.log("API: Creating station", station);
+  return station;
 };
 
-/* ----------------------------
-   (Optional) real provider template
-   Replace methods with fetch()/axios calls when ready
----------------------------- */
-const real = {
-  async fetchCompanies() {
-    throw new Error("Implement real API");
-  },
-  async fetchStations(companyId?: string) {
-    throw new Error("Implement real API");
-  },
-  async fetchChargers(stationId?: string) {
-    throw new Error("Implement real API");
-  },
-  async createCompany(payload: Partial<Company>) {
-    throw new Error("Implement real API");
-  },
-  async updateCompany(id: string, updates: Partial<Company>) {
-    throw new Error("Implement real API");
-  },
-  // ... and so on
+const mockUpdateStation = async (
+  stationId: string,
+  updates: Partial<Station>
+): Promise<Partial<Station>> => {
+  await delay();
+  console.log("API: Updating station", stationId, updates);
+  return updates;
 };
 
-/* ----------------------------
-   Provider resolves to mock or real
----------------------------- */
-const provider: typeof mock = USE_MOCK ? mock : real;
+const mockDeleteStation = async (stationId: string): Promise<void> => {
+  await delay();
+  console.log("API: Deleting station", stationId);
+};
 
-/* ----------------------------
-   Zustand store
----------------------------- */
+const mockFetchChargers = async (stationId: string): Promise<Charger[]> => {
+  await delay();
+  if (stationId === "station-a") {
+    return [
+      {
+        id: "charger-1",
+        stationId: "station-a",
+        ocppId: "OCCP-ARYAN-001",
+        oem: "Exicom",
+        chargerType: "DC",
+        powerRating: "60kW",
+        numConnectors: 2,
+        operationalStatus: "Active",
+        firmware: "4.0.3",
+        label: "Fast Charger",
+        typeOfConnector: "CCS2",
+      },
+      {
+        id: "charger-2",
+        stationId: "station-a",
+        ocppId: "OCCP-ARYAN-002",
+        oem: "Servotech",
+        chargerType: "AC",
+        powerRating: "7.4kW",
+        numConnectors: 1,
+        operationalStatus: "Available",
+        firmware: "4.0.3",
+        label: "Slow Charger",
+        typeOfConnector: "Type 2",
+      },
+    ];
+  }
+  return [];
+};
+
+const mockCreateCompany = async (company: Company): Promise<Company> => {
+  await delay();
+  console.log("API: Creating company", company);
+  return company;
+};
+
+const mockUpdateCompany = async (
+  companyId: string,
+  updates: Partial<Company>
+): Promise<Partial<Company>> => {
+  await delay();
+  console.log("API: Updating company", companyId, updates);
+  return updates;
+};
+
+const mockDeleteCompany = async (companyId: string): Promise<void> => {
+  await delay();
+  console.log("API: Deleting company", companyId);
+};
+
+// --- Zustand Store ---
 export const useDataStore = create<DataStore>((set, get) => ({
+  // Initial State
   companies: [],
   stations: [],
   chargers: [],
   isLoading: false,
-  isInitialized: false,
+  isInitialized: false, // Track initialization
+  selectedCompany: null,
+  selectedStation: null,
+  selectedCharger: null,
 
-  fetchCompanies: async (force = false) => {
+  // Fetch Methods
+  fetchCompanies: async (forceRefresh: boolean = false) => {
     const { isInitialized } = get();
-    if (isInitialized && !force) return;
+
+    // Only fetch if not already initialized OR if force refresh is requested
+    if (isInitialized && !forceRefresh) {
+      console.log("Companies already initialized, skipping fetch");
+      return;
+    }
+
     set({ isLoading: true });
     try {
-      const companies = await provider.fetchCompanies();
+      const companies = await mockFetchCompanies();
       set({ companies, isLoading: false, isInitialized: true });
-    } catch (e) {
-      console.error(e);
+      console.log(
+        forceRefresh
+          ? "Companies refreshed"
+          : "Companies fetched and initialized"
+      );
+    } catch (error) {
+      console.error("Error fetching companies:", error);
       set({ isLoading: false });
     }
   },
@@ -318,10 +258,10 @@ export const useDataStore = create<DataStore>((set, get) => ({
   fetchStationsByCompany: async (companyId: string) => {
     set({ isLoading: true });
     try {
-      const stations = await provider.fetchStations(companyId);
+      const stations = await mockFetchStations(companyId);
       set({ stations, isLoading: false });
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error("Error fetching stations:", error);
       set({ isLoading: false });
     }
   },
@@ -329,150 +269,163 @@ export const useDataStore = create<DataStore>((set, get) => ({
   fetchChargersByStation: async (stationId: string) => {
     set({ isLoading: true });
     try {
-      const chargers = await provider.fetchChargers(stationId);
+      const chargers = await mockFetchChargers(stationId);
       set({ chargers, isLoading: false });
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(`Error fetching chargers for station ${stationId}:`, error);
       set({ isLoading: false });
     }
   },
 
-  createCompany: async (payload) => {
+  // Company CRUD
+  createCompany: async (company: Company) => {
     set({ isLoading: true });
     try {
-      const created = await provider.createCompany(payload);
-      set((s) => ({ companies: [...s.companies, created], isLoading: false }));
-      return created;
-    } catch (e) {
-      set({ isLoading: false });
-      throw e;
-    }
-  },
-
-  updateCompany: async (id, updates) => {
-    set({ isLoading: true });
-    try {
-      const updated = await provider.updateCompany(id, updates);
-      // update global state (single source of truth)
-      set((s) => ({
-        companies: s.companies.map((c) => (c.id === id ? updated : c)),
+      const newCompany = await mockCreateCompany(company);
+      set((state) => ({
+        companies: [...state.companies, newCompany],
         isLoading: false,
       }));
-      return updated;
-    } catch (e) {
+      console.log("Company created successfully");
+    } catch (error) {
+      console.error("Error creating company:", error);
       set({ isLoading: false });
-      throw e;
+      throw error;
     }
   },
 
-  deleteCompany: async (id) => {
+  updateCompany: async (companyId, updates) => {
     set({ isLoading: true });
+
     try {
-      await provider.deleteCompany(id);
-      set((s) => ({
-        companies: s.companies.filter((c) => c.id !== id),
+      await mockUpdateCompany(companyId, updates);
+
+      set((state) => ({
+        companies: state.companies.map((c) =>
+          c.id === companyId ? { ...c, ...updates } : c
+        ),
+        selectedCompany:
+          state.selectedCompany?.id === companyId
+            ? { ...state.selectedCompany, ...updates }
+            : state.selectedCompany,
         isLoading: false,
       }));
-    } catch (e) {
+
+      console.log("Company updated successfully");
+    } catch (error) {
+      console.error("Error updating company:", error);
       set({ isLoading: false });
-      throw e;
     }
   },
 
-  createStation: async (payload) => {
+  deleteCompany: async (companyId: string) => {
     set({ isLoading: true });
     try {
-      const created = await provider.createStation(payload);
-      set((s) => ({ stations: [...s.stations, created], isLoading: false }));
-      return created;
-    } catch (e) {
-      set({ isLoading: false });
-      throw e;
-    }
-  },
-
-  updateStation: async (id, updates) => {
-    set({ isLoading: true });
-    try {
-      const updated = await provider.updateStation(id, updates);
-      set((s) => ({
-        stations: s.stations.map((st) => (st.id === id ? updated : st)),
+      await mockDeleteCompany(companyId);
+      set((state) => ({
+        companies: state.companies.filter(
+          (company) => company.id !== companyId
+        ),
+        selectedCompany:
+          state.selectedCompany?.id === companyId
+            ? null
+            : state.selectedCompany,
         isLoading: false,
       }));
-      return updated;
-    } catch (e) {
+      console.log("Company deleted successfully");
+    } catch (error) {
+      console.error("Error deleting company:", error);
       set({ isLoading: false });
-      throw e;
+      throw error;
     }
   },
-
-  deleteStation: async (id) => {
+  createStation: async (station) => {
     set({ isLoading: true });
     try {
-      await provider.deleteStation(id);
-      set((s) => ({
-        stations: s.stations.filter((st) => st.id !== id),
+      const newStation = await mockCreateStation(station);
+
+      set((state) => ({
+        stations: [...state.stations, newStation],
         isLoading: false,
       }));
-    } catch (e) {
+
+      console.log("Station created successfully");
+    } catch (error) {
+      console.error("Error creating station:", error);
       set({ isLoading: false });
-      throw e;
+      throw error;
     }
   },
 
-  createCharger: async (payload) => {
+  updateStation: async (stationId, updates) => {
     set({ isLoading: true });
     try {
-      const created = await provider.createCharger(payload);
-      set((s) => ({ chargers: [...s.chargers, created], isLoading: false }));
-      return created;
-    } catch (e) {
-      set({ isLoading: false });
-      throw e;
-    }
-  },
+      await mockUpdateStation(stationId, updates);
 
-  updateCharger: async (id, updates) => {
-    set({ isLoading: true });
-    try {
-      const updated = await provider.updateCharger(id, updates);
-      set((s) => ({
-        chargers: s.chargers.map((c) => (c.id === id ? updated : c)),
+      set((state) => ({
+        stations: state.stations.map((s) =>
+          s.id === stationId ? { ...s, ...updates } : s
+        ),
+        selectedStation:
+          state.selectedStation?.id === stationId
+            ? { ...state.selectedStation, ...updates }
+            : state.selectedStation,
         isLoading: false,
       }));
-      return updated;
-    } catch (e) {
+
+      console.log("Station updated successfully");
+    } catch (error) {
+      console.error("Error updating station:", error);
       set({ isLoading: false });
-      throw e;
+      throw error;
     }
   },
 
-  deleteCharger: async (id) => {
+  deleteStation: async (stationId) => {
     set({ isLoading: true });
     try {
-      await provider.deleteCharger(id);
-      set((s) => ({
-        chargers: s.chargers.filter((c) => c.id !== id),
+      await mockDeleteStation(stationId);
+
+      set((state) => ({
+        stations: state.stations.filter((s) => s.id !== stationId),
+        selectedStation:
+          state.selectedStation?.id === stationId
+            ? null
+            : state.selectedStation,
         isLoading: false,
       }));
-    } catch (e) {
+
+      console.log("Station deleted successfully");
+    } catch (error) {
+      console.error("Error deleting station:", error);
       set({ isLoading: false });
-      throw e;
+      throw error;
     }
   },
 
-  setCompanies: (companies) => set({ companies }),
+  // Selection Methods
+  setSelectedCompany: (company) => set({ selectedCompany: company }),
+  setSelectedStation: (station) => set({ selectedStation: station }),
+  setSelectedCharger: (charger) => set({ selectedCharger: charger }),
 }));
 
-/* ----------------------------
-   Hook to initialize once (call in root layout)
----------------------------- */
+// Helper hook for initializing data once in the app
 export const useInitializeStore = () => {
-  const fetch = useDataStore((s) => s.fetchCompanies);
-  const initialized = useDataStore((s) => s.isInitialized);
+  const { fetchCompanies, isInitialized } = useDataStore();
+
   React.useEffect(() => {
-    if (!initialized) fetch();
-  }, [fetch, initialized]);
+    if (!isInitialized) {
+      fetchCompanies();
+    }
+  }, [fetchCompanies, isInitialized]);
 };
 
-export default useDataStore;
+// Usage in React components:
+// In your main App or layout component (run once):
+// useInitializeStore();
+
+// In other components:
+// const { companies, isLoading, updateCompany } = useDataStore();
+
+// To manually force refresh:
+// fetchCompanies(true);

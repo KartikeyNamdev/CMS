@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Card from "@/app/components/Card";
 import { JsonDrawer } from "./JsonDrawer";
 import useChargerLogs, { ChargerLog } from "@/hooks/useChargerLogs";
@@ -11,10 +11,33 @@ export const ChargerLogsSection = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerData, setDrawerData] = useState(null);
 
+  // --- Date Filters ---
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
+
   const openDrawer = (rawJson: object) => {
     setDrawerData(rawJson);
     setDrawerOpen(true);
   };
+
+  // --- Filtered Logs (Memoized) ---
+  const filteredLogs = useMemo(() => {
+    return logs.filter((log: ChargerLog) => {
+      const requestTime = new Date(log.requestTimestamp).getTime();
+
+      if (fromDate) {
+        const from = new Date(fromDate).getTime();
+        if (requestTime < from) return false;
+      }
+
+      if (toDate) {
+        const to = new Date(toDate).getTime();
+        if (requestTime > to) return false;
+      }
+
+      return true;
+    });
+  }, [logs, fromDate, toDate]);
 
   return (
     <>
@@ -27,7 +50,7 @@ export const ChargerLogsSection = () => {
       />
 
       <Card className="p-6 mt-6 bg-black/40 border border-gray-300">
-        {/* Header */}
+        {/* Header Row */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-700">Charger Logs</h2>
 
@@ -42,6 +65,41 @@ export const ChargerLogsSection = () => {
               ⬇️
             </button>
           </div>
+        </div>
+
+        {/* --- DATE FILTER BAR --- */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="flex flex-col text-gray-600">
+            <label className="text-sm mb-1">From Date</label>
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              className="px-3 py-2 bg-white/10 border border-gray-300 rounded-lg text-gray-600"
+            />
+          </div>
+
+          <div className="flex flex-col text-gray-600">
+            <label className="text-sm mb-1">To Date</label>
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className="px-3 py-2 bg-white/10 border border-gray-300 rounded-lg text-gray-600"
+            />
+          </div>
+
+          {(fromDate || toDate) && (
+            <button
+              onClick={() => {
+                setFromDate("");
+                setToDate("");
+              }}
+              className="mt-6 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+              Clear
+            </button>
+          )}
         </div>
 
         {/* Loading */}
@@ -67,7 +125,7 @@ export const ChargerLogsSection = () => {
               </thead>
 
               <tbody>
-                {logs.map((log: ChargerLog, index: number) => (
+                {filteredLogs.map((log: ChargerLog, index: number) => (
                   <tr
                     key={index}
                     className="border-b border-gray-300 hover:bg-white/5 text-gray-600"
@@ -96,6 +154,17 @@ export const ChargerLogsSection = () => {
                     <td className="py-4">{log.responseTimestamp}</td>
                   </tr>
                 ))}
+
+                {filteredLogs.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={8}
+                      className="py-8 text-center text-gray-500 italic"
+                    >
+                      No logs match your date range.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

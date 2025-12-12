@@ -127,50 +127,42 @@ const AllChargersTable = () => {
     <div style={{ height: 260, width: "100%" }} className="mt-4">
       {/* 🔥 YOUR ORIGINAL CSS THEME INSERTED */}
       <style jsx global>{`
-        .custom-dabas-theme {
+        /* Fix AG Grid dropdown/filter menu transparency */
+        .ag-theme-alpine-dark.custom-dabas-theme .ag-menu,
+        .ag-theme-alpine-dark.custom-dabas-theme .ag-filter-toolpanel,
+        .ag-theme-alpine-dark.custom-dabas-theme .ag-rich-select,
+        .ag-theme-alpine-dark.custom-dabas-theme .ag-popup {
+          background-color: #2b2b2b !important; /* dark grey background */
+          color: white !important;
+          border: 1px solid #555 !important;
+        }
+
+        /* Fix select dropdown list items */
+        .ag-rich-select-list {
+          background-color: #2b2b2b !important;
+        }
+
+        .ag-rich-select-list-item {
+          background-color: #2b2b2b !important;
+          color: white !important;
+        }
+
+        .ag-rich-select-list-item:hover {
+          background-color: #444 !important;
+        }
+
+        /* Ensure text inside filter input is visible */
+        .ag-filter-body {
           --ag-background-color: transparent;
-          --ag-header-background-color: #6d2021;
-          --ag-row-hover-color: rgba(178, 40, 40, 0.7);
-          --ag-border-color: #8e8d8d;
-          --ag-foreground-color: white;
-          --ag-hover-foreground-color: white;
-          --ag-font-size: 14px;
-          --ag-header-foreground-color: white;
-          --ag-row-border-color: #868484;
-          --ag-row-border-style: none;
-          --ag-footer-color: #black;
+        }
+        ,
+        .ag-input-field-input {
+          color: white !important;
         }
 
-        .custom-dabas-theme .ag-header-cell {
-          padding-left: 10px;
-          padding-right: 10px;
-          font-weight: 600;
-        }
-
-        .custom-dabas-theme .ag-header-row {
-          background-color: #b22828 !important;
-          height: 40px;
-        }
-
-        /* .custom-dabas-theme .ag-row-odd {
-          background: #9d3536 !important;
-        }
-
-        .custom-dabas-theme .ag-row-even {
-          background: #6d2021 !important;
-        } */
-
+        /* Restore missing row color — your line had invalid CSS */
         .custom-dabas-theme .ag-row {
-          background-color: sparent tran !important;
-        }
-
-        .custom-dabas-theme .ag-row-selected {
-          background: rgba(255, 0, 0, 0.4) !important;
-        }
-
-        .custom-dabas-theme .ag-paging-panel {
-          color: black;
-          background-color: transparent;
+          background-color: transparent !important;
         }
       `}</style>
 

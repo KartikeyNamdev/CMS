@@ -2,6 +2,7 @@
 import Amenities from "@/app/components/Amenities";
 import Card from "@/app/components/Card";
 import ChargerDetails from "@/app/components/ChargerDetails";
+import SlideBtn from "@/app/components/SlideBtn";
 
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
@@ -55,11 +56,19 @@ export default function StationPage({
 
   return (
     <div className="p-6 lg:px-60">
-      <div className="flex gap-6 text-white  p-4">
-        <Link href={"/charger/station"}>
-          <ArrowLeftIcon className="w-6 h-6 text-gray-600 hover:text-black" />
-        </Link>
-        <p className="text-2xl text-black">Station Profile</p>
+      <div className="flex gap-6 text-white  p-4 justify-between ">
+        <div className="flex gap-6">
+          <Link href={"/charger/station"}>
+            <ArrowLeftIcon className="w-6 h-6 text-gray-600 hover:text-black" />
+          </Link>
+          <p className="text-2xl text-black">Station Profile</p>
+        </div>
+        <div className="flex gap-6">
+          <button className="text-sm font-semibold text-gray-500 hover:text-black">
+            Hub visibility
+          </button>
+          <SlideBtn />
+        </div>
       </div>
       <Card>
         <div className="grid grid-cols-4 gap-4">

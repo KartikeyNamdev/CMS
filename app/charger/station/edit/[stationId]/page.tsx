@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import useDataStore, { Station } from "@/store/useDataStore";
+import { Station, useDataStore } from "@/store/useDataStore";
 import DynamicStationForm, {
   StationFormData,
 } from "@/app/charger/station/new/page";
@@ -18,7 +18,8 @@ export default function StationEditPage() {
 
   const onSubmit = async (data: StationFormData) => {
     try {
-      await updateStation(stationId as string, data);
+      await updateStation(stationId as string, data as Partial<Station>);
+
       router.push("/charger/station");
     } catch (err) {
       console.error(err);

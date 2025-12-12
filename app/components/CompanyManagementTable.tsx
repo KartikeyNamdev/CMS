@@ -161,15 +161,15 @@ export default function CompanyManagementTable() {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Company Management
           </h1>
-          <p className="text-gray-400">Manage all companies in the system</p>
+          <p className="text-gray-500">Manage all companies in the system</p>
         </div>
-        <button
+        {/* <button
           onClick={handleCreateNew}
           className="flex items-center gap-2 px-6 py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors"
         >
           <Plus size={20} />
           Add New Company
-        </button>
+        </button> */}
       </div>
 
       {isLoading ? (

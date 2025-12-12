@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Card from "@/app/components/Card";
 import FormInput from "@/app/components/FormInput";
 import { Save } from "lucide-react";
-import useDataStore, { CompanyType } from "@/store/useDataStore";
+import { CompanyType, useDataStore } from "@/store/useDataStore";
 
 export default function CompanyNewPage() {
   const router = useRouter();

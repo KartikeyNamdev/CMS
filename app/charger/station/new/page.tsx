@@ -7,7 +7,7 @@ import FormInput from "@/app/components/FormInput";
 import MultipleSelectCheckmarks from "@/app/components/Checkmark";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useDataStore from "@/store/useDataStore";
+import { Station, useDataStore } from "@/store/useDataStore";
 
 // --- Selected Indian States Data ---
 const statesData = [
@@ -672,7 +672,8 @@ export function AddStationForm() {
   const onSubmit = async (data: StationFormData) => {
     // map partial form to Station model expected
     try {
-      const payload = {
+      const payload: Station = {
+        id: "",
         companyId: data["companyId"] ?? "", // if your form collects companyId (ensure)
         stationName: data.stationId ?? "",
         address: `${data.street ?? ""} ${data.area ?? ""}`,
@@ -682,8 +683,9 @@ export function AddStationForm() {
         accessType: data.accessType,
         openingHours: data.openingHours,
         stationVisibility: "Enable",
+        locationAxis: "",
         // convert amenities array to a comma-separated string to match Station.amenities type
-        amenities: (data.amenities ?? []).join(","),
+        amenities: data.amenities,
       };
       await createStation(payload);
       router.push("/charger/station");
