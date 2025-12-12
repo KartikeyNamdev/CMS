@@ -1,61 +1,59 @@
 "use client";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Card from "@/app/components/Card";
 import FormInput from "@/app/components/FormInput";
+import useDataStore, { Company } from "@/store/useDataStore";
 import { Save } from "lucide-react";
-import useDataStore, { CompanyType } from "@/store/useDataStore";
 
-export default function CompanyNewPage() {
+export default function CompanyEditPage() {
+  const params = useParams();
+  const companyId = params?.companyId as string;
   const router = useRouter();
-  const createCompany = useDataStore((s) => s.createCompany);
-  const [formData, setFormData] = useState({
-    id: "",
-    name: "",
-    type: "Host" as CompanyType,
-    taxId: "",
-    timezone: "IST",
-    currency: "INR",
-    pincode: "",
-  });
+
+  const companies = useDataStore((s) => s.companies);
+  const updateCompany = useDataStore((s) => s.updateCompany);
+  const [form, setForm] = useState<Partial<Company> | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (k: string, v: string) =>
-    setFormData((p) => ({ ...p, [k]: v }));
+  useEffect(() => {
+    const c = companies.find((x) => x.id === companyId);
+    if (!c) {
+      // If companies not loaded yet, don't redirect immediately (store initialization should be called globally)
+      setForm(null);
+      return;
+    }
+    setForm(c);
+  }, [companyId, companies]);
+
+  const handleChange = (k: keyof Company, v: string) =>
+    setForm((p) => (p ? { ...p, [k]: v } : p));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form) return;
     setLoading(true);
     try {
-      // Basic validation
-      if (!formData.id || !formData.name) {
-        alert("id and name required");
-        setLoading(false);
-        return;
-      }
-      await createCompany(formData);
+      await updateCompany(companyId, form);
       router.push("/company");
     } catch (err) {
       console.error(err);
-      alert("Failed to create");
+      alert("Failed to update");
     } finally {
       setLoading(false);
     }
   };
 
+  if (!form) return <p className="p-8">Loading…</p>;
+
   return (
     <div className="p-8">
-      <Card title="Create Company">
+      <Card title={`Edit ${form.name}`}>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <FormInput
-            label="Company ID"
-            value={formData.id}
-            onChange={(e) => handleChange("id", e.target.value)}
-            required
-          />
+          <FormInput label="Company ID" value={form.id} disabled />
           <FormInput
             label="Name"
-            value={formData.name}
+            value={form.name}
             onChange={(e) => handleChange("name", e.target.value)}
             required
           />
@@ -64,28 +62,30 @@ export default function CompanyNewPage() {
             options={[
               { value: "Host", label: "Host" },
               { value: "CPO", label: "CPO" },
+              { value: "EMSP", label: "EMSP" },
+              { value: "Investor", label: "Investor" },
             ]}
-            value={formData.type}
-            onChange={(e) => handleChange("type", e.target.value)}
+            value={form.type as string}
+            onChange={(e) => handleChange("type", e.target.value as string)}
           />
           <FormInput
             label="Tax ID"
-            value={formData.taxId}
+            value={form.taxId}
             onChange={(e) => handleChange("taxId", e.target.value)}
           />
           <FormInput
             label="Timezone"
-            value={formData.timezone}
+            value={form.timezone}
             onChange={(e) => handleChange("timezone", e.target.value)}
           />
           <FormInput
             label="Currency"
-            value={formData.currency}
+            value={form.currency}
             onChange={(e) => handleChange("currency", e.target.value)}
           />
           <FormInput
             label="Pincode"
-            value={formData.pincode}
+            value={form.pincode}
             onChange={(e) => handleChange("pincode", e.target.value)}
           />
           <div className="flex justify-end gap-3">
@@ -102,10 +102,10 @@ export default function CompanyNewPage() {
               disabled={loading}
             >
               {loading ? (
-                "Creating…"
+                "Saving…"
               ) : (
                 <>
-                  <Save size={16} /> Create
+                  <Save size={16} /> Update
                 </>
               )}
             </button>

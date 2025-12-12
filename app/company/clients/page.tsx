@@ -7,6 +7,7 @@ import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 import DropdownFilter from "../../components/DropdownFilter";
 import Link from "next/link";
 import ZustandTestComponent from "@/app/components/ZustandTestComponent";
+import CompanyManagementTable from "@/app/components/CompanyManagementTable";
 
 // Mock Data for filters
 const clientTypeOptions = [
@@ -84,7 +85,9 @@ const ClientPage = () => {
       </div>
 
       {/* --- ROW 3: CONTENT AREA --- */}
-      <div className="mt-12 text-center"></div>
+
+      <CompanyManagementTable />
+
       <ZustandTestComponent />
     </div>
   );

@@ -57,7 +57,7 @@ export default function AgDynamicTable({
 
   return (
     <div
-      className="ag-theme-quartz-dark border border-gray-700 rounded-xl mt-6"
+      className=" border border-gray-300 rounded-xl mt-6"
       style={{ height: 500, width: "100%" }}
     >
       <AgGridReact

@@ -2,9 +2,11 @@ import React from "react";
 
 interface FormInputProps {
   label: string;
-  placeholder: string;
+  placeholder?: string;
   type?: string;
   required?: boolean;
+  disabled?: boolean;
+  maxLength?: number;
   value?: string;
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -112,8 +114,10 @@ export const MultipeChoosableInput = ({
 const FormInput: React.FC<FormInputProps> = ({
   label,
   placeholder,
+  disabled,
   type = "text",
   required = false,
+  maxLength,
   options,
   radioName,
 }) => {
@@ -126,7 +130,7 @@ const FormInput: React.FC<FormInputProps> = ({
           className="h-10 bg-white/30 text-gray-700 border border-gray-400 p-2 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors appearance-none"
           required={required}
         >
-          <option value="" className="bg-white" disabled hidden>
+          <option value="" className="bg-white text-gray-300" disabled hidden>
             {placeholder}
           </option>
           {options.map((opt) => (
@@ -147,8 +151,9 @@ const FormInput: React.FC<FormInputProps> = ({
       <input
         type={type}
         placeholder={placeholder}
+        maxLength={maxLength}
         required={required}
-        className="h-10 bg-white/40 text-gray-700 placeholder-gray-600 border border-gray-400 p-3 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors"
+        className="h-10 bg-white/40 text-gray-700 placeholder-gray-400 border border-gray-400 p-3 rounded-lg focus:ring-red-300 focus:border-red-300 focus:outline-none transition-colors"
       />
     );
   };

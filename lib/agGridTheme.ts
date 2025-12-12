@@ -1,7 +1,7 @@
 import { themeQuartz } from "ag-grid-community";
 
 export const themeDabas = themeQuartz.withParams({
-  backgroundColor: "#white",
+  backgroundColor: "transaparent",
   foregroundColor: "black",
 
   headerBackgroundColor: "#b22828",

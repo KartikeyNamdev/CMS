@@ -26,18 +26,21 @@ const ZustandTestComponent = () => {
   // 2. Fetch companies on mount
   useEffect(() => {
     fetchCompanies();
+    console.log(companies);
   }, [fetchCompanies]);
 
   // 3. Fetch stations when a company is selected
   useEffect(() => {
     if (targetCompanyId) {
       fetchStationsByCompany(targetCompanyId);
+      console.log(stations);
     }
   }, [targetCompanyId, fetchStationsByCompany]);
 
   useEffect(() => {
     if (targetStationId) {
       fetchChargersByStation(targetStationId);
+      console.log(chargers);
     }
   }, [targetStationId, fetchChargersByStation]);
 
