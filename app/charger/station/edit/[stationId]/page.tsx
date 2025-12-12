@@ -11,7 +11,7 @@ export default function StationEditPage() {
   const router = useRouter();
 
   const stations = useDataStore((s) => s.stations);
-  const updateStation = useDataStore((s) => s.updateStation);
+  const updateStation = useDataStore((s) => s.updateCompany);
   const initial = useMemo<Station | null>(() => {
     return stations.find((x) => x.id === stationId) ?? null;
   }, [stations, stationId]);

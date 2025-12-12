@@ -38,7 +38,7 @@ const DiscountRenderer = (params: CustomCellRendererProps<Charger>) => {
   return (
     <Link
       href={`/charger/chargers/profile/${name}`}
-      className="text-blue-400 hover:text-blue-300 "
+      className="text-green-500 hover:text-green-700 "
     >
       {name}%
     </Link>
