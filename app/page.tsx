@@ -1,12 +1,15 @@
 "use client";
 
+import { useInitializeStore } from "@/store/useDataStore";
 import { BoltIcon, UserIcon } from "@heroicons/react/24/solid";
 import { Building, ChartArea, LogsIcon, Receipt } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { JSX } from "react";
+import React from "react";
 
 export default function Home() {
+  useInitializeStore(); // Initialize once at root
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* --- Background Glow --- */}

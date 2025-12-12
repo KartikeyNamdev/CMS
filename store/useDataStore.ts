@@ -23,12 +23,14 @@ export interface Station {
   state: string;
   city: string;
   pincode: string;
-  accessType: string;
+  accessType: "Public" | "Private";
   openingHours: string;
   stationVisibility: "Enable" | "Disable";
   amenities: string;
 }
-
+type connectorType = {
+  connectorStatuses: string;
+};
 export interface Charger {
   id: string;
   stationId: string;
@@ -36,11 +38,12 @@ export interface Charger {
   oem: string;
   chargerType: string;
   powerRating: string;
-  numConnectors: number;
   operationalStatus: string;
   firmware: string;
   label: string;
-  typeOfConnector: string;
+  connector: connectorType[];
+  numConnectors: number;
+  discountOffer: number;
 }
 
 // --- Store Interface ---
@@ -49,8 +52,7 @@ interface DataStore {
   stations: Station[];
   chargers: Charger[];
   isLoading: boolean;
-  isInitialized: boolean;
-
+  isInitialized: boolean; // Flag to track if data has been loaded
   selectedCompany: Company | null;
   selectedStation: Station | null;
   selectedCharger: Charger | null;
@@ -58,33 +60,20 @@ interface DataStore {
   fetchCompanies: (forceRefresh?: boolean) => Promise<void>;
   fetchStationsByCompany: (companyId: string) => Promise<void>;
   fetchChargersByStation: (stationId: string) => Promise<void>;
-
   createCompany: (company: Company) => Promise<void>;
   updateCompany: (
     companyId: string,
     updates: Partial<Company>
   ) => Promise<void>;
   deleteCompany: (companyId: string) => Promise<void>;
-
-  /** 🚀 ADD THESE */
-  createStation: (station: Station) => Promise<void>;
-  updateStation: (
-    stationId: string,
-    updates: Partial<Station>
-  ) => Promise<void>;
-  deleteStation: (stationId: string) => Promise<void>;
-
   setSelectedCompany: (company: Company | null) => void;
   setSelectedStation: (station: Station | null) => void;
   setSelectedCharger: (charger: Charger | null) => void;
 }
 
 // --- Mock API Functions ---
-const delay = (ms: number = 500) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
 
 const mockFetchCompanies = async (): Promise<Company[]> => {
-  await delay();
   return [
     {
       id: "host-1",
@@ -108,7 +97,6 @@ const mockFetchCompanies = async (): Promise<Company[]> => {
 };
 
 const mockFetchStations = async (companyId: string): Promise<Station[]> => {
-  await delay();
   if (companyId === "host-1") {
     return [
       {
@@ -143,28 +131,8 @@ const mockFetchStations = async (companyId: string): Promise<Station[]> => {
   }
   return [];
 };
-const mockCreateStation = async (station: Station): Promise<Station> => {
-  await delay();
-  console.log("API: Creating station", station);
-  return station;
-};
-
-const mockUpdateStation = async (
-  stationId: string,
-  updates: Partial<Station>
-): Promise<Partial<Station>> => {
-  await delay();
-  console.log("API: Updating station", stationId, updates);
-  return updates;
-};
-
-const mockDeleteStation = async (stationId: string): Promise<void> => {
-  await delay();
-  console.log("API: Deleting station", stationId);
-};
 
 const mockFetchChargers = async (stationId: string): Promise<Charger[]> => {
-  await delay();
   if (stationId === "station-a") {
     return [
       {
@@ -178,7 +146,15 @@ const mockFetchChargers = async (stationId: string): Promise<Charger[]> => {
         operationalStatus: "Active",
         firmware: "4.0.3",
         label: "Fast Charger",
-        typeOfConnector: "CCS2",
+        discountOffer: 20,
+        connector: [
+          {
+            connectorStatuses: "Available",
+          },
+          {
+            connectorStatuses: "UnAvailable",
+          },
+        ],
       },
       {
         id: "charger-2",
@@ -191,7 +167,15 @@ const mockFetchChargers = async (stationId: string): Promise<Charger[]> => {
         operationalStatus: "Available",
         firmware: "4.0.3",
         label: "Slow Charger",
-        typeOfConnector: "Type 2",
+        discountOffer: 20,
+        connector: [
+          {
+            connectorStatuses: "UnAvailable",
+          },
+          {
+            connectorStatuses: "Available",
+          },
+        ],
       },
     ];
   }
@@ -199,7 +183,6 @@ const mockFetchChargers = async (stationId: string): Promise<Charger[]> => {
 };
 
 const mockCreateCompany = async (company: Company): Promise<Company> => {
-  await delay();
   console.log("API: Creating company", company);
   return company;
 };
@@ -208,13 +191,11 @@ const mockUpdateCompany = async (
   companyId: string,
   updates: Partial<Company>
 ): Promise<Partial<Company>> => {
-  await delay();
   console.log("API: Updating company", companyId, updates);
   return updates;
 };
 
 const mockDeleteCompany = async (companyId: string): Promise<void> => {
-  await delay();
   console.log("API: Deleting company", companyId);
 };
 
@@ -294,27 +275,40 @@ export const useDataStore = create<DataStore>((set, get) => ({
     }
   },
 
-  updateCompany: async (companyId, updates) => {
+  updateCompany: async (companyId: string, updates: Partial<Company>) => {
     set({ isLoading: true });
-
     try {
+      // Call the API
       await mockUpdateCompany(companyId, updates);
 
-      set((state) => ({
-        companies: state.companies.map((c) =>
-          c.id === companyId ? { ...c, ...updates } : c
-        ),
-        selectedCompany:
+      // Option 1: Optimistic update (update state immediately)
+      set((state) => {
+        const updatedCompanies = state.companies.map((company) =>
+          company.id === companyId ? { ...company, ...updates } : company
+        );
+
+        const updatedSelectedCompany =
           state.selectedCompany?.id === companyId
             ? { ...state.selectedCompany, ...updates }
-            : state.selectedCompany,
-        isLoading: false,
-      }));
+            : state.selectedCompany;
 
-      console.log("Company updated successfully");
+        console.log("Company updated successfully (optimistic)");
+
+        return {
+          companies: updatedCompanies,
+          selectedCompany: updatedSelectedCompany,
+          isLoading: false,
+        };
+      });
+
+      // Option 2: Refetch from server to get the latest data
+      await get().fetchCompanies(true); // Force refresh
+
+      console.log("Companies refetched after update");
     } catch (error) {
       console.error("Error updating company:", error);
       set({ isLoading: false });
+      throw error;
     }
   },
 
@@ -335,69 +329,6 @@ export const useDataStore = create<DataStore>((set, get) => ({
       console.log("Company deleted successfully");
     } catch (error) {
       console.error("Error deleting company:", error);
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-  createStation: async (station) => {
-    set({ isLoading: true });
-    try {
-      const newStation = await mockCreateStation(station);
-
-      set((state) => ({
-        stations: [...state.stations, newStation],
-        isLoading: false,
-      }));
-
-      console.log("Station created successfully");
-    } catch (error) {
-      console.error("Error creating station:", error);
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-
-  updateStation: async (stationId, updates) => {
-    set({ isLoading: true });
-    try {
-      await mockUpdateStation(stationId, updates);
-
-      set((state) => ({
-        stations: state.stations.map((s) =>
-          s.id === stationId ? { ...s, ...updates } : s
-        ),
-        selectedStation:
-          state.selectedStation?.id === stationId
-            ? { ...state.selectedStation, ...updates }
-            : state.selectedStation,
-        isLoading: false,
-      }));
-
-      console.log("Station updated successfully");
-    } catch (error) {
-      console.error("Error updating station:", error);
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-
-  deleteStation: async (stationId) => {
-    set({ isLoading: true });
-    try {
-      await mockDeleteStation(stationId);
-
-      set((state) => ({
-        stations: state.stations.filter((s) => s.id !== stationId),
-        selectedStation:
-          state.selectedStation?.id === stationId
-            ? null
-            : state.selectedStation,
-        isLoading: false,
-      }));
-
-      console.log("Station deleted successfully");
-    } catch (error) {
-      console.error("Error deleting station:", error);
       set({ isLoading: false });
       throw error;
     }

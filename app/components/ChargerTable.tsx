@@ -2,7 +2,7 @@
 
 const themeClass = "ag-theme-alpine-dark custom-dabas-theme";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { ColDef } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
@@ -10,15 +10,16 @@ import type { CustomCellRendererProps } from "ag-grid-react";
 import Link from "next/link";
 import ConnectorDialog from "./ConnectorDialog";
 import { CpuChipIcon } from "@heroicons/react/24/solid";
-import { useAllChargers, IChargerRow } from "@/hooks/useAllChargers";
+
+import { Charger, useDataStore } from "@/store/useDataStore";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 // -------- RENDERERS ----------
-const NameRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
-  const name = params.data?.chargerName;
-  const url = params.data?.url;
-  if (!name || !url) return <span>--</span>;
+const NameRenderer = (params: CustomCellRendererProps<Charger>) => {
+  const name = params.data?.ocppId;
+
+  if (!name) return <span>--</span>;
 
   return (
     <Link
@@ -29,20 +30,34 @@ const NameRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
     </Link>
   );
 };
+const DiscountRenderer = (params: CustomCellRendererProps<Charger>) => {
+  const name = params.data?.discountOffer;
+
+  if (!name) return <span>--</span>;
+
+  return (
+    <Link
+      href={`/charger/chargers/profile/${name}`}
+      className="text-blue-400 hover:text-blue-300 "
+    >
+      {name}%
+    </Link>
+  );
+};
 
 // -------- RENDERERS WITH DIALOG OPEN CONTROL ----------
 const ConnectorRenderer = (
-  params: CustomCellRendererProps<IChargerRow>,
+  params: CustomCellRendererProps<Charger>,
   openDialog: (v: boolean) => void
 ) => {
   return (
     <div className="flex gap-1 justify-center">
-      {params.data?.connectorStatuses?.map((status, i) => (
+      {params.data?.connector.map((c, i) => (
         <span
           key={i}
           onClick={() => openDialog(true)}
           className={`w-6 h-6 flex items-center justify-center rounded cursor-pointer ${
-            status === "Available" ? "bg-green-500" : "bg-red-500"
+            c.connectorStatuses === "Available" ? "bg-green-500" : "bg-red-500"
           }`}
         >
           <CpuChipIcon className="w-4 h-4 text-white" />
@@ -53,7 +68,7 @@ const ConnectorRenderer = (
 };
 
 const OperationalStatusRenderer = (
-  params: CustomCellRendererProps<IChargerRow>
+  params: CustomCellRendererProps<Charger>
 ) => {
   const status = params.value;
   return (
@@ -73,39 +88,58 @@ const OperationalStatusRenderer = (
 
 // -------- UI COMPONENT ----------
 const AllChargersTable = () => {
-  const { data: rowData, loading } = useAllChargers();
+  // 🔥 FIX 1: Access state and actions directly from Zustand
+  const { chargers, fetchChargersByStation } = useDataStore();
+
+  // 🔥 FIX 2: Trigger fetching only on mount using useEffect
+  useEffect(() => {
+    fetchChargersByStation("station-a"); // Start loading company data
+  }, [fetchChargersByStation]);
+
+  // Use existing hook for row data (assumed to work independently for now)
+
   const [connectorDialog, setConnectorDialog] = useState(false);
 
-  const colDefs: ColDef<IChargerRow>[] = [
+  // Debugging console log is now clean and reflects state
+  console.log("Current Companies State:", chargers);
+
+  const colDefs: ColDef<Charger>[] = [
     {
-      field: "chargerName",
-      headerName: "Name",
-      cellRenderer: NameRenderer,
+      field: "ocppId",
+      headerName: "OCPP ID",
       width: 120,
+      cellRenderer: NameRenderer,
     },
-    { field: "cinSerial", headerName: "Serial", width: 90 },
-    { field: "stationName", headerName: "Station", width: 120 },
-    { field: "source", headerName: "Source", width: 80 },
-    { field: "ocppId", headerName: "OCPP ID", width: 120 },
-    { field: "locationStateCity", headerName: "Location", width: 170 },
-    { field: "accessType", headerName: "Access", width: 90 },
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "stationId", headerName: "Station ID", width: 120 },
+    { field: "oem", headerName: "OEM", width: 80 },
+
     { field: "chargerType", headerName: "Type", width: 80 },
-    { field: "oem", headerName: "OEM", width: 130 },
-    { field: "emspMapped", headerName: "EMSP", width: 110 },
+    { field: "powerRating", headerName: "Power Rating", width: 170 },
     {
       field: "operationalStatus",
       headerName: "Operational Status",
       width: 180,
       cellRenderer: OperationalStatusRenderer,
     },
-    { field: "visibilityStatus", headerName: "Visibility", width: 100 },
+    { field: "firmware", headerName: "Firmware", width: 90 },
+
+    { field: "label", headerName: "Label", width: 110 },
+    { field: "firmware", headerName: "Firmware", width: 110 },
+
     {
-      field: "connectorStatuses",
+      field: "numConnectors",
       headerName: "Connectors",
       width: 120,
       sortable: false,
       filter: false,
       cellRenderer: (params) => ConnectorRenderer(params, setConnectorDialog),
+    },
+    {
+      field: "discountOffer",
+      headerName: "Discount",
+      width: 80,
+      cellRenderer: DiscountRenderer,
     },
   ];
 
@@ -168,8 +202,7 @@ const AllChargersTable = () => {
 
       <AgGridReact
         className={themeClass}
-        rowData={rowData}
-        loading={loading}
+        rowData={chargers as []}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
         pagination
@@ -179,7 +212,7 @@ const AllChargersTable = () => {
       />
 
       <p className="text-center text-black text-sm mt-2">
-        Showing {rowData.length} items
+        Showing {chargers.length} items
       </p>
       {connectorDialog && (
         <ConnectorDialog
