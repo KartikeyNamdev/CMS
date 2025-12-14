@@ -1,33 +1,33 @@
 "use client";
-import React, { useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Station, useDataStore } from "@/store/useDataStore";
-import DynamicStationForm, {
-  StationFormData,
-} from "@/app/charger/station/new/page";
 
-export default function StationEditPage() {
+import { useParams } from "next/navigation";
+import { useDataStore } from "@/store/useDataStore";
+import Step2StationForm from "@/app/components/Step2StationForm";
+import { useState } from "react";
+
+export default function EditStationPage() {
   const { stationId } = useParams();
-  const router = useRouter();
+  const { stations, updateStation } = useDataStore();
 
-  const stations = useDataStore((s) => s.stations);
-  const updateStation = useDataStore((s) => s.updateCompany);
-  const initial = useMemo<Station | null>(() => {
-    return stations.find((x) => x.id === stationId) ?? null;
-  }, [stations, stationId]);
+  const existing = stations.find((s) => s.id === stationId);
 
-  const onSubmit = async (data: StationFormData) => {
-    try {
-      await updateStation(stationId as string, data as Partial<Station>);
+  const [form, setForm] = useState(existing || {});
 
-      router.push("/charger/station");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to update station");
-    }
+  if (existing) setForm(existing);
+
+  const handleSave = async () => {
+    await updateStation(stationId as string, form);
+    alert("Station updated!");
   };
 
-  if (!initial) return <div className="p-8">Loading…</div>;
-
-  return <DynamicStationForm initialData={initial} onSubmit={onSubmit} />;
+  return (
+    <div className="p-10 lg:px-60">
+      <Step2StationForm
+        onNext={handleSave}
+        onSkip={() => history.back()}
+        formOverride={form} // ⬅ NEW PROP
+        setFormOverride={setForm} // ⬅ NEW PROP
+      />
+    </div>
+  );
 }

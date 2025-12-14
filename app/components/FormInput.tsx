@@ -7,7 +7,7 @@ interface FormInputProps {
   required?: boolean;
   disabled?: boolean;
   maxLength?: number;
-  value?: string;
+  value?: string | number;
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
@@ -111,6 +111,21 @@ export const MultipeChoosableInput = ({
   );
 };
 
+interface FormInputProps {
+  label: string;
+  placeholder?: string;
+  type?: string;
+  required?: boolean;
+  disabled?: boolean;
+  maxLength?: number;
+  value?: string | number;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
+  options?: { value: string; label: string }[];
+  radioName?: string;
+}
+
 const FormInput: React.FC<FormInputProps> = ({
   label,
   placeholder,
@@ -118,83 +133,81 @@ const FormInput: React.FC<FormInputProps> = ({
   type = "text",
   required = false,
   maxLength,
+  value,
+  onChange,
   options,
   radioName,
 }) => {
-  // --- Standard Input / Select ---
-  const renderInput = () => {
-    if (options) {
-      // Select Dropdown
-      return (
+  // --- Select ---
+  if (options) {
+    return (
+      <div className="flex flex-col gap-1">
+        <label className="text-gray-800 text-sm font-medium">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+
         <select
-          className="h-10 bg-white/30 text-gray-700 border border-gray-400 p-2 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none transition-colors appearance-none"
+          value={value ?? ""}
+          onChange={onChange}
+          disabled={disabled}
           required={required}
+          className="h-10 bg-white/30 text-gray-700 border border-gray-400 p-2 rounded-lg focus:ring-red-500 focus:border-red-500 focus:outline-none"
         >
-          <option value="" className="bg-white text-gray-300" disabled hidden>
+          <option value="" disabled hidden>
             {placeholder}
           </option>
+
           {options.map((opt) => (
-            <option
-              key={opt.value}
-              value={opt.value}
-              className="bg-[#fffbfb] text-gray-700"
-            >
+            <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
-      );
-    }
-
-    // Default Text/Number Input
-    return (
-      <input
-        type={type}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        required={required}
-        className="h-10 bg-white/40 text-gray-700 placeholder-gray-400 border border-gray-400 p-3 rounded-lg focus:ring-red-300 focus:border-red-300 focus:outline-none transition-colors"
-      />
+      </div>
     );
-  };
+  }
 
-  // --- Checkbox / Radio Inputs ---
-  const renderRadioOrCheckbox = () => {
-    if (radioName) {
-      return (
-        <div className="flex gap-4 items-center mt-2">
-          <label className="flex items-center gap-2 text-black">
-            <input
-              type="radio"
-              name={radioName}
-              value="yes"
-              className="form-radio text-red-600 h-4 w-4 bg-gray-700 border-gray-600"
-              defaultChecked
-            />
-            Yes
-          </label>
-          <label className="flex items-center gap-2 text-black">
-            <input
-              type="radio"
-              name={radioName}
-              value="no"
-              className="form-radio text-red-600 h-4 w-4 bg-gray-700 border-gray-600"
-            />
-            No
-          </label>
+  // --- Radio ---
+  if (radioName) {
+    return (
+      <div className="flex flex-col gap-1">
+        <label className="text-gray-800 text-sm font-medium">{label}</label>
+
+        <div className="flex gap-4">
+          {["yes", "no"].map((opt) => (
+            <label key={opt} className="flex items-center gap-2 text-black">
+              <input
+                type="radio"
+                name={radioName}
+                value={opt}
+                checked={value === opt}
+                onChange={onChange}
+              />
+              {opt.toUpperCase()}
+            </label>
+          ))}
         </div>
-      );
-    }
-    // Return standard input if no specific complex type is requested
-    return renderInput();
-  };
+      </div>
+    );
+  }
 
+  // --- Text Input ---
   return (
     <div className="flex flex-col gap-1">
       <label className="text-gray-800 text-sm font-medium">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
-      {radioName ? renderRadioOrCheckbox() : renderInput()}
+
+      <input
+        type={type}
+        placeholder={placeholder}
+        disabled={disabled}
+        required={required}
+        maxLength={maxLength}
+        value={value ?? ""}
+        onChange={onChange}
+        className="h-10 bg-white/40 text-gray-700 placeholder-gray-400 border border-gray-400 p-3 rounded-lg focus:ring-red-300 focus:border-red-300"
+      />
     </div>
   );
 };

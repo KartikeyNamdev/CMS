@@ -3,10 +3,11 @@
 import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import AgDynamicTable from "@/app/components/AgDynamicTable";
-import { useDataStore, CompanyType } from "@/store/useDataStore";
+import { useDataStore } from "@/store/useDataStore";
 import { ColumnType } from "@/lib/agGrid";
 import { ICellRendererParams } from "ag-grid-community";
-import { Edit, Plus } from "lucide-react";
+
+import { CompanyType } from "@/lib/types";
 
 // Extend Company interface to match table requirements
 interface CompanyRow {
@@ -22,20 +23,35 @@ interface CompanyRow {
 // Action Cell Renderer Component
 const ActionCellRenderer = (props: ICellRendererParams<CompanyRow>) => {
   const router = useRouter();
+  const deleteCompany = useDataStore((s) => s.deleteCompany);
 
   const handleEdit = () => {
-    // Navigate to edit page with company ID
     router.push(`/company/clients/edit/${props.data?.id}`);
   };
 
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete this company?")) {
+      await deleteCompany(props.data.id);
+      alert("Company removed!");
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center h-full gap-2">
+    <div className="flex items-center gap-2 text-sm ">
       <button
         onClick={handleEdit}
-        className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors"
+        className="p-2 rounded-lg hover:text-red-600 transition-colors"
         title="Edit Company"
       >
-        <Edit size={16} className="text-white" />
+        <p>Edit</p>
+      </button>
+      <span className="text-gray-700">|</span>
+      <button
+        onClick={handleDelete}
+        className="p-2 rounded-lg  hover:text-red-600 transition-colors"
+        title="Delete Company"
+      >
+        Delete
       </button>
     </div>
   );
@@ -61,7 +77,7 @@ const CompanyTypeCellRenderer = (props: ICellRendererParams<CompanyRow>) => {
   };
 
   return (
-    <div className="flex items-center h-full">
+    <div className="flex items-center h-full mt-2 justify-center">
       <span
         className={`px-3 border-none py-1 rounded-full text-white text-sm font-medium ${getTypeColor(
           type
@@ -89,14 +105,11 @@ export default function CompanyManagementTable() {
         headerName: "Company ID",
         field: "id",
         width: 150,
-        pinned: "left",
       },
       {
         headerName: "Company Name",
         field: "name",
         width: 250,
-        pinned: "left",
-        cellStyle: { fontWeight: 600 },
       },
       {
         headerName: "Type",
@@ -117,21 +130,20 @@ export default function CompanyManagementTable() {
       {
         headerName: "Currency",
         field: "currency",
-        width: 130,
+        width: 150,
       },
       {
         headerName: "Pincode",
         field: "pincode",
-        width: 130,
+        width: 150,
       },
       {
         headerName: "Actions",
         field: "actions",
-        width: 120,
+
         cellRenderer: ActionCellRenderer,
         sortable: false,
         filter: false,
-        // pinned: "right",
       },
     ],
     []
@@ -163,13 +175,6 @@ export default function CompanyManagementTable() {
           </h1>
           <p className="text-gray-500">Manage all companies in the system</p>
         </div>
-        {/* <button
-          onClick={handleCreateNew}
-          className="flex items-center gap-2 px-6 py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors"
-        >
-          <Plus size={20} />
-          Add New Company
-        </button> */}
       </div>
 
       {isLoading ? (
@@ -177,14 +182,17 @@ export default function CompanyManagementTable() {
           <div className="text-white text-xl">Loading companies...</div>
         </div>
       ) : (
-        <AgDynamicTable
-          columns={columns}
-          rowData={rowData as []}
-          gridOptions={{
-            animateRows: true,
-            enableCellTextSelection: true,
-          }}
-        />
+        <div style={{ width: "100%" }} className="mt-4 text-white">
+          <AgDynamicTable
+            className="border border-gray-500 mt-4"
+            columns={columns}
+            rowData={rowData as []}
+            gridOptions={{
+              animateRows: true,
+              enableCellTextSelection: true,
+            }}
+          />
+        </div>
       )}
 
       <div className="mt-4 text-gray-400 text-sm">

@@ -27,7 +27,7 @@ const ZustandTestComponent = () => {
   useEffect(() => {
     fetchCompanies();
     console.log(companies);
-  }, [fetchCompanies]);
+  }, []);
 
   // 3. Fetch stations when a company is selected
   useEffect(() => {
@@ -62,7 +62,7 @@ const ZustandTestComponent = () => {
         <div className="space-y-3">
           {companies.map((company) => (
             <div
-              key={company.id}
+              key={company.name}
               className={`flex justify-between items-center p-3 rounded-md cursor-pointer transition-colors ${
                 targetCompanyId === company.id
                   ? "bg-[#b22828] hover:bg-red-600 text-white"
@@ -110,7 +110,12 @@ const ZustandTestComponent = () => {
                         : "text-black"
                     }`}
                   >
-                    {station.address}
+                    {
+                      (station.state,
+                      station.city,
+                      station.street,
+                      station.area)
+                    }
                   </p>
                 </div>
               ))

@@ -1,185 +1,151 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import Link from "next/link";
-import type { ColDef } from "ag-grid-community";
-import { AgGridReact } from "ag-grid-react";
-import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
-import type { CustomCellRendererProps } from "ag-grid-react";
-import { useGellAllChargerStation } from "@/hooks/useGetAllChargerStation";
-
-// Register AG Grid Modules
-ModuleRegistry.registerModules([AllCommunityModule]);
-
-/* -------------------------------------------
-   TYPES
-------------------------------------------- */
-interface IChargerRow {
-  name: string;
-  stationId: string;
-  source: string;
-  locations: string;
-  stateCity: string;
-  locationType: string;
-  numChargers: number;
-  emspChargers: string;
-  accessType: string;
-  openingHours: string;
-  visibilityStatus: string;
-  url: string;
-}
+import AgDynamicTable from "@/app/components/AgDynamicTable";
+import { ColumnType } from "@/lib/agGrid";
+import { useDataStore } from "@/store/useDataStore";
+import { Station } from "@/lib/types";
 
 /* -------------------------------------------
    CELL RENDERERS
 ------------------------------------------- */
-const NameRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
-  const { name } = params.data || {};
-  if (!name) return <span>--</span>;
 
+const NameRenderer = ({
+  data,
+}: {
+  data: { id: string; stationName: string };
+}) => {
+  if (!data?.stationName) return <span>--</span>;
   return (
     <Link
-      href={`/charger/station/profile/${name}`}
-      className="text-[#1f51ff] hover:text-[#0031e3] hover:underline transition"
+      href={`/charger/station/profile/${data.id}`}
+      className="text-blue-600 hover:underline"
     >
-      {name}
+      {data.stationName}
     </Link>
   );
 };
 
-const URLRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
-  const url = params.data?.url;
-  return url ? (
-    <Link
-      href={url}
-      className="text-[#1f51ff] hover:text-[#002fd8] hover:underline transition"
-    >
-      View Details
-    </Link>
-  ) : (
-    <span className="text-gray-400">--</span>
-  );
-};
-
-const ActionsRenderer = (params: CustomCellRendererProps<IChargerRow>) => {
-  const id = params.data?.stationId;
+const ActionRenderer = ({
+  data,
+}: {
+  data: { id: string; stationName: string };
+}) => {
   return (
-    <div className="flex items-center gap-2 text-sm text-red-500">
-      <Link href={id ? `/charger/station/edit/${id}` : "#"}>
-        <button className="hover:text-black">Edit</button>
+    <div className="flex items-center gap-3 text-red-600 text-sm">
+      <Link href={`/charger/station/edit/${data.id}`}>
+        <span className="hover:text-black cursor-pointer">Edit</span>
       </Link>
+
       <span className="text-gray-400">|</span>
 
-      <button>Delete</button>
+      <button
+        onClick={() => alert("Delete API: " + data.id)}
+        className="hover:text-black"
+      >
+        Delete
+      </button>
     </div>
   );
 };
 
 /* -------------------------------------------
-   MAIN COMPONENT
+   MAIN PAGE COMPONENT
 ------------------------------------------- */
-const StationTable = () => {
-  const { allStations, loading } = useGellAllChargerStation();
 
-  // Transform API data → AG Grid compatible format
-  const rowData = useMemo<IChargerRow[]>(() => {
-    if (!allStations) return [];
+export default function StationTablePage() {
+  const stations = useDataStore((s) => s.stations);
+  const fetchStationsByCompany = useDataStore((s) => s.fetchStationsByCompany);
 
-    return allStations.map((s) => ({
-      name: s.name,
-      stationId: s.stationId,
-      source: s.source,
-      locations: s.locations,
-      stateCity: s.stateCity,
-      locationType: s.locationType,
-      numChargers: s.numChargers,
-      emspChargers: s.emspChargers,
+  // Hard-coded company for demo — replace with selected company if needed
+  const companyId = "host-1";
+
+  /* Load stations once */
+  useEffect(() => {
+    fetchStationsByCompany(companyId);
+  }, [companyId, fetchStationsByCompany]);
+
+  /* Convert Zustand stations → Table rows */
+  const rowData = useMemo(() => {
+    return stations.map((s: Station) => ({
+      id: s.id,
+      stationName: s.stationName,
+      stationId: s.id,
       accessType: s.accessType,
+      stateCity: `${s.state}, ${s.city}`,
+      locationType: s.alternateAccessType,
       openingHours: s.openingHours,
-      visibilityStatus: s.visibilityStatus,
-      url: s.url,
+      visibilityStatus: s.stationVisibility,
+      numChargers: "--", // You can replace when you fetch chargers
+      url: `/charger/station/profile/${s.id}`,
     }));
-  }, [allStations]);
+  }, [stations]);
 
-  const colDefs: ColDef<IChargerRow>[] = [
+  /* COLUMN DEFINITIONS (AgDynamicTable format) */
+  const columns: ColumnType[] = [
     {
-      field: "name",
-      headerName: "Name",
-      width: 120,
+      field: "stationName",
+      headerName: "Station Name",
+      width: 160,
       cellRenderer: NameRenderer,
     },
-    { field: "stationId", headerName: "Site ID", width: 110 },
-    { field: "source", headerName: "Source", width: 100 },
-    { field: "locations", headerName: "Locations", width: 150 },
-    { field: "stateCity", headerName: "State, City", width: 150 },
-    { field: "locationType", headerName: "Location Type", width: 140 },
-    { field: "numChargers", headerName: "Chargers", width: 100 },
-    { field: "emspChargers", headerName: "EMSP", width: 100 },
-    { field: "accessType", headerName: "Access Type", width: 120 },
-    { field: "openingHours", headerName: "Hours", width: 120 },
-    { field: "visibilityStatus", headerName: "Visibility", width: 130 },
     {
-      field: "url",
-      headerName: "Details",
-      width: 120,
-      cellRenderer: URLRenderer,
+      field: "stationId",
+      headerName: "Site ID",
+      width: 110,
     },
     {
-      field: "name",
-      headerName: "Actions",
+      field: "stateCity",
+      headerName: "State, City",
       width: 150,
-      cellRenderer: ActionsRenderer,
+    },
+    {
+      field: "locationType",
+      headerName: "Location Type",
+      width: 140,
+    },
+    {
+      field: "accessType",
+      headerName: "Access Type",
+      width: 110,
+    },
+    {
+      field: "openingHours",
+      headerName: "Opening Hours",
+      width: 140,
+    },
+    {
+      field: "visibilityStatus",
+      headerName: "Visibility",
+      width: 120,
+    },
+    {
+      field: "numChargers",
+      headerName: "Chargers",
+      width: 100,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 160,
+      cellRenderer: ActionRenderer,
     },
   ];
 
-  const defaultColDef: ColDef = {
-    filter: true,
-    sortable: true,
-    resizable: true,
-    cellStyle: { color: "black", display: "flex", alignItems: "center" },
-  };
-
   return (
-    <div style={{ height: "240px", width: "100%" }} className="mt-4 text-white">
-      <style jsx global>{`
-        .custom-dabas-theme {
-          --ag-background-color: transparent;
-          --ag-header-background-color: #b22828;
-          --ag-row-hover-color: rgba(255, 142, 142, 0.7);
-          --ag-border-color: #8f8e8e;
-          --ag-font-size: 14px;
-          --ag-header-foreground-color: white;
-        }
+    <div className="mt-6 p-6 text-black">
+      <h1 className="text-2xl font-semibold mb-4">All Stations</h1>
 
-        .custom-dabas-theme .ag-header-cell {
-          font-weight: 700;
-          color: white;
-        }
-
-        .custom-dabas-theme .ag-row:nth-child(odd) {
-          background: #white;
-        }
-
-        .custom-dabas-theme .ag-row:nth-child(even) {
-          background: #e8e5e6;
-        }
-      `}</style>
-
-      <AgGridReact
-        className="ag-theme-alpine-dark custom-dabas-theme"
-        rowData={rowData}
-        columnDefs={colDefs}
-        defaultColDef={defaultColDef}
-        pagination
-        paginationPageSize={10}
-        animateRows
-        loading={loading}
+      <AgDynamicTable
+        columns={columns}
+        rowData={rowData as []}
+        className="bg-white"
+        gridOptions={{
+          pagination: true,
+          domLayout: "normal",
+        }}
       />
-
-      <p className="text-center text-black text-sm mt-3">
-        Showing {rowData.length} items
-      </p>
     </div>
   );
-};
-
-export default StationTable;
+}

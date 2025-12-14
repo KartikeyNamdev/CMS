@@ -11,9 +11,34 @@ import Link from "next/link";
 import ConnectorDialog from "./ConnectorDialog";
 import { CpuChipIcon } from "@heroicons/react/24/solid";
 
-import { Charger, useDataStore } from "@/store/useDataStore";
+import { useDataStore } from "@/store/useDataStore";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
+import { Edit } from "lucide-react";
+import { ICellRendererParams } from "ag-grid-community";
+import { useRouter } from "next/navigation";
+import { Charger } from "@/lib/types";
+
+const ActionCellRenderer = (props: ICellRendererParams<Charger>) => {
+  const router = useRouter();
+
+  const handleEdit = () => {
+    // Navigate to edit page with company ID
+    router.push(`/charger/chargers/edit/${props.data?.ocppId}`);
+  };
+
+  return (
+    <div className="flex items-center justify-center h-full gap-2">
+      <button
+        onClick={handleEdit}
+        className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition-colors"
+        title="Edit Charger"
+      >
+        <Edit size={16} className="text-white" />
+      </button>
+    </div>
+  );
+};
 
 // -------- RENDERERS ----------
 const NameRenderer = (params: CustomCellRendererProps<Charger>) => {
@@ -107,22 +132,22 @@ const AllChargersTable = () => {
     {
       field: "ocppId",
       headerName: "OCPP ID",
-      width: 120,
+      width: 140,
       cellRenderer: NameRenderer,
     },
     { field: "id", headerName: "ID", width: 90 },
     { field: "stationId", headerName: "Station ID", width: 120 },
-    { field: "oem", headerName: "OEM", width: 80 },
+    { field: "oem", headerName: "OEM", width: 100 },
 
-    { field: "chargerType", headerName: "Type", width: 80 },
-    { field: "powerRating", headerName: "Power Rating", width: 170 },
+    { field: "chargerType", headerName: "Type", width: 100 },
+    { field: "powerRating", headerName: "Power Rating", width: 140 },
     {
       field: "operationalStatus",
-      headerName: "Operational Status",
-      width: 180,
+      headerName: " Status",
+      width: 100,
       cellRenderer: OperationalStatusRenderer,
     },
-    { field: "firmware", headerName: "Firmware", width: 90 },
+    { field: "firmware", headerName: "Firmware", width: 100 },
 
     { field: "label", headerName: "Label", width: 110 },
     { field: "firmware", headerName: "Firmware", width: 110 },
@@ -138,8 +163,16 @@ const AllChargersTable = () => {
     {
       field: "discountOffer",
       headerName: "Discount",
-      width: 80,
+      width: 100,
       cellRenderer: DiscountRenderer,
+    },
+    {
+      headerName: "Actions",
+      colId: "actions",
+      width: 120,
+      cellRenderer: ActionCellRenderer,
+      sortable: false,
+      filter: false,
     },
   ];
 
@@ -158,7 +191,7 @@ const AllChargersTable = () => {
   );
 
   return (
-    <div style={{ height: 260, width: "100%" }} className="mt-4">
+    <div style={{ height: 260, width: "98%" }} className="mt-4">
       {/* 🔥 YOUR ORIGINAL CSS THEME INSERTED */}
       <style jsx global>{`
         /* Fix AG Grid dropdown/filter menu transparency */
@@ -186,17 +219,71 @@ const AllChargersTable = () => {
         }
 
         /* Ensure text inside filter input is visible */
-        .ag-filter-body {
-          --ag-background-color: transparent;
+        /**************************************
+  1️⃣ TRANSPARENT TABLE BACKGROUND
+***************************************/
+        .ag-theme-alpine-dark.custom-dabas-theme {
+          --ag-background-color: transparent !important;
+          --ag-row-background-color: transparent !important;
+          --ag-odd-row-background-color: transparent !important;
+          --ag-even-row-background-color: transparent !important;
         }
-        ,
-        .ag-input-field-input {
+
+        /**************************************
+  2️⃣ HEADER BACKGROUND = DABAS RED
+***************************************/
+        .custom-dabas-theme .ag-header,
+        .custom-dabas-theme .ag-header-row {
+          background-color: #b22828 !important;
           color: white !important;
         }
 
-        /* Restore missing row color — your line had invalid CSS */
+        /**************************************
+  3️⃣ WHITE DROPDOWNS (FILTER POPUPS)
+***************************************/
+        .ag-theme-alpine-dark.custom-dabas-theme .ag-popup,
+        .ag-theme-alpine-dark.custom-dabas-theme .ag-menu,
+        .ag-theme-alpine-dark.custom-dabas-theme .ag-filter-toolpanel,
+        .ag-theme-alpine-dark.custom-dabas-theme .ag-menu-option {
+          background: #ffffff !important; /* ✔ white popup */
+          color: #000000 !important; /* ✔ dark text */
+          border: 1px solid #d0d0d0 !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /**************************************
+  4️⃣ WHITE SELECT DROPDOWN LIST
+***************************************/
+        .ag-rich-select,
+        .ag-rich-select-list,
+        .ag-rich-select-list-item {
+          background-color: #ffffff !important;
+          color: #000000 !important;
+        }
+
+        .ag-rich-select-list-item:hover {
+          background-color: #f2f2f2 !important;
+        }
+
+        /**************************************
+  5️⃣ FILTER INPUT FIELD = WHITE
+***************************************/
+        .ag-input-field-input,
+        .ag-filter-body input {
+          background: #ffffff !important;
+          color: #000000 !important;
+          border: 1px solid #ccc !important;
+        }
+
+        /**************************************
+  6️⃣ ROWS STAY TRANSPARENT
+***************************************/
         .custom-dabas-theme .ag-row {
           background-color: transparent !important;
+        }
+
+        .custom-dabas-theme .ag-row:hover {
+          background-color: rgba(255, 255, 255, 0.05) !important;
         }
       `}</style>
 

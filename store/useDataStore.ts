@@ -1,131 +1,77 @@
-import React from "react";
+"use client";
+
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import React from "react";
 
-// --- Type Definitions ---
-export type CompanyType = "Host" | "CPO" | "EMSP" | "Investor";
+import type { Company, Station, Charger } from "../lib/types"; // ⬅ IMPORT TYPES FROM FILE 1
 
-export interface Company {
-  id: string;
-  name: string;
-  type: CompanyType;
-  taxId?: string;
-  timezone: string;
-  currency: string;
-  pincode: string;
-}
+/* --------------------------------------------
+   MOCK API (NO DELAYS)
+---------------------------------------------*/
 
-export interface Station {
-  id: string;
-  companyId: string;
-  stationName: string;
-  address: string;
-  locationAxis: string;
-  state: string;
-  city: string;
-  pincode: string;
-  accessType: "Public" | "Private";
-  openingHours: string;
-  stationVisibility: "Enable" | "Disable";
-  amenities: string;
-}
-type connectorType = {
-  connectorStatuses: string;
-};
-export interface Charger {
-  id: string;
-  stationId: string;
-  ocppId: string;
-  oem: string;
-  chargerType: string;
-  powerRating: string;
-  operationalStatus: string;
-  firmware: string;
-  label: string;
-  connector: connectorType[];
-  numConnectors: number;
-  discountOffer: number;
-}
-
-// --- Store Interface ---
-interface DataStore {
-  companies: Company[];
-  stations: Station[];
-  chargers: Charger[];
-  isLoading: boolean;
-  isInitialized: boolean; // Flag to track if data has been loaded
-  selectedCompany: Company | null;
-  selectedStation: Station | null;
-  selectedCharger: Charger | null;
-
-  fetchCompanies: (forceRefresh?: boolean) => Promise<void>;
-  fetchStationsByCompany: (companyId: string) => Promise<void>;
-  fetchChargersByStation: (stationId: string) => Promise<void>;
-  createCompany: (company: Company) => Promise<void>;
-  updateCompany: (
-    companyId: string,
-    updates: Partial<Company>
-  ) => Promise<void>;
-  deleteCompany: (companyId: string) => Promise<void>;
-  setSelectedCompany: (company: Company | null) => void;
-  setSelectedStation: (station: Station | null) => void;
-  setSelectedCharger: (charger: Charger | null) => void;
-}
-
-// --- Mock API Functions ---
-
-const mockFetchCompanies = async (): Promise<Company[]> => {
-  return [
-    {
-      id: "host-1",
-      name: "Aryan Hotel Group",
-      type: "Host",
-      taxId: "12345",
-      pincode: "302020",
-      currency: "INR",
-      timezone: "IST",
-    },
-    {
-      id: "cpo-2",
-      name: "PLUGUP CPO",
-      type: "CPO",
-      taxId: "67890",
-      pincode: "110001",
-      currency: "INR",
-      timezone: "IST",
-    },
-  ];
-};
+const mockFetchCompanies = async (): Promise<Company[]> => [
+  {
+    id: "host-1",
+    clientName: "Aryan",
+    name: "Aryan Hotel Group",
+    type: "Host",
+    taxId: "12345",
+    timezone: "IST",
+    currency: "INR",
+    pincode: "302020",
+    country: "India",
+    state: "Rajasthan",
+    city: "Jaipur",
+  },
+  {
+    id: "cpo-2",
+    clientName: "Plugup",
+    name: "PLUGUP CPO",
+    type: "CPO",
+    taxId: "67890",
+    timezone: "IST",
+    currency: "INR",
+    pincode: "110001",
+    country: "India",
+    state: "Delhi",
+    city: "New Delhi",
+  },
+];
 
 const mockFetchStations = async (companyId: string): Promise<Station[]> => {
   if (companyId === "host-1") {
     return [
       {
         id: "station-a",
-        companyId: "host-1",
         stationName: "Aryan Hotel Station",
-        address: "Jaipur Road",
-        locationAxis: "123.4546N, 78.9012E",
+        country: "India",
+        street: "Jaipur Road",
+        area: "Central Jaipur",
+        landmark: "Near Civil Lines",
+        zone: "North",
         state: "Rajasthan",
         city: "Jaipur",
         pincode: "302020",
-        accessType: "Public",
-        openingHours: "24Hrs",
-        stationVisibility: "Enable",
-        amenities: "Wifi",
-      },
-      {
-        id: "station-b",
+
         companyId: "host-1",
-        stationName: "Avani Resorts Station",
-        address: "Kangra Valley",
-        locationAxis: "32.1234N, 76.5678E",
-        state: "Himachal Pradesh",
-        city: "Kangra",
-        pincode: "176001",
         accessType: "Public",
-        openingHours: "24Hrs",
+        alternateAccessType: "Captive",
         stationVisibility: "Enable",
-        amenities: "Wifi",
+        amenities: "Wifi,Restroom",
+
+        cctv: "yes",
+        connectionType: "EV connection",
+        openingHours: "24hours",
+
+        spocName: "Rahul Sharma",
+        spocNumber: 9876543210,
+
+        guardName: "Amit",
+        guardNumber: 9988771122,
+
+        parkingFee: 1,
+        internetConnectionType: "WiFi",
       },
     ];
   }
@@ -138,209 +84,236 @@ const mockFetchChargers = async (stationId: string): Promise<Charger[]> => {
       {
         id: "charger-1",
         stationId: "station-a",
-        ocppId: "OCCP-ARYAN-001",
+        ocppId: "OCPP-ARYAN-001",
         oem: "Exicom",
         chargerType: "DC",
         powerRating: "60kW",
-        numConnectors: 2,
         operationalStatus: "Active",
         firmware: "4.0.3",
         label: "Fast Charger",
         discountOffer: 20,
         connector: [
-          {
-            connectorStatuses: "Available",
-          },
-          {
-            connectorStatuses: "UnAvailable",
-          },
+          { connectorStatuses: "Available" },
+          { connectorStatuses: "Unavailable" },
         ],
+        numConnectors: 2,
       },
       {
         id: "charger-2",
         stationId: "station-a",
-        ocppId: "OCCP-ARYAN-002",
+        ocppId: "OCPP-ARYAN-002",
         oem: "Servotech",
         chargerType: "AC",
         powerRating: "7.4kW",
-        numConnectors: 1,
         operationalStatus: "Available",
         firmware: "4.0.3",
         label: "Slow Charger",
-        discountOffer: 20,
-        connector: [
-          {
-            connectorStatuses: "UnAvailable",
-          },
-          {
-            connectorStatuses: "Available",
-          },
-        ],
+        discountOffer: 0,
+        connector: [{ connectorStatuses: "Available" }],
+        numConnectors: 1,
       },
     ];
   }
   return [];
 };
 
-const mockCreateCompany = async (company: Company): Promise<Company> => {
-  console.log("API: Creating company", company);
-  return company;
-};
+/* --------------------------------------------
+   STORE INTERFACE
+---------------------------------------------*/
+interface DataStore {
+  companies: Company[];
+  stations: Station[];
+  chargers: Charger[];
+  isLoading: boolean;
+  isInitialized: boolean;
 
-const mockUpdateCompany = async (
-  companyId: string,
-  updates: Partial<Company>
-): Promise<Partial<Company>> => {
-  console.log("API: Updating company", companyId, updates);
-  return updates;
-};
+  selectedCompany: Company | null;
+  selectedStation: Station | null;
+  selectedCharger: Charger | null;
 
-const mockDeleteCompany = async (companyId: string): Promise<void> => {
-  console.log("API: Deleting company", companyId);
-};
+  fetchCompanies: (forceRefresh?: boolean) => Promise<Company[]>;
+  fetchStationsByCompany: (companyId: string) => Promise<Station[]>;
+  fetchChargersByStation: (stationId: string) => Promise<Charger[]>;
 
-// --- Zustand Store ---
-export const useDataStore = create<DataStore>((set, get) => ({
-  // Initial State
-  companies: [],
-  stations: [],
-  chargers: [],
-  isLoading: false,
-  isInitialized: false, // Track initialization
-  selectedCompany: null,
-  selectedStation: null,
-  selectedCharger: null,
+  createCompany: (company: Company) => Promise<Company>;
+  updateCompany: (id: string, updates: Partial<Company>) => Promise<Company>;
+  deleteCompany: (id: string) => Promise<boolean>;
 
-  // Fetch Methods
-  fetchCompanies: async (forceRefresh: boolean = false) => {
-    const { isInitialized } = get();
+  createStation: (station: Station) => Promise<Station>;
+  updateStation: (id: string, updates: Partial<Station>) => Promise<Station>;
+  deleteStation: (id: string) => Promise<boolean>;
 
-    // Only fetch if not already initialized OR if force refresh is requested
-    if (isInitialized && !forceRefresh) {
-      console.log("Companies already initialized, skipping fetch");
-      return;
+  createCharger: (charger: Charger) => Promise<Charger>;
+  updateCharger: (id: string, updates: Partial<Charger>) => Promise<Charger>;
+  deleteCharger: (id: string) => Promise<boolean>;
+
+  setSelectedCompany: (company: Company | null) => void;
+  setSelectedStation: (station: Station | null) => void;
+  setSelectedCharger: (charger: Charger | null) => void;
+}
+
+/* --------------------------------------------
+   ZUSTAND STORE (PERSISTENT)
+---------------------------------------------*/
+
+export const useDataStore = create<DataStore>()(
+  persist(
+    (set, get) => ({
+      companies: [],
+      stations: [],
+      chargers: [],
+      isLoading: false,
+      isInitialized: false,
+
+      selectedCompany: null,
+      selectedStation: null,
+      selectedCharger: null,
+
+      /* FETCH ---------------------------------- */
+      fetchCompanies: async (force = false) => {
+        if (get().isInitialized && !force) {
+          console.log("Companies already initialized");
+          return get().companies;
+        }
+
+        set({ isLoading: true });
+        const companies = await mockFetchCompanies();
+        set({ companies, isInitialized: true, isLoading: false });
+        console.log("Companies fetched:", companies.length);
+        return companies;
+      },
+
+      fetchStationsByCompany: async (companyId) => {
+        set({ isLoading: true });
+        const stations = await mockFetchStations(companyId);
+        set({ stations, isLoading: false });
+        console.log(`Stations fetched for ${companyId}:`, stations.length);
+        return stations;
+      },
+
+      fetchChargersByStation: async (stationId) => {
+        set({ isLoading: true });
+        const chargers = await mockFetchChargers(stationId);
+        set({ chargers, isLoading: false });
+        console.log(`Chargers fetched for ${stationId}:`, chargers.length);
+        return chargers;
+      },
+
+      /* COMPANY CRUD ----------------------------- */
+      createCompany: async (company) => {
+        set((s) => ({ companies: [...s.companies, company] }));
+        console.log("Company created:", company.id);
+        return company;
+      },
+
+      updateCompany: async (id, updates) => {
+        let updated!: Company;
+        set((s) => ({
+          companies: s.companies.map((c) =>
+            c.id === id ? (updated = { ...c, ...updates }) : c
+          ),
+          selectedCompany:
+            s.selectedCompany?.id === id
+              ? { ...s.selectedCompany, ...updates }
+              : s.selectedCompany,
+        }));
+        console.log("Company updated:", id);
+        return updated;
+      },
+
+      deleteCompany: async (id) => {
+        set((s) => ({
+          companies: s.companies.filter((c) => c.id !== id),
+          selectedCompany:
+            s.selectedCompany?.id === id ? null : s.selectedCompany,
+        }));
+        console.log("Company deleted:", id);
+        return true;
+      },
+
+      /* STATION CRUD ------------------------------ */
+      createStation: async (station) => {
+        set((s) => ({ stations: [...s.stations, station] }));
+        console.log("Station created:", station.id);
+        return station;
+      },
+
+      updateStation: async (id, updates) => {
+        let updated!: Station;
+        set((s) => ({
+          stations: s.stations.map((st) =>
+            st.id === id ? (updated = { ...st, ...updates }) : st
+          ),
+          selectedStation:
+            s.selectedStation?.id === id
+              ? { ...s.selectedStation, ...updates }
+              : s.selectedStation,
+        }));
+        console.log("Station updated:", id);
+        return updated;
+      },
+
+      deleteStation: async (id) => {
+        set((s) => ({
+          stations: s.stations.filter((st) => st.id !== id),
+          selectedStation:
+            s.selectedStation?.id === id ? null : s.selectedStation,
+        }));
+        console.log("Station deleted:", id);
+        return true;
+      },
+
+      /* CHARGER CRUD ------------------------------ */
+      createCharger: async (charger) => {
+        set((s) => ({ chargers: [...s.chargers, charger] }));
+        console.log("Charger created:", charger.id);
+        return charger;
+      },
+
+      updateCharger: async (id, updates) => {
+        let updated!: Charger;
+        set((s) => ({
+          chargers: s.chargers.map((ch) =>
+            ch.id === id ? (updated = { ...ch, ...updates }) : ch
+          ),
+          selectedCharger:
+            s.selectedCharger?.id === id
+              ? { ...s.selectedCharger, ...updates }
+              : s.selectedCharger,
+        }));
+        console.log("Charger updated:", id, updates);
+        return updated;
+      },
+
+      deleteCharger: async (id) => {
+        set((s) => ({
+          chargers: s.chargers.filter((ch) => ch.id !== id),
+          selectedCharger:
+            s.selectedCharger?.id === id ? null : s.selectedCharger,
+        }));
+        console.log("Charger deleted:", id);
+        return true;
+      },
+
+      /* SELECTORS ---------------------------------- */
+      setSelectedCompany: (company) => set({ selectedCompany: company }),
+      setSelectedStation: (station) => set({ selectedStation: station }),
+      setSelectedCharger: (charger) => set({ selectedCharger: charger }),
+    }),
+
+    {
+      name: "dabas-data-store",
+      partialize: (state) => ({
+        companies: state.companies,
+        stations: state.stations,
+        chargers: state.chargers,
+        isInitialized: state.isInitialized,
+      }),
     }
+  )
+);
 
-    set({ isLoading: true });
-    try {
-      const companies = await mockFetchCompanies();
-      set({ companies, isLoading: false, isInitialized: true });
-      console.log(
-        forceRefresh
-          ? "Companies refreshed"
-          : "Companies fetched and initialized"
-      );
-    } catch (error) {
-      console.error("Error fetching companies:", error);
-      set({ isLoading: false });
-    }
-  },
-
-  fetchStationsByCompany: async (companyId: string) => {
-    set({ isLoading: true });
-    try {
-      const stations = await mockFetchStations(companyId);
-      set({ stations, isLoading: false });
-    } catch (error) {
-      console.error("Error fetching stations:", error);
-      set({ isLoading: false });
-    }
-  },
-
-  fetchChargersByStation: async (stationId: string) => {
-    set({ isLoading: true });
-    try {
-      const chargers = await mockFetchChargers(stationId);
-      set({ chargers, isLoading: false });
-    } catch (error) {
-      console.error(`Error fetching chargers for station ${stationId}:`, error);
-      set({ isLoading: false });
-    }
-  },
-
-  // Company CRUD
-  createCompany: async (company: Company) => {
-    set({ isLoading: true });
-    try {
-      const newCompany = await mockCreateCompany(company);
-      set((state) => ({
-        companies: [...state.companies, newCompany],
-        isLoading: false,
-      }));
-      console.log("Company created successfully");
-    } catch (error) {
-      console.error("Error creating company:", error);
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-
-  updateCompany: async (companyId: string, updates: Partial<Company>) => {
-    set({ isLoading: true });
-    try {
-      // Call the API
-      await mockUpdateCompany(companyId, updates);
-
-      // Option 1: Optimistic update (update state immediately)
-      set((state) => {
-        const updatedCompanies = state.companies.map((company) =>
-          company.id === companyId ? { ...company, ...updates } : company
-        );
-
-        const updatedSelectedCompany =
-          state.selectedCompany?.id === companyId
-            ? { ...state.selectedCompany, ...updates }
-            : state.selectedCompany;
-
-        console.log("Company updated successfully (optimistic)");
-
-        return {
-          companies: updatedCompanies,
-          selectedCompany: updatedSelectedCompany,
-          isLoading: false,
-        };
-      });
-
-      // Option 2: Refetch from server to get the latest data
-      await get().fetchCompanies(true); // Force refresh
-
-      console.log("Companies refetched after update");
-    } catch (error) {
-      console.error("Error updating company:", error);
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-
-  deleteCompany: async (companyId: string) => {
-    set({ isLoading: true });
-    try {
-      await mockDeleteCompany(companyId);
-      set((state) => ({
-        companies: state.companies.filter(
-          (company) => company.id !== companyId
-        ),
-        selectedCompany:
-          state.selectedCompany?.id === companyId
-            ? null
-            : state.selectedCompany,
-        isLoading: false,
-      }));
-      console.log("Company deleted successfully");
-    } catch (error) {
-      console.error("Error deleting company:", error);
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-
-  // Selection Methods
-  setSelectedCompany: (company) => set({ selectedCompany: company }),
-  setSelectedStation: (station) => set({ selectedStation: station }),
-  setSelectedCharger: (charger) => set({ selectedCharger: charger }),
-}));
-
-// Helper hook for initializing data once in the app
+/* AUTO INIT ----------------------------------*/
 export const useInitializeStore = () => {
   const { fetchCompanies, isInitialized } = useDataStore();
 
@@ -349,14 +322,6 @@ export const useInitializeStore = () => {
       fetchCompanies();
     }
   }, [fetchCompanies, isInitialized]);
+
+  return { isInitialized };
 };
-
-// Usage in React components:
-// In your main App or layout component (run once):
-// useInitializeStore();
-
-// In other components:
-// const { companies, isLoading, updateCompany } = useDataStore();
-
-// To manually force refresh:
-// fetchCompanies(true);

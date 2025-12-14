@@ -22,22 +22,27 @@ const MenuProps = {
 
 export default function MultipleSelectCheckmarks({
   data = [],
+  onChange,
   label,
+  selected,
 }: {
   data?: string[];
+  onChange?: (arr: string[]) => void;
   label: string;
+  selected?: string[];
 }) {
   const [personName, setPersonName] = React.useState<string[]>([]);
 
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value;
+    onChange([]);
     setPersonName(typeof value === "string" ? value.split(",") : value);
   };
 
   return (
     <FormControl
       fullWidth
-      className="text-black"
+      className="text-black border border-gray-300"
       sx={{ maxWidth: "280px", minWidth: "100px", border: "black" }}
     >
       <InputLabel
@@ -87,7 +92,7 @@ export default function MultipleSelectCheckmarks({
             fontSize: "14px",
             display: "flex",
             alignItems: "center",
-            color: "white",
+            color: "black",
           },
 
           ".MuiSelect-icon": {

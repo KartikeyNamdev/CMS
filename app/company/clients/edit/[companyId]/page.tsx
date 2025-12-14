@@ -5,7 +5,8 @@ import { useRouter, useParams } from "next/navigation";
 import Card from "@/app/components/Card";
 import { MoveLeftIcon, Save } from "lucide-react";
 import Link from "next/link";
-import { Company, CompanyType, useDataStore } from "@/store/useDataStore";
+import { useDataStore } from "@/store/useDataStore";
+import { CompanyType } from "@/lib/types";
 
 interface CompanyFormData {
   id: string;
