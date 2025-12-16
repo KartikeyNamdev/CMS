@@ -2,15 +2,14 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import React from "react";
 
-import type { Company, Station, Charger } from "../lib/types"; // ⬅ IMPORT TYPES FROM FILE 1
+import type { Company, Station, Charger } from "../lib/types";
 
 /* --------------------------------------------
-   MOCK API (NO DELAYS)
+   INITIAL DUMMY DATA
 ---------------------------------------------*/
 
-const mockFetchCompanies = async (): Promise<Company[]> => [
+const initialCompanies: Company[] = [
   {
     id: "host-1",
     clientName: "Aryan",
@@ -39,83 +38,68 @@ const mockFetchCompanies = async (): Promise<Company[]> => [
   },
 ];
 
-const mockFetchStations = async (companyId: string): Promise<Station[]> => {
-  if (companyId === "host-1") {
-    return [
-      {
-        id: "station-a",
-        stationName: "Aryan Hotel Station",
-        country: "India",
-        street: "Jaipur Road",
-        area: "Central Jaipur",
-        landmark: "Near Civil Lines",
-        zone: "North",
-        state: "Rajasthan",
-        city: "Jaipur",
-        pincode: "302020",
+const initialStations: Station[] = [
+  {
+    id: "station-a",
+    stationName: "Aryan Hotel Station",
+    country: "India",
+    street: "Jaipur Road",
+    area: "Central Jaipur",
+    landmark: "Near Civil Lines",
+    zone: "North",
+    state: "Rajasthan",
+    city: "Jaipur",
+    pincode: "302020",
+    companyId: "host-1",
+    accessType: "Public",
+    alternateAccessType: "Captive",
+    stationVisibility: "Enable",
+    amenities: "Wifi,Restroom",
+    cctv: "yes",
+    connectionType: "EV connection",
+    openingHours: "24hours",
+    spocName: "Rahul Sharma",
+    spocNumber: 9876543210,
+    guardName: "Amit",
+    guardNumber: 9988771122,
+    parkingFee: 1,
+    internetConnectionType: "WiFi",
+  },
+];
 
-        companyId: "host-1",
-        accessType: "Public",
-        alternateAccessType: "Captive",
-        stationVisibility: "Enable",
-        amenities: "Wifi,Restroom",
-
-        cctv: "yes",
-        connectionType: "EV connection",
-        openingHours: "24hours",
-
-        spocName: "Rahul Sharma",
-        spocNumber: 9876543210,
-
-        guardName: "Amit",
-        guardNumber: 9988771122,
-
-        parkingFee: 1,
-        internetConnectionType: "WiFi",
-      },
-    ];
-  }
-  return [];
-};
-
-const mockFetchChargers = async (stationId: string): Promise<Charger[]> => {
-  if (stationId === "station-a") {
-    return [
-      {
-        id: "charger-1",
-        stationId: "station-a",
-        ocppId: "OCPP-ARYAN-001",
-        oem: "Exicom",
-        chargerType: "DC",
-        powerRating: "60kW",
-        operationalStatus: "Active",
-        firmware: "4.0.3",
-        label: "Fast Charger",
-        discountOffer: 20,
-        connector: [
-          { connectorStatuses: "Available" },
-          { connectorStatuses: "Unavailable" },
-        ],
-        numConnectors: 2,
-      },
-      {
-        id: "charger-2",
-        stationId: "station-a",
-        ocppId: "OCPP-ARYAN-002",
-        oem: "Servotech",
-        chargerType: "AC",
-        powerRating: "7.4kW",
-        operationalStatus: "Available",
-        firmware: "4.0.3",
-        label: "Slow Charger",
-        discountOffer: 0,
-        connector: [{ connectorStatuses: "Available" }],
-        numConnectors: 1,
-      },
-    ];
-  }
-  return [];
-};
+const initialChargers: Charger[] = [
+  {
+    id: "charger-1",
+    stationId: "station-a",
+    ocppId: "OCPP-ARYAN-001",
+    oem: "Exicom",
+    chargerType: "DC",
+    powerRating: "60kW",
+    operationalStatus: "Active",
+    firmware: "4.0.3",
+    label: "Fast Charger",
+    discountOffer: 20,
+    connector: [
+      { connectorStatuses: "Available" },
+      { connectorStatuses: "Unavailable" },
+    ],
+    numConnectors: 2,
+  },
+  {
+    id: "charger-2",
+    stationId: "station-a",
+    ocppId: "OCPP-ARYAN-002",
+    oem: "Servotech",
+    chargerType: "AC",
+    powerRating: "7.4kW",
+    operationalStatus: "Available",
+    firmware: "4.0.3",
+    label: "Slow Charger",
+    discountOffer: 0,
+    connector: [{ connectorStatuses: "Available" }],
+    numConnectors: 1,
+  },
+];
 
 /* --------------------------------------------
    STORE INTERFACE
@@ -125,31 +109,38 @@ interface DataStore {
   stations: Station[];
   chargers: Charger[];
   isLoading: boolean;
-  isInitialized: boolean;
 
   selectedCompany: Company | null;
   selectedStation: Station | null;
   selectedCharger: Charger | null;
 
-  fetchCompanies: (forceRefresh?: boolean) => Promise<Company[]>;
-  fetchStationsByCompany: (companyId: string) => Promise<Station[]>;
-  fetchChargersByStation: (stationId: string) => Promise<Charger[]>;
+  // Getters
+  getCompanies: () => Company[];
+  getStationsByCompany: (companyId: string) => Station[];
+  getChargersByStation: (stationId: string) => Charger[];
 
-  createCompany: (company: Company) => Promise<Company>;
-  updateCompany: (id: string, updates: Partial<Company>) => Promise<Company>;
-  deleteCompany: (id: string) => Promise<boolean>;
+  // Company CRUD
+  createCompany: (company: Company) => void;
+  updateCompany: (id: string, updates: Partial<Company>) => void;
+  deleteCompany: (id: string) => void;
 
-  createStation: (station: Station) => Promise<Station>;
-  updateStation: (id: string, updates: Partial<Station>) => Promise<Station>;
-  deleteStation: (id: string) => Promise<boolean>;
+  // Station CRUD
+  createStation: (station: Station) => void;
+  updateStation: (id: string, updates: Partial<Station>) => void;
+  deleteStation: (id: string) => void;
 
-  createCharger: (charger: Charger) => Promise<Charger>;
-  updateCharger: (id: string, updates: Partial<Charger>) => Promise<Charger>;
-  deleteCharger: (id: string) => Promise<boolean>;
+  // Charger CRUD
+  createCharger: (charger: Charger) => void;
+  updateCharger: (id: string, updates: Partial<Charger>) => void;
+  deleteCharger: (id: string) => void;
 
+  // Selectors
   setSelectedCompany: (company: Company | null) => void;
   setSelectedStation: (station: Station | null) => void;
   setSelectedCharger: (charger: Charger | null) => void;
+
+  // Reset
+  resetStore: () => void;
 }
 
 /* --------------------------------------------
@@ -159,146 +150,146 @@ interface DataStore {
 export const useDataStore = create<DataStore>()(
   persist(
     (set, get) => ({
-      companies: [],
-      stations: [],
-      chargers: [],
+      companies: initialCompanies,
+      stations: initialStations,
+      chargers: initialChargers,
       isLoading: false,
-      isInitialized: false,
 
       selectedCompany: null,
       selectedStation: null,
       selectedCharger: null,
 
-      /* FETCH ---------------------------------- */
-      fetchCompanies: async (force = false) => {
-        if (get().isInitialized && !force) {
-          console.log("Companies already initialized");
-          return get().companies;
-        }
-
-        set({ isLoading: true });
-        const companies = await mockFetchCompanies();
-        set({ companies, isInitialized: true, isLoading: false });
-        console.log("Companies fetched:", companies.length);
-        return companies;
+      /* GETTERS ---------------------------------- */
+      getCompanies: () => {
+        return get().companies;
+      },
+      getStationsByCompany: (companyId: string) => {
+        return get().stations.filter((s) => s.companyId === companyId);
       },
 
-      fetchStationsByCompany: async (companyId) => {
-        set({ isLoading: true });
-        const stations = await mockFetchStations(companyId);
-        set({ stations, isLoading: false });
-        console.log(`Stations fetched for ${companyId}:`, stations.length);
-        return stations;
-      },
-
-      fetchChargersByStation: async (stationId) => {
-        set({ isLoading: true });
-        const chargers = await mockFetchChargers(stationId);
-        set({ chargers, isLoading: false });
-        console.log(`Chargers fetched for ${stationId}:`, chargers.length);
-        return chargers;
+      getChargersByStation: (stationId: string) => {
+        return get().chargers.filter((c) => c.stationId === stationId);
       },
 
       /* COMPANY CRUD ----------------------------- */
-      createCompany: async (company) => {
-        set((s) => ({ companies: [...s.companies, company] }));
-        console.log("Company created:", company.id);
-        return company;
+      createCompany: (company: Company) => {
+        set((state) => ({
+          companies: [...state.companies, company],
+        }));
+        console.log("✅ Company created:", company.id);
       },
 
-      updateCompany: async (id, updates) => {
-        let updated!: Company;
-        set((s) => ({
-          companies: s.companies.map((c) =>
-            c.id === id ? (updated = { ...c, ...updates }) : c
+      updateCompany: (id: string, updates: Partial<Company>) => {
+        set((state) => ({
+          companies: state.companies.map((c) =>
+            c.id === id ? { ...c, ...updates } : c
           ),
           selectedCompany:
-            s.selectedCompany?.id === id
-              ? { ...s.selectedCompany, ...updates }
-              : s.selectedCompany,
+            state.selectedCompany?.id === id
+              ? { ...state.selectedCompany, ...updates }
+              : state.selectedCompany,
         }));
-        console.log("Company updated:", id);
-        return updated;
+        console.log("✅ Company updated:", id);
       },
 
-      deleteCompany: async (id) => {
-        set((s) => ({
-          companies: s.companies.filter((c) => c.id !== id),
+      deleteCompany: (id: string) => {
+        set((state) => ({
+          companies: state.companies.filter((c) => c.id !== id),
+          stations: state.stations.filter((s) => s.companyId !== id),
           selectedCompany:
-            s.selectedCompany?.id === id ? null : s.selectedCompany,
+            state.selectedCompany?.id === id ? null : state.selectedCompany,
         }));
-        console.log("Company deleted:", id);
-        return true;
+        console.log("✅ Company deleted:", id);
       },
 
       /* STATION CRUD ------------------------------ */
-      createStation: async (station) => {
-        set((s) => ({ stations: [...s.stations, station] }));
-        console.log("Station created:", station.id);
-        return station;
+      createStation: (station: Station) => {
+        if (!station.id || !station.companyId) {
+          console.error("❌ Station ID and Company ID are required");
+          return;
+        }
+
+        set((state) => ({
+          stations: [...state.stations, station],
+        }));
+        console.log("✅ Station created:", station.id);
       },
 
-      updateStation: async (id, updates) => {
-        let updated!: Station;
-        set((s) => ({
-          stations: s.stations.map((st) =>
-            st.id === id ? (updated = { ...st, ...updates }) : st
+      updateStation: (id: string, updates: Partial<Station>) => {
+        set((state) => ({
+          stations: state.stations.map((s) =>
+            s.id === id ? { ...s, ...updates } : s
           ),
           selectedStation:
-            s.selectedStation?.id === id
-              ? { ...s.selectedStation, ...updates }
-              : s.selectedStation,
+            state.selectedStation?.id === id
+              ? { ...state.selectedStation, ...updates }
+              : state.selectedStation,
         }));
-        console.log("Station updated:", id);
-        return updated;
+        console.log("✅ Station updated:", id);
       },
 
-      deleteStation: async (id) => {
-        set((s) => ({
-          stations: s.stations.filter((st) => st.id !== id),
+      deleteStation: (id: string) => {
+        set((state) => ({
+          stations: state.stations.filter((s) => s.id !== id),
+          chargers: state.chargers.filter((c) => c.stationId !== id),
           selectedStation:
-            s.selectedStation?.id === id ? null : s.selectedStation,
+            state.selectedStation?.id === id ? null : state.selectedStation,
         }));
-        console.log("Station deleted:", id);
-        return true;
+        console.log("✅ Station deleted:", id);
       },
 
       /* CHARGER CRUD ------------------------------ */
-      createCharger: async (charger) => {
-        set((s) => ({ chargers: [...s.chargers, charger] }));
-        console.log("Charger created:", charger.id);
-        return charger;
+      createCharger: (charger: Charger) => {
+        if (!charger.id || !charger.stationId) {
+          console.error("❌ Charger ID and Station ID are required");
+          return;
+        }
+
+        set((state) => ({
+          chargers: [...state.chargers, charger],
+        }));
+        console.log("✅ Charger created:", charger.id);
       },
 
-      updateCharger: async (id, updates) => {
-        let updated!: Charger;
-        set((s) => ({
-          chargers: s.chargers.map((ch) =>
-            ch.id === id ? (updated = { ...ch, ...updates }) : ch
+      updateCharger: (id: string, updates: Partial<Charger>) => {
+        set((state) => ({
+          chargers: state.chargers.map((c) =>
+            c.id === id ? { ...c, ...updates } : c
           ),
           selectedCharger:
-            s.selectedCharger?.id === id
-              ? { ...s.selectedCharger, ...updates }
-              : s.selectedCharger,
+            state.selectedCharger?.id === id
+              ? { ...state.selectedCharger, ...updates }
+              : state.selectedCharger,
         }));
-        console.log("Charger updated:", id, updates);
-        return updated;
+        console.log("✅ Charger updated:", id);
       },
 
-      deleteCharger: async (id) => {
-        set((s) => ({
-          chargers: s.chargers.filter((ch) => ch.id !== id),
+      deleteCharger: (id: string) => {
+        set((state) => ({
+          chargers: state.chargers.filter((c) => c.id !== id),
           selectedCharger:
-            s.selectedCharger?.id === id ? null : s.selectedCharger,
+            state.selectedCharger?.id === id ? null : state.selectedCharger,
         }));
-        console.log("Charger deleted:", id);
-        return true;
+        console.log("✅ Charger deleted:", id);
       },
 
       /* SELECTORS ---------------------------------- */
       setSelectedCompany: (company) => set({ selectedCompany: company }),
       setSelectedStation: (station) => set({ selectedStation: station }),
       setSelectedCharger: (charger) => set({ selectedCharger: charger }),
+
+      /* RESET --------------------------------------- */
+      resetStore: () => {
+        set({
+          companies: initialCompanies,
+          stations: initialStations,
+          chargers: initialChargers,
+          selectedCompany: null,
+          selectedStation: null,
+          selectedCharger: null,
+        });
+        console.log("🔄 Store reset to initial state");
+      },
     }),
 
     {
@@ -307,21 +298,45 @@ export const useDataStore = create<DataStore>()(
         companies: state.companies,
         stations: state.stations,
         chargers: state.chargers,
-        isInitialized: state.isInitialized,
       }),
     }
   )
 );
 
-/* AUTO INIT ----------------------------------*/
-export const useInitializeStore = () => {
-  const { fetchCompanies, isInitialized } = useDataStore();
+/* USAGE EXAMPLE ----------------------------------
 
-  React.useEffect(() => {
-    if (!isInitialized) {
-      fetchCompanies();
-    }
-  }, [fetchCompanies, isInitialized]);
+// Get all companies
+const companies = useDataStore((state) => state.companies);
 
-  return { isInitialized };
-};
+// Get stations for a specific company
+const getStationsByCompany = useDataStore((state) => state.getStationsByCompany);
+const stations = getStationsByCompany("host-1");
+
+// Get chargers for a specific station
+const getChargersByStation = useDataStore((state) => state.getChargersByStation);
+const chargers = getChargersByStation("station-a");
+
+// Create new company
+const createCompany = useDataStore((state) => state.createCompany);
+createCompany({
+  id: "new-company-1",
+  clientName: "New Client",
+  name: "New Company",
+  type: "CPO",
+  timezone: "IST",
+  currency: "INR",
+  pincode: "123456",
+  country: "India",
+  state: "Maharashtra",
+  city: "Mumbai",
+});
+
+// Update company
+const updateCompany = useDataStore((state) => state.updateCompany);
+updateCompany("host-1", { name: "Updated Hotel Group" });
+
+// Delete company (also deletes associated stations)
+const deleteCompany = useDataStore((state) => state.deleteCompany);
+deleteCompany("host-1");
+
+*/

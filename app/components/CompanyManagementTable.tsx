@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import AgDynamicTable from "@/app/components/AgDynamicTable";
 import { useDataStore } from "@/store/useDataStore";
@@ -29,15 +29,21 @@ const ActionCellRenderer = (props: ICellRendererParams<CompanyRow>) => {
     router.push(`/company/clients/edit/${props.data?.id}`);
   };
 
-  const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this company?")) {
-      await deleteCompany(props.data.id);
-      alert("Company removed!");
+  const handleDelete = () => {
+    if (!props.data?.id) return;
+
+    if (
+      confirm(
+        `Are you sure you want to delete "${props.data.name}"? This will also delete all associated stations and chargers.`
+      )
+    ) {
+      deleteCompany(props.data.id);
+      alert("Company and all associated data removed!");
     }
   };
 
   return (
-    <div className="flex items-center gap-2 text-sm ">
+    <div className="flex items-center gap-2 text-sm">
       <button
         onClick={handleEdit}
         className="p-2 rounded-lg hover:text-red-600 transition-colors"
@@ -48,7 +54,7 @@ const ActionCellRenderer = (props: ICellRendererParams<CompanyRow>) => {
       <span className="text-gray-700">|</span>
       <button
         onClick={handleDelete}
-        className="p-2 rounded-lg  hover:text-red-600 transition-colors"
+        className="p-2 rounded-lg hover:text-red-600 transition-colors"
         title="Delete Company"
       >
         Delete
@@ -91,12 +97,7 @@ const CompanyTypeCellRenderer = (props: ICellRendererParams<CompanyRow>) => {
 
 export default function CompanyManagementTable() {
   const router = useRouter();
-  const { companies, isLoading, fetchCompanies } = useDataStore();
-
-  // Fetch companies on component mount
-  useEffect(() => {
-    fetchCompanies();
-  }, [fetchCompanies]);
+  const companies = useDataStore((state) => state.companies);
 
   // Define AG Grid columns
   const columns: ColumnType[] = useMemo(
@@ -140,7 +141,6 @@ export default function CompanyManagementTable() {
       {
         headerName: "Actions",
         field: "actions",
-
         cellRenderer: ActionCellRenderer,
         sortable: false,
         filter: false,
@@ -167,19 +167,31 @@ export default function CompanyManagementTable() {
   };
 
   return (
-    <div className="w-full p-8  bg-transparent">
-      <div className=" flex justify-between items-center">
+    <div className="w-full p-8 bg-transparent">
+      <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Company Management
           </h1>
           <p className="text-gray-500">Manage all companies in the system</p>
         </div>
+        {/* <button
+          onClick={handleCreateNew}
+          className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+        >
+          + Create New Company
+        </button> */}
       </div>
 
-      {isLoading ? (
-        <div className="flex justify-center items-center h-96">
-          <div className="text-white text-xl">Loading companies...</div>
+      {companies.length === 0 ? (
+        <div className="flex flex-col justify-center items-center h-96 bg-white rounded-lg shadow mt-6">
+          <p className="text-gray-500 text-xl mb-4">No companies found</p>
+          <button
+            onClick={handleCreateNew}
+            className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+          >
+            Create Your First Company
+          </button>
         </div>
       ) : (
         <div style={{ width: "100%" }} className="mt-4 text-white">
@@ -190,13 +202,22 @@ export default function CompanyManagementTable() {
             gridOptions={{
               animateRows: true,
               enableCellTextSelection: true,
+              pagination: true,
+              paginationPageSize: 10,
             }}
           />
         </div>
       )}
 
-      <div className="mt-4 text-gray-400 text-sm">
-        Total Companies: {companies.length}
+      <div className="mt-4 text-gray-600 text-sm flex justify-between items-center">
+        <span>
+          Total Companies: <strong>{companies.length}</strong>
+        </span>
+        {companies.length > 0 && (
+          <span className="text-xs text-gray-500">
+            💡 Deleting a company will remove all its stations and chargers
+          </span>
+        )}
       </div>
     </div>
   );

@@ -17,13 +17,12 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 import { Edit } from "lucide-react";
 import { ICellRendererParams } from "ag-grid-community";
 import { useRouter } from "next/navigation";
-import { Charger } from "@/lib/types";
+import { Charger, Station } from "@/lib/types";
 
 const ActionCellRenderer = (props: ICellRendererParams<Charger>) => {
   const router = useRouter();
 
   const handleEdit = () => {
-    // Navigate to edit page with company ID
     router.push(`/charger/chargers/edit/${props.data?.ocppId}`);
   };
 
@@ -43,9 +42,7 @@ const ActionCellRenderer = (props: ICellRendererParams<Charger>) => {
 // -------- RENDERERS ----------
 const NameRenderer = (params: CustomCellRendererProps<Charger>) => {
   const name = params.data?.ocppId;
-
   if (!name) return <span>--</span>;
-
   return (
     <Link
       href={`/charger/chargers/profile/${name}`}
@@ -55,11 +52,10 @@ const NameRenderer = (params: CustomCellRendererProps<Charger>) => {
     </Link>
   );
 };
+
 const DiscountRenderer = (params: CustomCellRendererProps<Charger>) => {
   const name = params.data?.discountOffer;
-
   if (!name) return <span>--</span>;
-
   return (
     <Link
       href={`/charger/chargers/profile/${name}`}
@@ -70,7 +66,6 @@ const DiscountRenderer = (params: CustomCellRendererProps<Charger>) => {
   );
 };
 
-// -------- RENDERERS WITH DIALOG OPEN CONTROL ----------
 const ConnectorRenderer = (
   params: CustomCellRendererProps<Charger>,
   openDialog: (v: boolean) => void
@@ -113,20 +108,72 @@ const OperationalStatusRenderer = (
 
 // -------- UI COMPONENT ----------
 const AllChargersTable = () => {
-  // 🔥 FIX 1: Access state and actions directly from Zustand
-  const { chargers, fetchChargersByStation } = useDataStore();
+  const companies = useDataStore((state) => state.companies);
+  const stations = useDataStore((state) => state.stations);
+  const getStationsByCompany = useDataStore(
+    (state) => state.getStationsByCompany
+  );
+  const getChargersByStation = useDataStore(
+    (state) => state.getChargersByStation
+  );
 
-  // 🔥 FIX 2: Trigger fetching only on mount using useEffect
-  useEffect(() => {
-    fetchChargersByStation("station-a"); // Start loading company data
-  }, [fetchChargersByStation]);
-
-  // Use existing hook for row data (assumed to work independently for now)
-
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
+  const [selectedStationId, setSelectedStationId] = useState<string>("");
+  const [filteredStations, setFilteredStations] = useState<Station[]>([]);
+  const [chargers, setChargers] = useState<Charger[]>([]);
   const [connectorDialog, setConnectorDialog] = useState(false);
 
-  // Debugging console log is now clean and reflects state
-  console.log("Current Companies State:", chargers);
+  // Auto-select first company on mount
+  useEffect(() => {
+    const load = () => {
+      if (companies.length > 0 && !selectedCompanyId) {
+        setSelectedCompanyId(companies[0].id);
+      }
+    };
+    load();
+  }, [companies, selectedCompanyId]);
+
+  // Fetch stations when company changes
+  useEffect(() => {
+    const load = () => {
+      if (selectedCompanyId) {
+        const stationsForCompany = getStationsByCompany(selectedCompanyId);
+        setFilteredStations(stationsForCompany);
+        console.log(
+          `📍 Loaded ${stationsForCompany.length} stations for company: ${selectedCompanyId}`
+        );
+
+        // Auto-select first station if available
+        if (stationsForCompany.length > 0) {
+          setSelectedStationId(stationsForCompany[0].id);
+        } else {
+          setSelectedStationId("");
+          setChargers([]);
+        }
+      } else {
+        setFilteredStations([]);
+        setSelectedStationId("");
+        setChargers([]);
+      }
+    };
+    load();
+  }, [selectedCompanyId, getStationsByCompany]);
+
+  // Fetch chargers when station changes
+  useEffect(() => {
+    const load = () => {
+      if (selectedStationId) {
+        const chargersForStation = getChargersByStation(selectedStationId);
+        setChargers(chargersForStation);
+        console.log(
+          `⚡ Loaded ${chargersForStation.length} chargers for station: ${selectedStationId}`
+        );
+      } else {
+        setChargers([]);
+      }
+    };
+    load();
+  }, [selectedStationId, getChargersByStation]);
 
   const colDefs: ColDef<Charger>[] = [
     {
@@ -138,20 +185,16 @@ const AllChargersTable = () => {
     { field: "id", headerName: "ID", width: 90 },
     { field: "stationId", headerName: "Station ID", width: 120 },
     { field: "oem", headerName: "OEM", width: 100 },
-
     { field: "chargerType", headerName: "Type", width: 100 },
     { field: "powerRating", headerName: "Power Rating", width: 140 },
     {
       field: "operationalStatus",
-      headerName: " Status",
+      headerName: "Status",
       width: 100,
       cellRenderer: OperationalStatusRenderer,
     },
     { field: "firmware", headerName: "Firmware", width: 100 },
-
     { field: "label", headerName: "Label", width: 110 },
-    { field: "firmware", headerName: "Firmware", width: 110 },
-
     {
       field: "numConnectors",
       headerName: "Connectors",
@@ -190,117 +233,176 @@ const AllChargersTable = () => {
     []
   );
 
+  const selectedCompany = companies.find((c) => c.id === selectedCompanyId);
+  const selectedStation = filteredStations.find(
+    (s) => s.id === selectedStationId
+  );
+
   return (
-    <div style={{ height: 260, width: "98%" }} className="mt-4">
-      {/* 🔥 YOUR ORIGINAL CSS THEME INSERTED */}
-      <style jsx global>{`
-        /* Fix AG Grid dropdown/filter menu transparency */
-        .ag-theme-alpine-dark.custom-dabas-theme .ag-menu,
-        .ag-theme-alpine-dark.custom-dabas-theme .ag-filter-toolpanel,
-        .ag-theme-alpine-dark.custom-dabas-theme .ag-rich-select,
-        .ag-theme-alpine-dark.custom-dabas-theme .ag-popup {
-          background-color: #2b2b2b !important; /* dark grey background */
-          color: white !important;
-          border: 1px solid #555 !important;
-        }
+    <div className="p-6">
+      <h1 className="text-2xl font-bold text-black mb-6">All Chargers</h1>
 
-        /* Fix select dropdown list items */
-        .ag-rich-select-list {
-          background-color: #2b2b2b !important;
-        }
+      {/* COMPANY & STATION SELECTOR */}
+      <div className="mb-6 bg-white p-4 rounded-lg shadow space-y-4">
+        {/* Company Selector */}
+        <div className="flex items-center gap-4">
+          <label className="text-gray-700 font-medium min-w-[140px]">
+            Choose Company:
+          </label>
+          <select
+            value={selectedCompanyId}
+            onChange={(e) => setSelectedCompanyId(e.target.value)}
+            className="flex-1 max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+          >
+            <option value="">Select a company</option>
+            {companies.map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.name} ({company.type})
+              </option>
+            ))}
+          </select>
+          {selectedCompany && (
+            <div className="text-sm text-gray-600">
+              <span className="font-semibold">{filteredStations.length}</span>{" "}
+              stations
+            </div>
+          )}
+        </div>
 
-        .ag-rich-select-list-item {
-          background-color: #2b2b2b !important;
-          color: white !important;
-        }
+        {/* Station Selector */}
+        {selectedCompanyId && filteredStations.length > 0 && (
+          <div className="flex items-center gap-4">
+            <label className="text-gray-700 font-medium min-w-[140px]">
+              Choose Station:
+            </label>
+            <select
+              value={selectedStationId}
+              onChange={(e) => setSelectedStationId(e.target.value)}
+              className="flex-1 max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">Select a station</option>
+              {filteredStations.map((station) => (
+                <option key={station.id} value={station.id}>
+                  {station.stationName} - {station.city}
+                </option>
+              ))}
+            </select>
+            {selectedStation && (
+              <div className="text-sm text-gray-600">
+                Showing <span className="font-semibold">{chargers.length}</span>{" "}
+                chargers
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
-        .ag-rich-select-list-item:hover {
-          background-color: #444 !important;
-        }
+      {/* TABLE */}
+      {selectedStationId ? (
+        chargers.length > 0 ? (
+          <div style={{ height: 500, width: "100%" }}>
+            <style jsx global>{`
+              /* Fix AG Grid dropdown/filter menu transparency */
+              .ag-theme-alpine-dark.custom-dabas-theme .ag-menu,
+              .ag-theme-alpine-dark.custom-dabas-theme .ag-filter-toolpanel,
+              .ag-theme-alpine-dark.custom-dabas-theme .ag-rich-select,
+              .ag-theme-alpine-dark.custom-dabas-theme .ag-popup {
+                background-color: #2b2b2b !important;
+                color: white !important;
+                border: 1px solid #555 !important;
+              }
 
-        /* Ensure text inside filter input is visible */
-        /**************************************
-  1️⃣ TRANSPARENT TABLE BACKGROUND
-***************************************/
-        .ag-theme-alpine-dark.custom-dabas-theme {
-          --ag-background-color: transparent !important;
-          --ag-row-background-color: transparent !important;
-          --ag-odd-row-background-color: transparent !important;
-          --ag-even-row-background-color: transparent !important;
-        }
+              .ag-rich-select-list {
+                background-color: #2b2b2b !important;
+              }
 
-        /**************************************
-  2️⃣ HEADER BACKGROUND = DABAS RED
-***************************************/
-        .custom-dabas-theme .ag-header,
-        .custom-dabas-theme .ag-header-row {
-          background-color: #b22828 !important;
-          color: white !important;
-        }
+              .ag-rich-select-list-item {
+                background-color: #2b2b2b !important;
+                color: white !important;
+              }
 
-        /**************************************
-  3️⃣ WHITE DROPDOWNS (FILTER POPUPS)
-***************************************/
-        .ag-theme-alpine-dark.custom-dabas-theme .ag-popup,
-        .ag-theme-alpine-dark.custom-dabas-theme .ag-menu,
-        .ag-theme-alpine-dark.custom-dabas-theme .ag-filter-toolpanel,
-        .ag-theme-alpine-dark.custom-dabas-theme .ag-menu-option {
-          background: #ffffff !important; /* ✔ white popup */
-          color: #000000 !important; /* ✔ dark text */
-          border: 1px solid #d0d0d0 !important;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
+              .ag-rich-select-list-item:hover {
+                background-color: #444 !important;
+              }
 
-        /**************************************
-  4️⃣ WHITE SELECT DROPDOWN LIST
-***************************************/
-        .ag-rich-select,
-        .ag-rich-select-list,
-        .ag-rich-select-list-item {
-          background-color: #ffffff !important;
-          color: #000000 !important;
-        }
+              .ag-theme-alpine-dark.custom-dabas-theme {
+                --ag-background-color: transparent !important;
+                --ag-row-background-color: transparent !important;
+                --ag-odd-row-background-color: transparent !important;
+                --ag-even-row-background-color: transparent !important;
+              }
 
-        .ag-rich-select-list-item:hover {
-          background-color: #f2f2f2 !important;
-        }
+              .custom-dabas-theme .ag-header,
+              .custom-dabas-theme .ag-header-row {
+                background-color: #b22828 !important;
+                color: white !important;
+              }
 
-        /**************************************
-  5️⃣ FILTER INPUT FIELD = WHITE
-***************************************/
-        .ag-input-field-input,
-        .ag-filter-body input {
-          background: #ffffff !important;
-          color: #000000 !important;
-          border: 1px solid #ccc !important;
-        }
+              .ag-theme-alpine-dark.custom-dabas-theme .ag-popup,
+              .ag-theme-alpine-dark.custom-dabas-theme .ag-menu,
+              .ag-theme-alpine-dark.custom-dabas-theme .ag-filter-toolpanel,
+              .ag-theme-alpine-dark.custom-dabas-theme .ag-menu-option {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #d0d0d0 !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+              }
 
-        /**************************************
-  6️⃣ ROWS STAY TRANSPARENT
-***************************************/
-        .custom-dabas-theme .ag-row {
-          background-color: transparent !important;
-        }
+              .ag-rich-select,
+              .ag-rich-select-list,
+              .ag-rich-select-list-item {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+              }
 
-        .custom-dabas-theme .ag-row:hover {
-          background-color: rgba(255, 255, 255, 0.05) !important;
-        }
-      `}</style>
+              .ag-rich-select-list-item:hover {
+                background-color: #f2f2f2 !important;
+              }
 
-      <AgGridReact
-        className={themeClass}
-        rowData={chargers as []}
-        columnDefs={colDefs}
-        defaultColDef={defaultColDef}
-        pagination
-        paginationPageSize={10}
-        rowSelection="multiple"
-        animateRows
-      />
+              .ag-input-field-input,
+              .ag-filter-body input {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #ccc !important;
+              }
 
-      <p className="text-center text-black text-sm mt-2">
-        Showing {chargers.length} items
-      </p>
+              .custom-dabas-theme .ag-row {
+                background-color: transparent !important;
+              }
+
+              .custom-dabas-theme .ag-row:hover {
+                background-color: rgba(255, 255, 255, 0.05) !important;
+              }
+            `}</style>
+
+            <AgGridReact
+              className={themeClass}
+              rowData={chargers as []}
+              columnDefs={colDefs}
+              defaultColDef={defaultColDef}
+              pagination
+              paginationPageSize={10}
+              rowSelection="multiple"
+              animateRows
+            />
+
+            <p className="text-center text-black text-sm mt-2">
+              Showing {chargers.length} chargers
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500">
+            No chargers found for this station
+          </div>
+        )
+      ) : (
+        <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500">
+          {selectedCompanyId
+            ? "Please select a station to view chargers"
+            : "Please select a company first"}
+        </div>
+      )}
+
       {connectorDialog && (
         <ConnectorDialog
           onClose={() => setConnectorDialog(false)}

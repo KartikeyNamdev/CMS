@@ -1,13 +1,10 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import FormInput from "@/app/components/FormInput";
+import FormInput, { MultipeChoosableInput } from "@/app/components/FormInput";
 import MultipleSelectCheckmarks from "@/app/components/Checkmark";
 import { statesData, Station } from "@/lib/types";
-
-/* ---------------------------
-   STATE → CITY MAPPING
----------------------------- */
+import { useDataStore } from "@/store/useDataStore";
 
 interface Props {
   formData: Partial<Station>;
@@ -15,21 +12,17 @@ interface Props {
 }
 
 export default function DynamicStationForm({ formData, setFormData }: Props) {
-  /* LOCAL STATE WITH DEFAULT VALUES */
   const [selectedState, setSelectedState] = useState(formData.state || "");
   const [selectedCity, setSelectedCity] = useState(formData.city || "");
+  const { companies } = useDataStore();
 
-  /* ---------------------------
-     STATE OPTIONS
-  ---------------------------- */
+  /* STATE OPTIONS */
   const stateOptions = statesData.map((s) => ({
     value: s.state,
     label: s.state,
   }));
 
-  /* ---------------------------
-     CITY OPTIONS (Dynamic)
-  ---------------------------- */
+  /* CITY OPTIONS (Dynamic based on selected state) */
   const cityOptions = useMemo(() => {
     if (!selectedState) return [];
     const match = statesData.find((s) => s.state === selectedState);
@@ -38,20 +31,38 @@ export default function DynamicStationForm({ formData, setFormData }: Props) {
 
   /* Auto-reset city when state changes */
   useEffect(() => {
-    if (!cityOptions.some((c) => c.value === selectedCity)) {
-      setFormData((f) => ({ ...f, city: "" }));
+    function load() {
+      if (!cityOptions.some((c) => c.value === selectedCity)) {
+        setSelectedCity("");
+        setFormData((f) => ({ ...f, city: "" }));
+      }
     }
+    load();
   }, [selectedState, cityOptions, selectedCity, setFormData]);
 
   /* Shared update function */
-  const update = (field: keyof Station, value: string) =>
+  const update = (field: keyof Station, value: string) => {
+    console.log("Updating : ", field, value);
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <h2 className="text-xl text-gray-700 font-bold md:col-span-2">
         Station Details
       </h2>
+
+      {/* COMPANY */}
+      <MultipeChoosableInput
+        label="Company"
+        placeholder="Select Company"
+        value={formData.companyId || ""}
+        onChange={(e) => update("companyId", e.target.value)}
+        options={companies.map((c) => ({
+          label: c.name,
+          value: c.id,
+        }))}
+      />
 
       {/* BASIC INFORMATION */}
       <FormInput
@@ -60,6 +71,7 @@ export default function DynamicStationForm({ formData, setFormData }: Props) {
         value={formData.id || ""}
         onChange={(e) => update("id", e.target.value)}
       />
+
       <FormInput
         label="Station Name"
         placeholder="Enter station name"
@@ -88,7 +100,7 @@ export default function DynamicStationForm({ formData, setFormData }: Props) {
         onChange={(e) => update("landmark", e.target.value)}
       />
 
-      {/* STATE DROPDOWN */}
+      {/* STATE & CITY */}
       <FormInput
         label="State"
         options={stateOptions}
@@ -101,7 +113,6 @@ export default function DynamicStationForm({ formData, setFormData }: Props) {
         }}
       />
 
-      {/* CITY DROPDOWN (DYNAMIC) */}
       <FormInput
         label="City"
         options={cityOptions}
@@ -115,7 +126,6 @@ export default function DynamicStationForm({ formData, setFormData }: Props) {
         }}
       />
 
-      {/* PINCODE */}
       <FormInput
         label="Pincode"
         placeholder="Pincode"
@@ -135,7 +145,7 @@ export default function DynamicStationForm({ formData, setFormData }: Props) {
         onChange={(e) => update("accessType", e.target.value)}
       />
 
-      {/* AMENITIES MULTI-SELECT */}
+      {/* AMENITIES */}
       <MultipleSelectCheckmarks
         label="Amenities"
         data={["RestRoom", "Cafe", "Wifi", "Store", "Lodging"]}
@@ -143,7 +153,6 @@ export default function DynamicStationForm({ formData, setFormData }: Props) {
         onChange={(vals) => update("amenities", vals.join(","))}
       />
 
-      {/* OPENING HOURS */}
       <FormInput
         label="Opening Hours"
         placeholder="24Hrs or custom"
@@ -187,7 +196,7 @@ export default function DynamicStationForm({ formData, setFormData }: Props) {
         onChange={(e) => update("spocNumber", e.target.value)}
       />
 
-      {/* GUARD */}
+      {/* GUARD DETAILS */}
       <FormInput
         label="Guard Name"
         value={formData.guardName || ""}

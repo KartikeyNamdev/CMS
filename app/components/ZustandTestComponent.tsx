@@ -1,60 +1,90 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-// Adjust path as needed
 import { BoltIcon } from "@heroicons/react/24/solid";
 import { useDataStore } from "@/store/useDataStore";
+import { Charger, Station } from "@/lib/types";
 
 const ZustandTestComponent = () => {
-  // 1. Accessing State and Actions
-  const {
-    companies,
-    stations,
-    chargers,
-    isLoading,
-    fetchCompanies,
-    fetchStationsByCompany,
-    selectedStation,
-    setSelectedStation,
-    fetchChargersByStation,
-  } = useDataStore();
+  const companies = useDataStore((state) => state.companies);
+  const getStationsByCompany = useDataStore(
+    (state) => state.getStationsByCompany
+  );
+  const getChargersByStation = useDataStore(
+    (state) => state.getChargersByStation
+  );
+  const selectedStation = useDataStore((state) => state.selectedStation);
+  const setSelectedStation = useDataStore((state) => state.setSelectedStation);
 
-  // Local state to track which company we are viewing stations for
-  const [targetCompanyId, setTargetCompanyId] = useState<string | null>(null);
-  const [targetStationId, setTargetStationId] = useState<string | null>(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
+    null
+  );
+  const [selectedStationId, setSelectedStationId] = useState<string | null>(
+    null
+  );
+  const [stations, setStations] = useState<Station[]>([]);
+  const [chargers, setChargers] = useState<Charger[]>([]);
 
-  // 2. Fetch companies on mount
+  // Fetch stations when company changes
   useEffect(() => {
-    fetchCompanies();
-    console.log(companies);
-  }, []);
+    function load() {
+      if (selectedCompanyId) {
+        const filteredStations = getStationsByCompany(selectedCompanyId);
+        setStations(filteredStations);
+        console.log(
+          `📍 Loaded ${filteredStations.length} stations for company: ${selectedCompanyId}`
+        );
 
-  // 3. Fetch stations when a company is selected
-  useEffect(() => {
-    if (targetCompanyId) {
-      fetchStationsByCompany(targetCompanyId);
-      console.log(stations);
+        // Reset station and charger selection when company changes
+        setSelectedStationId(null);
+        setSelectedStation(null);
+        setChargers([]);
+      } else {
+        setStations([]);
+        setChargers([]);
+      }
     }
-  }, [targetCompanyId, fetchStationsByCompany]);
+    load();
+  }, [selectedCompanyId, getStationsByCompany, setSelectedStation]);
 
+  // Fetch chargers when station changes
   useEffect(() => {
-    if (targetStationId) {
-      fetchChargersByStation(targetStationId);
-      console.log(chargers);
+    function load() {
+      if (selectedStationId) {
+        const filteredChargers = getChargersByStation(selectedStationId);
+        setChargers(filteredChargers);
+        console.log(
+          `⚡ Loaded ${filteredChargers.length} chargers for station: ${selectedStationId}`
+        );
+      } else {
+        setChargers([]);
+      }
     }
-  }, [targetStationId, fetchChargersByStation]);
+    load();
+  }, [selectedStationId, getChargersByStation]);
 
-  // --- Render Logic ---
+  const handleCompanyClick = (companyId: string) => {
+    setSelectedCompanyId(companyId);
+  };
+
+  const handleStationClick = (station: Station) => {
+    setSelectedStation(station);
+    setSelectedStationId(station.id);
+  };
+
+  const handleClearSelection = () => {
+    setSelectedStation(null);
+    setSelectedStationId(null);
+    setChargers([]);
+  };
 
   return (
     <div className="p-8 bg-transparent text-gray-800 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-red-500">
+      <h1 className="text-3xl font-extrabold mb-6 text-red-500/80">
         DABAS Host Station Charger Management
       </h1>
 
-      {isLoading && <p className="text-green-500">Loading data...</p>}
-
-      {/* SECTION 1: Company List (Host Level) */}
+      {/* SECTION 1: Company List */}
       <div className="mb-8 p-4 border border-gray-700 rounded-lg">
         <h2 className="text-xl font-semibold mb-3">
           1. Companies (Hosts/CPOs)
@@ -62,14 +92,13 @@ const ZustandTestComponent = () => {
         <div className="space-y-3">
           {companies.map((company) => (
             <div
-              key={company.name}
+              key={company.id}
               className={`flex justify-between items-center p-3 rounded-md cursor-pointer transition-colors ${
-                targetCompanyId === company.id
-                  ? "bg-[#b22828] hover:bg-red-600 text-white"
-                  : "bg-white/40 hover:bg-white/80"
+                selectedCompanyId === company.id
+                  ? "bg-[#b22828] hover:bg-[#f7d0d0] text-white hover:text-black"
+                  : "hover:bg-red-200/40 bg-gray-200/20 border border-gray-300"
               }`}
-              onClick={() => setTargetCompanyId(company.id)}
-              //   const colors = ["#CD2C58", "#E06B80", "#FFC69D", "#FFE6D4"];
+              onClick={() => handleCompanyClick(company.id)}
             >
               <span>
                 {company.name} ({company.type}) - {company.taxId}
@@ -80,12 +109,12 @@ const ZustandTestComponent = () => {
         </div>
       </div>
 
-      {/* SECTION 2: Station List (Child of Host) */}
-      {targetCompanyId && (
+      {/* SECTION 2: Station List */}
+      {selectedCompanyId && (
         <div className="mb-8 p-4 border border-gray-700 rounded-lg">
           <h2 className="text-xl font-semibold mb-3">
             2. Stations for{" "}
-            {companies.find((c) => c.id === targetCompanyId)?.name}
+            {companies.find((c) => c.id === selectedCompanyId)?.name}
           </h2>
           <div className="space-y-3">
             {stations.length > 0 ? (
@@ -94,13 +123,10 @@ const ZustandTestComponent = () => {
                   key={station.id}
                   className={`p-3 rounded-md cursor-pointer transition-colors ${
                     selectedStation?.id === station.id
-                      ? "bg-[#b22828] hover:bg-red-600 text-white"
-                      : "bg-white/40 hover:bg-white/80"
+                      ? "bg-[#b22828] hover:bg-[#f7d0d0] text-white hover:text-black"
+                      : "hover:bg-red-200/40 bg-gray-200/20 border border-gray-300"
                   }`}
-                  onClick={() => {
-                    setSelectedStation(station);
-                    setTargetStationId(station.id);
-                  }}
+                  onClick={() => handleStationClick(station)}
                 >
                   <p className="font-medium">{station.stationName}</p>
                   <p
@@ -109,14 +135,7 @@ const ZustandTestComponent = () => {
                         ? "text-white"
                         : "text-black"
                     }`}
-                  >
-                    {
-                      (station.state,
-                      station.city,
-                      station.street,
-                      station.area)
-                    }
-                  </p>
+                  ></p>
                 </div>
               ))
             ) : (
@@ -128,10 +147,10 @@ const ZustandTestComponent = () => {
         </div>
       )}
 
-      {/* SECTION 3: Global Selection State */}
+      {/* SECTION 3: Chargers */}
       <div className="p-4 border border-gray-700 rounded-lg bg-gray-200">
         <h2 className="text-xl font-semibold mb-3">
-          3. Available Charger for {selectedStation?.stationName}
+          3. Available Chargers for {selectedStation?.stationName || "..."}
         </h2>
         {selectedStation ? (
           <div>
@@ -139,24 +158,41 @@ const ZustandTestComponent = () => {
               ✅ Station Selected:
             </p>
             <p>
-              {selectedStation.stationName} (ID: {selectedStation.stationName})
+              {selectedStation.stationName} (ID: {selectedStation.id})
             </p>
-            {chargers.map((charger) => {
-              return (
-                <div
-                  key={charger.id}
-                  className="p-6 m-2 relative rounded-xl shadow-xl overflow-hidden
-   bg-white/50 content-center justify-center hover:bg-[#FFE6D4]
-backdrop-filter backdrop-blur-md
-border border-gray-300 border-opacity-30 "
-                >
-                  {charger.ocppId}
-                </div>
-              );
-            })}
+
+            {chargers.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                {chargers.map((charger) => (
+                  <div
+                    key={charger.id}
+                    className="p-6 relative rounded-xl shadow-xl overflow-hidden
+                      bg-white/50 hover:bg-[#FFE6D4]
+                      backdrop-filter backdrop-blur-md
+                      border border-gray-300 border-opacity-30"
+                  >
+                    <p className="font-semibold">{charger.ocppId}</p>
+                    <p className="text-sm text-gray-600">
+                      {charger.chargerType} - {charger.powerRating}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Status: {charger.operationalStatus}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Connectors: {charger.numConnectors}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 mt-4">
+                No chargers found for this station.
+              </p>
+            )}
+
             <button
-              onClick={() => setSelectedStation(null)}
-              className="mt-2 text-sm bg-[#b22828] hover:bg-red-600 px-3 py-3  text-white rounded-lg p-4"
+              onClick={handleClearSelection}
+              className="mt-4 text-sm bg-[#b22828] hover:bg-[#f7d0d0] px-4 py-2 text-white rounded-lg hover:text-black"
             >
               Clear Selection
             </button>

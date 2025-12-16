@@ -1,6 +1,6 @@
 import { Station } from "@/lib/types";
 import { useDataStore } from "@/store/useDataStore";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import DynamicStationForm from "./DynamicStationForm";
 import Card from "./Card";
 
@@ -20,9 +20,12 @@ export default function Step2StationForm({
   const [form, setForm] = useState<Partial<Station>>(formOverride || {});
 
   // overwrite if editing
-
-  if (formOverride) setForm(formOverride);
-
+  useEffect(() => {
+    function load() {
+      if (formOverride) setForm(formOverride);
+    }
+    load();
+  });
   const handleSubmit = async () => {
     if (formOverride) {
       onNext(); // edit mode handled outside

@@ -59,6 +59,7 @@ export interface Company {
   area?: string;
   state?: string;
   city?: string;
+  stations?: Station[];
 }
 
 export interface Station {
@@ -86,11 +87,8 @@ export interface Station {
   guardNumber: number;
   parkingFee: number;
   internetConnectionType: "WiFi" | "Sim" | "Lan";
+  chargers?: Charger[];
 }
-
-export type connectorType = {
-  connectorStatuses: string;
-};
 
 export interface Charger {
   id: string;
@@ -106,6 +104,9 @@ export interface Charger {
   numConnectors: number;
   discountOffer: number;
 }
+export type connectorType = {
+  connectorStatuses: string;
+};
 export const statesData = [
   {
     state: "Andhra Pradesh",
