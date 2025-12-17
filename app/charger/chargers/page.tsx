@@ -55,6 +55,7 @@ export const ChargersPage = () => {
   const navigate = useRouter();
   // State placeholders for filters
   const [client, setClient] = useState("");
+  console.log(client);
   const [columnFilter, setColumnFilter] = useState("");
 
   return (

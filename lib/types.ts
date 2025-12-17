@@ -91,18 +91,70 @@ export interface Station {
 }
 
 export interface Charger {
+  // Basic Information
   id: string;
   stationId: string;
+  chargerName: string; // From Image 1
+  stationName: string; // From Image 1
+
+  // Location Details
+  latitude?: string; // From Image 1
+  longitude?: string; // From Image 1
+  area?: string; // From Image 1
+  state?: string; // From Image 1
+  city?: string; // From Image 1
+  pincode?: string; // From Image 1
+  street?: string; // From Image 1
+  stationSiteId?: string; // From Image 1
+  zone?: string; // From Image 1
+
+  // Access & Timing
+  openingTime?: string; // From Image 1
+  closingTime?: string; // From Image 1
+  accessType?: string; // From Image 1
+  alternativeAccessType?: string; // From Image 1
+
+  // Technical Specifications
   ocppId: string;
   oem: string;
-  chargerType: string;
+  chargerType: string; // AC/DC
   powerRating: string;
+  chargerPowerRating?: string; // From Image 1
   operationalStatus: string;
   firmware: string;
-  label: string;
+  label?: string;
+
+  // Connector Details
   connector: connectorType[];
   numConnectors: number;
+  typeOfConnector?: string; // From Image 1
+  autoCharge?: boolean; // From Image 1
+
+  // Pricing & Discounts
   discountOffer: number;
+
+  // Deal Details (From Image 2)
+  fixedCostPerKwh?: number;
+  electricityConnectionOwnedBy?: string;
+  electricityConnectionType?: string;
+  meterType?: string;
+  discomIdAccountNumber?: string;
+  estimatedElectricityChargePerKwh?: number;
+  insuranceAmountAnnual?: number;
+
+  // Company Mapping (From Image 2)
+  dateOfCompanyMapping?: string;
+
+  // Financial Details (From Image 2)
+  costFromCPO?: {
+    retail?: number;
+    fleet?: number;
+  };
+  fixedFee?: number;
+  saas?: number;
+  profitShare?: number;
+  revenueShare?: number;
+  dealApplicable?: string;
 }
 export type connectorType = {
   connectorStatuses: string;

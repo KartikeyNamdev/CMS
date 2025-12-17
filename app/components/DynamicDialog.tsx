@@ -34,9 +34,8 @@ const BaseDialog = ({
   triggerButton?: React.ReactNode;
 }) => (
   <Dialog>
-    <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-
     <form className="h-full" onSubmit={onClose}>
+      <DialogTrigger asChild>{triggerButton}</DialogTrigger>
       <DialogContent
         className="
             sm:max-w-md rounded-lg shadow-xl text-white border border-gray-300 border-opacity-30 
@@ -63,14 +62,17 @@ const BaseDialog = ({
             const uniqueId = `${title.replace(/\s/g, "")}-${idx}`;
             return (
               <div className="grid gap-2" key={uniqueId}>
-                <Label htmlFor={uniqueId} className="text-gray-200 text-sm">
+                <Label
+                  htmlFor={uniqueId}
+                  className="text-white text-md font-bold"
+                >
                   {field.label}
                 </Label>
                 <Input
                   id={uniqueId}
                   type={field.type || "text"}
                   placeholder={field.placeholder}
-                  className="h-10 bg-gray-100 text-black placeholder-gray-400 "
+                  className="h-10 bg-gray-100 border border-gray-300 text-black placeholder-gray-400 "
                 />
               </div>
             );
@@ -99,6 +101,11 @@ const ADD_ADMIN_FIELDS: DialogField[] = [
   { label: "Role Name", placeholder: "e.g., Super Admin" },
   { label: "Company Type", placeholder: "e.g., CPO / EMSP" },
   { label: "Company Name", placeholder: "e.g., PLUGUP" },
+  {
+    label: "Charger Group Assigned",
+    placeholder: "Yes or No",
+    type: "boolean",
+  },
 ];
 
 export const AddAdminDialog = ({
@@ -119,14 +126,13 @@ export const AddAdminDialog = ({
 );
 
 // --- 3. Add Group Dialog ---
-const ADD_GROUP_FIELDS: DialogField[] = [
-  { label: "Group Name", placeholder: "e.g., West Coast Chargers" },
-  { label: "Role Type", placeholder: "e.g., Custom / Default" },
-  { label: "Permission Template", placeholder: "e.g., Operator-Level Access" },
-  { label: "Description", placeholder: "Optional details" },
+const ADD_Roles_FIELDS: DialogField[] = [
+  { label: "Role Name", placeholder: "e.g., Admin / User" },
+  { label: "Company", placeholder: "e.g., Available companies" },
+  { label: "Role Template", placeholder: "Select role from template" },
 ];
 
-export const AddGroupDialog = ({
+export const AddRolesDialog = ({
   triggerButton,
   open,
   onClose,
@@ -136,8 +142,8 @@ export const AddGroupDialog = ({
   onClose?: () => void;
 }) => (
   <BaseDialog
-    title="Add New Charger Group"
-    data={ADD_GROUP_FIELDS}
+    title="Add New Role"
+    data={ADD_Roles_FIELDS}
     onClose={onClose}
     triggerButton={triggerButton}
   />

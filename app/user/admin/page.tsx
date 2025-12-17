@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/solid";
 import useUserTables from "@/hooks/useUserTable";
 import RoleDetailsDialog from "@/app/components/dialogs/RoleDetailsDialog";
-import { AddAdminDialog, AddGroupDialog } from "@/app/components/DynamicDialog";
+import { AddAdminDialog, AddRolesDialog } from "@/app/components/DynamicDialog";
 import { ColumnType } from "@/lib/agGrid";
 
 /* ---------------------------------------------------
@@ -215,7 +215,7 @@ const RolesView = ({ setAddRoleOpen, isAddRoleOpen }) => {
       {/* Filters/Actions section is missing but assumed to be here */}
       <div className="flex flex-wrap items-center justify-end gap-4 mt-4 pb-2">
         {/* FIX: Replacing Link/Button combination with the Dialog Component */}
-        <AddAdminDialog
+        <AddRolesDialog
           triggerButton={AddRoleButton} // Uses the button defined above
           open={isAddRoleOpen}
           onClose={() => setAddRoleOpen(false)}
@@ -297,11 +297,11 @@ const GroupsView = ({ setAddGroupOpen, isAddGroupOpen }) => {
           </button>
 
           {/* FIXED: open prop should be boolean, not function */}
-          <AddGroupDialog
+          {/* <AddGroupDialog
             triggerButton={AddGroupButton}
             open={isAddGroupOpen}
             onClose={() => setAddGroupOpen(false)}
-          />
+          /> */}
         </div>
       </div>
 

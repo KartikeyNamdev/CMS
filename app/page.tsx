@@ -88,10 +88,6 @@ export default function Home() {
         </section>
 
         {/* ---- FOOTER ---- */}
-        <footer className="mt-32 text-foreground/50 text-sm">
-          © {new Date().getFullYear()} DABAS EV CMS — Designed & Engineered with
-          ❤️
-        </footer>
       </main>
     </div>
   );

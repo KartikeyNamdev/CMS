@@ -57,12 +57,12 @@ const DiscountRenderer = (params: CustomCellRendererProps<Charger>) => {
   const name = params.data?.discountOffer;
   if (!name) return <span>--</span>;
   return (
-    <Link
-      href={`/charger/chargers/profile/${name}`}
-      className="text-green-500 hover:text-green-700 "
-    >
-      {name}%
-    </Link>
+    // <Link
+    //   href={`/charger/chargers/profile/${name}`}
+    //   className="text-green-500 hover:text-green-700 "
+    // >
+    <p>{name}%</p>
+    // </Link>
   );
 };
 
